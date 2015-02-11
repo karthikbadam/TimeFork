@@ -2,17 +2,14 @@
  * Created by karthik on 1/31/15.
  */
 
-var csv = require('fast-csv');
-var fs = require('fs');
-var d3 = require('d3');
-var brain = require('brain');
-
-var parseDate =  d3.time.format("%Y%m%d").parse;
-var TEMPORAL_INPUT_SIZE = 7;
-var TEMPORAL_OUTPUT_SIZE = 2;
-
 function Stock (options) {
     var _self = this;
+
+    var csv = _self.csv = require('fast-csv');
+    var fs = _self.fs =  require('fs');
+    var d3 = _self.d3 = require('d3');
+    var brain = _self.brain = require('brain');
+
     _self.companyName = options.company;
     _self.symbol = options.symbol;
     _self.data = [];
@@ -20,23 +17,30 @@ function Stock (options) {
     _self.min = 100000;
     _self.max = -100000;
 
-    _self.temporalNet = new brain.NeuralNetwork({
+    _self.temporalNet = new _self.brain.NeuralNetwork({
         hiddenLayers: [40, 50, 20],
         learningRate: 0.3 // global learning rate, useful when training using streams
     });
+
+    _self.parseDate =  _self.d3.time.format("%Y%m%d").parse;
+    _self.TEMPORAL_INPUT_SIZE = 12;
+    _self.TEMPORAL_OUTPUT_SIZE = 1;
+
+
+    //_self.readStock();
 }
 
 Stock.prototype.readStock = function () {
 
     var _self = this;
 
-    var stream = fs.createReadStream("data/"+_self.symbol+".csv");
+    var stream = _self.fs.createReadStream("data/"+_self.symbol+".csv");
 
-    var csvStream = csv
+    var csvStream = _self.csv
         .fromStream(stream, {headers : true})
         .on("data", function(d){
 
-            d["date"] = parseDate(String(d["date"]));
+            d["date"] = _self.parseDate(String(d["date"]));
             d["close price"] = +d["close price"];
             d["volume"] = +d["volume"];
 
@@ -81,20 +85,20 @@ Stock.prototype.getTemporalNetworkInput = function () {
 
     var dataSize = _self.data.length;
 
-    if (dataSize < TEMPORAL_INPUT_SIZE + TEMPORAL_OUTPUT_SIZE) {
+    if (dataSize < _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE) {
         return;
     }
 
-    for (var i = dataSize - 1; i >= TEMPORAL_INPUT_SIZE + TEMPORAL_OUTPUT_SIZE - 1; i--) {
+    for (var i = dataSize - 1; i >= _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE - 1; i--) {
         var tempInput = [];
         var tempOutput = [];
 
-        for (var j = 0; j < TEMPORAL_OUTPUT_SIZE; j++) {
+        for (var j = 0; j < _self.TEMPORAL_OUTPUT_SIZE; j++) {
             var d = _self.data[i-j];
             tempOutput.push(d["normalized"]);
         }
 
-        for (var j = TEMPORAL_OUTPUT_SIZE; j < TEMPORAL_INPUT_SIZE + TEMPORAL_OUTPUT_SIZE; j++) {
+        for (var j = _self.TEMPORAL_OUTPUT_SIZE; j < _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE; j++) {
             var d = _self.data[i-j];
             tempInput.push(d["normalized"]);
         }
@@ -134,7 +138,7 @@ Stock.prototype.trainTemporal = function () {
         //write weights to file
 
         //console.log(JSON.stringify(_self.temporalNet.weights));
-        fs.writeFile("data/train/t"+_self.symbol+".json", JSON.stringify(_self.temporalNet.weights), function(err) {
+        _self.fs.writeFile("data/train/train-"+_self.symbol+".json", JSON.stringify(_self.temporalNet.toJSON()), function(err) {
             if(err) {
                 console.log(err);
             } else {

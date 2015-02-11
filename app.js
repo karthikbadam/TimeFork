@@ -11,7 +11,7 @@ var csv = require('fast-csv');
 var fs = require('fs');
 var Parallel = require('paralleljs');
 
-var Stock = require('./Stock.js');
+var Stock = require('./stock2.js');
 
 
 //SOM
@@ -62,21 +62,29 @@ httpserver.listen(app.get('port'), function () {
 //start with internet information providers
 var stream = fs.createReadStream("data/iip.csv");
 
+var allStocks = [];
+var allData = {};
 var csvStream = csv
     .fromStream(stream, {headers : true})
     .on("data", function(data){
-        //console.log(data);
-
-        //for each symbol
         var companyName = data.company;
         var symbol = data.symbols;
 
-        var stockObject = new Stock({
-            company: companyName,
-            symbol: symbol
-        });
+        //var stream = fs.createReadStream("data/"+symbol+".csv");
 
-        stockObject.readStock();
+
+        allStocks.push(symbol);
+
+        //for each symbol
+//        var companyName = data.company;
+//        var symbol = data.symbols;
+//
+//        var stockObject = new Stock({
+//            company: companyName,
+//            symbol: symbol
+//        });
+
+        //stockObject.readStock();
 
         //stockObject.trainTemporal();
 
@@ -105,7 +113,27 @@ var csvStream = csv
 
     })
     .on("end", function(){
-        console.log("done");
+        console.log(allStocks);
+        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
+        p.require(Stock);
+
+        p.map(function (data) {
+
+            console.log(data);
+
+            var companyName = data;
+            var symbol = data;
+
+            Stock({
+                company: companyName,
+                symbol: symbol
+            });
+
+            //stockObject.readStock();
+
+           return 1;
+
+        });
     });
 
 // error handlers
