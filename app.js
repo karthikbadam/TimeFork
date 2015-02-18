@@ -67,49 +67,10 @@ var allData = {};
 var csvStream = csv
     .fromStream(stream, {headers : true})
     .on("data", function(data){
-        var companyName = data.company;
+
         var symbol = data.symbols;
 
-        //var stream = fs.createReadStream("data/"+symbol+".csv");
-
-
         allStocks.push(symbol);
-
-        //for each symbol
-//        var companyName = data.company;
-//        var symbol = data.symbols;
-//
-//        var stockObject = new Stock({
-//            company: companyName,
-//            symbol: symbol
-//        });
-
-        //stockObject.readStock();
-
-        //stockObject.trainTemporal();
-
-//        var p = new Parallel(data);
-//
-//        p.spawn(function (data) {
-//
-//            //for each symbol
-//            var companyName = data.company;
-//            var symbol = data.symbols;
-//
-//            var stockObject = new Stock({
-//                company: companyName,
-//                symbol: symbol
-//            });
-//
-//            stockObject.readStock();
-//
-//            return stockObject.trainTemporal()
-//
-//        }).then(function (data) {
-//
-//            console.log(data);
-//
-//        });
 
     })
     .on("end", function(){
@@ -120,16 +81,16 @@ var csvStream = csv
         p.map(function (data) {
 
             console.log(data);
-
+            var fs = require('fs');
             var companyName = data;
             var symbol = data;
+            var content = fs.readFileSync("data/"+symbol+".csv", 'utf8');
 
             Stock({
                 company: companyName,
                 symbol: symbol
             });
 
-            //stockObject.readStock();
 
            return 1;
 
