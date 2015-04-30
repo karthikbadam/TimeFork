@@ -246,14 +246,20 @@ g.tick text {
     margin-right: auto;
 }
 
-.content #linechart-viz .stockChart {
-    width: 480px;
+.stockChart {
+    width: 49%;
     height: 320px;
     padding: 0px;
     float: left; 
     border: 1px solid rgba(180, 180, 180, 0.2);
-    /*display: compact;*/
     overflow-x: scroll;
+    display: inline-block;
+}
+
+.expandedStockChart {
+    width: 98%;
+    height: 320px;
+    display: block;
 }
 
 .volumeBar {

@@ -17,8 +17,8 @@ function LineChart(options) {
     _self.temporalPredictors = options.temporalPredictors;
     _self.numberOfPredictionsMade = 0;
     _self.margin = {
-        top: 60,
-        right: 40,
+        top: 50,
+        right: 30,
         bottom: 60,
         left: 40
     };
@@ -27,7 +27,7 @@ function LineChart(options) {
     
     _self.dataFilteredForPrediction = _self.dataFiltered;
     
-    _self.svgWidth = 2*$("#linechart-viz").width()/3 - _self.margin.left - _self.margin.right;
+    _self.svgWidth = $("#linechart-viz").width() - _self.margin.left - _self.margin.right;
     
     _self.predictionRects = [];
  
@@ -42,13 +42,8 @@ function LineChart(options) {
     
     /* Manage visual space to handle prediction chaining */
     function expandChart() {
-        //alert("expand");
-        console.log("width"+ 49 * $("#linechart-viz").width()/100 +","+ $("#ID"+_self.id).width());
-        if ($("#ID"+_self.id).width() == 480) {
-            $("#ID"+_self.id).width(Math.round(54 * $("#linechart-viz").width()/100));
-        } else if ($("#ID"+_self.id).width() == Math.round(54*$("#linechart-viz").width()/100)) {
-            $("#ID"+_self.id).width(480);
-        }
+        
+        $("#ID"+_self.id).toggleClass("expandedStockChart");
     }
     
     _self.svg = _self.div.append("svg")
@@ -220,7 +215,7 @@ function LineChart(options) {
 
     //draws a rectangle at the right of each line chart for predictions
     var rect_offsetX = 5;
-    var rectangle_width = _self.margin.right + 5;
+    var rectangle_width = 40;
     var rectangle_height = _self.height + _self.margin.top + _self.margin.bottom;
     
     var numberOfPredictions = 15;
