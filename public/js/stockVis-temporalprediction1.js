@@ -23,10 +23,14 @@ function TemporalPrediction(options) {
 /* calculates temporal prediction */
 TemporalPrediction.prototype.predict = function(input) {
     var _self = this;
+    
     console.log(input);
     //var output = new Array(1);
+    
     var output = _self.network.run(input);
+    
     console.log(output);
+    
     return output;
 };
 

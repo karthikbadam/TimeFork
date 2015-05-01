@@ -8,54 +8,61 @@ function LineChart(options) {
     _self.charts = options.charts;
     _self.color = options.color;
     _self.id = options.id;
-    
+
     _self.data = _self.stockObject.data;
     _self.dataFiltered = _self.stockObject.data;
     _self.stockName = options.name;
     _self.stockSymbol = options.symbol;
     _self.trainingStocks = options.trainingStocks;
-    
+
     _self.spatialPrediction = options.spatialPrediction;
     _self.temporalPredictors = options.temporalPredictors;
     _self.numberOfPredictionsMade = 0;
-    
+
+    var temporalprediction = new TemporalPrediction({
+        //encog_file: data,
+        stock_name: _self.stockSymbol
+    });
+
+    temporalPredictors[_self.stockSymbol] = temporalprediction;
+
     _self.margin = {
-        top: 30,
+        top: 20,
         right: 30,
-        bottom: 60,
-        left: 20
+        bottom: 30,
+        left: 30
     };
-    
+
     _self.tomorrow = new Date();
-    
+
     _self.dataFilteredForPrediction = _self.dataFiltered;
-    
+
     _self.svgWidth = $("#linechart-viz").width() - _self.margin.left - _self.margin.right;
-    
+
     _self.predictionRects = [];
- 
+
     _self.width = (480 - _self.margin.left - _self.margin.right),
-        _self.height = (250 - _self.margin.top - _self.margin.bottom);
+        _self.height = (150 - _self.margin.top - _self.margin.bottom);
 
     _self.div = d3.select("#linecharts").append("div")
-        .attr("class", "stockChart").attr("id", "ID"+_self.id);
-    
+        .attr("class", "stockChart").attr("id", "ID" + _self.id);
+
     _self.div.append("div").attr("class", "expandClass")
-            .text(_self.stockName)
-            .on("click", expandChart);
-    
+        .text(_self.stockName)
+        .on("click", expandChart);
+
     /* Manage visual space to handle prediction chaining */
     function expandChart() {
-        $("#ID"+_self.id).toggleClass("expandedStockChart");
+        $("#ID" + _self.id).toggleClass("expandedStockChart");
     }
-    
+
     //line chart svg
     _self.linechartSVG = _self.div.append("svg")
         .attr("width", _self.svgWidth + _self.margin.left - _self.margin.right)
         .attr("height", _self.height + _self.margin.top + _self.margin.bottom)
         .append("g")
         .attr("transform", "translate(" + (_self.margin.left) + "," + _self.margin.top + ")");
-    
+
     //volume bar chart svg
     _self.volumeSVG = _self.div.append("svg")
         .attr("class", "volumeBar")
@@ -72,20 +79,20 @@ function LineChart(options) {
     _self.y = d3.scale.linear()
         .range([_self.height, 0]);
 
-    _self.x.domain(d3.extent(_self.dataFiltered, function(stock) {
+    _self.x.domain(d3.extent(_self.dataFiltered, function (stock) {
         return stock[_self.stockColumns[0]];
     }));
-    
-    _self.y.domain(d3.extent(_self.dataFiltered, function(stock) {
+
+    _self.y.domain(d3.extent(_self.dataFiltered, function (stock) {
         return stock[_self.stockColumns[6]];
     }));
 
-    
+
     //creates x and y axis
     _self.xAxis = d3.svg.axis()
         .scale(_self.x)
         .orient("bottom").ticks(4)
-        .tickFormat(function(d) {
+        .tickFormat(function (d) {
             return d3.time.format('%b%d/%y')(new Date(d));
         });
 
@@ -96,14 +103,14 @@ function LineChart(options) {
     //creates the mapping function for path line in SVG
     _self.line = d3.svg.line()
         .interpolate("Monotone")
-        .x(function(d) {
+        .x(function (d) {
             return _self.x(d[_self.stockColumns[0]]);
         })
-        .y(function(d) {
+        .y(function (d) {
             return _self.y(d[_self.stockColumns[6]]);
         });
 
-    
+
     //general definitions to keep everything within boundaries 
     _self.linechartSVG.append("defs")
         .append("clipPath").attr("id", "clip-" + _self.id)
@@ -125,7 +132,7 @@ function LineChart(options) {
         .append("svg:path")
         .attr("d", "M0,-5L10,0L0,5");
 
-    
+
     //draws the path line    
     _self.chartContainer = _self.linechartSVG.append("g")
         .attr("class", "linechart")
@@ -137,7 +144,7 @@ function LineChart(options) {
         .data([_self.dataFiltered])
         .attr("d", _self.line)
         //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#67655D")    
+        .attr("stroke", "#67655D")
         .attr("fill", "transparent")
         .attr("stroke-width", "1.5px")
         .attr("z-index", 1);
@@ -160,7 +167,7 @@ function LineChart(options) {
 
     //creates y-axis for the volume bar chart 
     _self.volumeY = d3.scale.linear().range([_self.height / 4, 0]);
-    _self.volumeY.domain(d3.extent(_self.data, function(stock) {
+    _self.volumeY.domain(d3.extent(_self.data, function (stock) {
         return stock[stockColumns[5]];
     }));
 
@@ -170,21 +177,21 @@ function LineChart(options) {
         .data(_self.data)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d) {
+        .attr("x", function (d) {
             return _self.x(d[_self.stockColumns[0]]);
         })
         .attr("width", 2)
-        .attr("y", function(d) {
+        .attr("y", function (d) {
             return _self.volumeY(d[stockColumns[5]]);
         })
-        .attr("height", function(d) {
+        .attr("height", function (d) {
             return _self.height / 4 - _self.volumeY(d[stockColumns[5]]);
         })
         //.attr("fill", _self.color(_self.id)) //--change COLOR THEME
         .attr("fill", "#222")
         .attr("fill-opacity", 0.3);
-    
-    
+
+
     // initializes parameters to show the prediction line at end of each chart
     _self.lastValueY = _self.y(_self.data[0][_self.stockColumns[6]]);
     _self.lastValueX = _self.x(_self.data[0][_self.stockColumns[0]]);
@@ -199,23 +206,23 @@ function LineChart(options) {
     var rect_offsetX = 2;
     var rectangle_width = _self.rectangle_width = 30;
     var rectangle_height = _self.height + _self.margin.top + _self.margin.bottom;
-    
+
     var numberOfPredictions = 20;
-    
+
     // draws the visual prediction space
     for (var i = 0; i < numberOfPredictions; i++) {
         var rect = _self.linechartSVG.append("svg:rect")
             .attr("class", "rect")
-            .attr("transform", "translate(" + (_self.width + i*rectangle_width - rect_offsetX) + "," + (-_self.margin.top) + ")")
+            .attr("transform", "translate(" + (_self.width + i * rectangle_width - rect_offsetX) + "," + (-_self.margin.top) + ")")
             .attr("width", rectangle_width)
             .attr("height", rectangle_height)
             .on("mousedown", mousedown)
             .on("mousemove", mousemove)
             .on("mouseup", mouseup);
-        
-        _self.predictionRects.push(rect);   
+
+        _self.predictionRects.push(rect);
     }
-    
+
     // creates the variable for the prediction line -- variable updated when user actually draws a prediction    
     var draw = _self.linechartSVG.append("line").attr("id", "prediction")
         .attr("x1", _self.lastValueX)
@@ -237,23 +244,23 @@ function LineChart(options) {
 
     function mousemove() {
         var m = d3.mouse(this);
-        
+
         /* Indirection to check if the user indeed wants a prediction */
         if (predictMouseClicked) {
-            draw.attr("x2", (_self.width - 2*rect_offsetX + (_self.numberOfPredictionsMade +1)*rectangle_width))
+            draw.attr("x2", (_self.width - 2 * rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width))
                 .attr("y2", (m[1] - _self.margin.top))
                 //.attr("stroke", _self.color(_self.id)); //--change COLOR SCHEME
                 .attr("stroke", "#222");
-            
-            _self.predictedValueX = _self.width - rect_offsetX + (_self.numberOfPredictionsMade + 1)*rectangle_width;    
-            _self.predictedValueY = m[1] - _self.margin.top;    
-            
+
+            _self.predictedValueX = _self.width - rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width;
+            _self.predictedValueY = m[1] - _self.margin.top;
+
             _self.predictedY = _self.stockMaxValue - (_self.stockMaxValue - _self.stockMinValue) * (((m[1] - _self.margin.top)) / (_self.height));
-        
+
             _self.lineLength = 100 * ((_self.predictedY - _self.closingValue) / _self.closingValue);
-        
+
         }
-        
+
         _self.linechartSVG.on("mouseup", mouseup);
     }
 
@@ -263,61 +270,61 @@ function LineChart(options) {
         }
 
         predictMouseClicked = false;
-        
+
         _self.userPredicted = true;
-        
+
         var error = Math.abs((_self.predictedY - _self.tomorrowValue) * 100 / _self.tomorrowValue);
-        console.log("Prediction error= " + error + "%" +" actual value " +_self.tomorrowValue+" predicted value "+_self.predictedY);
-        
-//        if (error < 10) {
-//            var score = Number($('#score_value').text());
-//            $('#score_value').html((score + 1));
-//            console.log("score - " + score);
-//        }
-        
-        var count=0;
+        console.log("Prediction error= " + error + "%" + " actual value " + _self.tomorrowValue + " predicted value " + _self.predictedY);
+
+        //        if (error < 10) {
+        //            var score = Number($('#score_value').text());
+        //            $('#score_value').html((score + 1));
+        //            console.log("score - " + score);
+        //        }
+
+        var count = 0;
         for (var i = 0; i < _self.charts.length; i++) {
-            
+
             if (_self.charts[i].userPredicted === true) {
-            
+
                 count++;
                 continue;
-            
+
             } else {
-           
+
                 break;
-            
+
             }
         }
 
         // TODO - clean up here when prediction on all the charts happens
         if (count === _self.charts.length) {
-           for (var i = 0; i < _self.charts.length; i++) {
-               _self.charts[i].moveToNextInstance();
-           }
-           return;
+            for (var i = 0; i < _self.charts.length; i++) {
+                _self.charts[i].moveToNextInstance();
+            }
+            return;
         }
-        
+
         // when moving to the next prediction stage during chaing, record the current value
         if (_self.startedPredictions) {
             var actualValue = _self.tomorrowValue;
             return;
         }
-        
+
         // pop up a confirm dialog box for spatial prediction
         $("#dialog-confirm").dialog({
             resizable: false,
             height: 140,
             modal: true,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 var textarea = '<p id="predictionText"><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Do you want to predict other stocks?</p>';
                 if ($("#predictionText").contents().length < 1) {
                     $("#dialog-confirm").append(textarea);
                 }
             },
-            
+
             buttons: {
-                OK: function() {
+                OK: function () {
                     $(this).dialog("close");
                     //do something
                     var predictions = _self.spatialPrediction.getPredictions(_self.lineLength, _self.stockSymbol);
@@ -327,7 +334,7 @@ function LineChart(options) {
                         }
                     }
                 },
-                Cancel: function() {
+                Cancel: function () {
                     $(this).dialog("close");
                 }
             }
@@ -338,13 +345,13 @@ function LineChart(options) {
 }
 
 //move to next instance
-LineChart.prototype.moveToNextInstance = function() {
+LineChart.prototype.moveToNextInstance = function () {
     var _self = this;
     _self.tomorrowValue = _self.predictedY;
     var stockData = {};
     stockData[_self.stockColumns[6]] = _self.tomorrowValue;
     stockData[_self.stockColumns[0]] = _self.tomorrow;
-    
+
     var b = _self.tomorrow;
     var tomorrow = _self.tomorrow;
     //find the date of next day
@@ -358,7 +365,7 @@ LineChart.prototype.moveToNextInstance = function() {
     if (b.getDay() === 5) {
         tomorrow.setDate(b.getDate() + 3);
     }
-    
+
     // goes through the data to find the actual tomorrow's value -- we do have training data
     _self.tomorrowValue = 0;
     for (var i = 0; i < _self.data.length; i++) {
@@ -369,7 +376,7 @@ LineChart.prototype.moveToNextInstance = function() {
             break;
         }
     }
-    
+
     // reads the last 15 values -- this might have to contain the predictions    
     var prData = [];
     prData.push(stockData);
@@ -377,14 +384,16 @@ LineChart.prototype.moveToNextInstance = function() {
         prData.push(_self.dataFilteredForPrediction[i]);
     }
     _self.dataFilteredForPrediction = prData;
-    
+
+
+    // temporal input
     var input = new Array(15);
     for (var i = 0; i < 15; i++) {
         input[i] = _self.stockObject.normalizeValue(prData[i][_self.stockColumns[6]]);
     }
-    
+
     _self.numberOfPredictionsMade++;
-    
+
     //adding a line to the prediction space
     _self.linechartSVG.append("line")
         .attr("class", "userPredictionLine")
@@ -393,19 +402,19 @@ LineChart.prototype.moveToNextInstance = function() {
         .attr("x2", _self.predictedValueX)
         .attr("y2", _self.predictedValueY)
         //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#222")    
+        .attr("stroke", "#222")
         .attr("stroke-opacity", 0.8)
         .attr("stroke-width", "2px");
-     
+
     _self.linechartSVG.selectAll(".temporalPredictionLine")
-        .attr("stroke-opacity", 0.1); 
-    
+        .attr("stroke-opacity", 0.1);
+
     _self.linechartSVG.selectAll(".predictionLine")
-        .attr("stroke-opacity", 0.03); 
-       
+        .attr("stroke-opacity", 0.03);
+
     _self.lastValueX = _self.predictedValueX;
     _self.lastValueY = _self.predictedValueY;
-    
+
     var predictor = _self.temporalPredictors[_self.stockSymbol];
     var output = predictor.predict(input);
     _self.currentPrediction = _self.stockObject.deNormalize(output[0]);
@@ -417,53 +426,53 @@ LineChart.prototype.moveToNextInstance = function() {
         .attr("x2", _self.lastValueX + _self.rectangle_width)
         .attr("y2", _self.y(_self.currentPrediction))
         //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#222")    
+        .attr("stroke", "#222")
         .attr("stroke-opacity", 0.8)
         .attr("stroke-width", "2px");
-    
-    console.log("after all prediction --"+_self.lastValueX);
+
+    console.log("after all prediction --" + _self.lastValueX);
     _self.linechartSVG.select("#prediction")
         .attr("x1", _self.lastValueX)
         .attr("y1", _self.lastValueY)
         .attr("x2", _self.lastValueX)
         .attr("y2", _self.lastValueY);
-     
-     _self.userPredicted = false;
-     _self.startedPredictions = false;
-     
+
+    _self.userPredicted = false;
+    _self.startedPredictions = false;
+
 };
 
 //brushes each line chart based on the region selected on the overview
-LineChart.prototype.showOnly = function(b, empty) {
+LineChart.prototype.showOnly = function (b, empty) {
     var _self = this;
-    
+
     _self.numberOfPredictionsMade = 0;
     _self.userPredicted = false;
     _self.startedPredictions = false;
-    
+
     //var x = this.x;
     //var stockColumns = this.stockColumns;
     _self.tomorrow = new Date();
     //var y = this.y;
     _self.dataFiltered = _self.stockObject.getFilteredData(b);
-    
+
     if (_self.dataFiltered.length < 0) {
         return;
     }
-    
+
     _self.dataFilteredForPrediction = _self.dataFiltered;
-    
+
     _self.x.domain(b);
     _self.chartContainer.select(".x.axis").call(_self.xAxis);
 
-    _self.y.domain(d3.extent(_self.dataFiltered, function(stock) {
+    _self.y.domain(d3.extent(_self.dataFiltered, function (stock) {
         return stock[_self.stockColumns[6]];
     }));
-    
+
     _self.y.domain([_self.y.domain()[0] - _self.y.domain()[0] / 50, _self.y.domain()[1] + _self.y.domain()[1] / 50]);
     _self.chartContainer.select(".y.axis").call(_self.yAxis);
 
-    
+
     //parameters to find the ending value of each chart
     _self.lastValueY = _self.y(_self.dataFiltered[0][_self.stockColumns[6]]);
     _self.lastValueX = _self.x(_self.dataFiltered[0][_self.stockColumns[0]]);
@@ -479,25 +488,25 @@ LineChart.prototype.showOnly = function(b, empty) {
         .attr("y2", _self.lastValueY);
 
 
-    var volumeY = _self.volumeY.domain(d3.extent(_self.dataFiltered, function(stock) {
+    var volumeY = _self.volumeY.domain(d3.extent(_self.dataFiltered, function (stock) {
         return stock[stockColumns[5]];
     }));
 
-    
+
     //updates volume chart below the line chart
     _self.volumeSVG.selectAll(".bar").remove();
     _self.volumeSVG.selectAll(".bar")
         .data(_self.dataFiltered)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d) {
+        .attr("x", function (d) {
             return _self.x(d[_self.stockColumns[0]]);
         })
         .attr("width", 4)
-        .attr("y", function(d) {
+        .attr("y", function (d) {
             return volumeY(d[stockColumns[5]]);
         })
-        .attr("height", function(d) {
+        .attr("height", function (d) {
             return _self.height / 4 - volumeY(d[stockColumns[5]]);
         })
         //.attr("fill", color(_self.id))
@@ -554,12 +563,12 @@ LineChart.prototype.showOnly = function(b, empty) {
             break;
         }
     }
-    
+
     _self.linechartSVG.selectAll(".temporalPredictionLine").remove();
     var predictor = _self.temporalPredictors[_self.stockSymbol];
     var output = predictor.predict(input);
     _self.currentPrediction = _self.stockObject.deNormalize(output[0]);
-    
+
     //console.log("prediction is "+((this.currentPrediction - tomorrowValue)*100/this.currentPrediction));
     _self.linechartSVG.append("line")
         .attr("class", "temporalPredictionLine")
@@ -575,7 +584,7 @@ LineChart.prototype.showOnly = function(b, empty) {
 };
 
 // Adds spatial predictions
-LineChart.prototype.addPrediction = function(predictionArray, opacity) {
+LineChart.prototype.addPrediction = function (predictionArray, opacity) {
     var _self = this;
     _self.startedPredictions = true;
     var stockIndex = _self.trainingStocks.indexOf(_self.stockSymbol);
@@ -591,4 +600,3 @@ LineChart.prototype.addPrediction = function(predictionArray, opacity) {
         .attr("stroke", "#888")
         .attr("stroke-opacity", opacity);
 };
-

@@ -1,4 +1,3 @@
-
 var stockList = 'data/internet information providers.csv';
 
 var stockSymbols = [];
@@ -31,16 +30,19 @@ var temporalPredictors = [];
 
 var stocks = [];
 
+var stockObjects = {};
+
 var startDate = parseDate("20100506");
 
 var correlationViewer;
 
 //Download file for spatial prediction
-$.get("/StockVisServlet/SpatialPrediction", function (data) {
+$.get("data/train/SOM_WEIGHTS.json", function (data) {
     console.log("Data: " + data);
     trainingStockList = data.stocks;
     weightsSOM = data.weights;
-    spatialPrediction = new SpatialPrediction({weights: weightsSOM,
+    spatialPrediction = new SpatialPrediction({
+        weights: weightsSOM,
         trainingStocks: trainingStockList,
         stockSymbols: stockSymbols
     });
@@ -49,35 +51,30 @@ $.get("/StockVisServlet/SpatialPrediction", function (data) {
 
 
 $(document).ready(function () {
-    
+
     //create Correlation Viewer
     correlationViewer = new CorrelationChart();
 
     //Temporal prediction request handler
-    $("#request_temporal").on('click', function (e) {
-        //Download file from servlet
-        $("#start_prediction_label").html("Prediction Started");
-        selectedSymbols.forEach(function (stockSymbol) {
-            //$.get("/StockVisServlet/TemporalPrediction", {"symbols[]": stockSymbol}, function (data, error) {
-                var temporalprediction = new TemporalPrediction({
-                    //encog_file: data,
-                    stock_name: stockSymbol
-                });
+    //$("#request_temporal").on('click', function (e) {
+    //Download file from servlet
+    //$("#start_prediction_label").html("Prediction Started");
+    //  selectedSymbols.forEach(function (stockSymbol) {
+    //$.get("/StockVisServlet/TemporalPrediction", {"symbols[]": stockSymbol}, function (data, error) {
 
-                temporalPredictors[stockSymbol] = temporalprediction;
-            //});
-        });
+    //});
+    // });
 
-//        correlationViewer = new CorrelationChart({
-//            selectedSymbolsData: selectedSymbolsData,
-//            stocks: stocks,
-//            selectedSymbols: selectedSymbols,
-//            color: color,
-//        });
+    //        correlationViewer = new CorrelationChart({
+    //            selectedSymbolsData: selectedSymbolsData,
+    //            stocks: stocks,
+    //            selectedSymbols: selectedSymbols,
+    //            color: color,
+    //        });
 
-//        correlationViewer.refresh();
+    //        correlationViewer.refresh();
 
-    });
+    // });
 
     //reads the list of stocks first
     d3.csv(stockList, function (error, data) {
@@ -178,6 +175,8 @@ $(document).ready(function () {
                             });
 
                             stocks.push(stockObject);
+                            stockObjects[stock_id] = stockObject;
+
                             stockObject.normalize(close_values);
 
                             charts.push(new LineChart({
@@ -214,9 +213,9 @@ $(document).ready(function () {
                             document.getElementById(stock_id).style.color = color(selectedSymbols.indexOf(stock_id) % 10);
 
                             document.getElementById(stock_id).style.backgroundColor = "#EEEEEE";
-                            
+
                             callback(null, data);
-                            
+
                         });
 
                     });
@@ -224,19 +223,18 @@ $(document).ready(function () {
             });
             //emptying this list because the data has already been downloaded
             newlySelectedSymbols = [];
-            
+
             q.await(createCorrelation);
         });
     });
 });
 
-function createCorrelation () {
-    correlationViewer.add ({
-            selectedSymbolsData: selectedSymbolsData,
-            stocks: stocks,
-            selectedSymbols: selectedSymbols,
-            color: color,
-    });     
+function createCorrelation() {
+    correlationViewer.add({
+        selectedSymbolsData: selectedSymbolsData,
+        stocks: stocks,
+        selectedSymbols: selectedSymbols,
+        color: color,
+    });
     correlationViewer.refresh();
 }
-
