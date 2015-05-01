@@ -103,20 +103,17 @@ option.ui-widget-content {
 }
 
 .expandClass {
-    background: url('../images/expand_grey.png');
+/*    background: url('../images/expand_grey.png');*/
     background-size: 15px 15px;
-    width: 15px;
+    width: 100%;
     height: 15px;
     cursor: pointer;
-    float: right;
+    color: gray;
 }
 
 .expandClass:hover{
-    background: url('../images/expand_color.png');
-    background-size: 15px 15px;
-    width: 15px;
-    height: 15px;
-    float: right;
+    /*background: url('../images/expand_color.png');*/
+    color:black;   
 }
 
 #settings_button {
@@ -241,7 +238,7 @@ g.tick text {
     width: 85%;
     height: 80%;
     float: left;
-    display:block;
+    display: block;
     margin-left: auto;
     margin-right: auto;
 }
@@ -253,7 +250,7 @@ g.tick text {
     float: left; 
     border: 1px solid rgba(180, 180, 180, 0.2);
     overflow-x: scroll;
-    display: inline-block;
+    display: block;
 }
 
 .expandedStockChart {
