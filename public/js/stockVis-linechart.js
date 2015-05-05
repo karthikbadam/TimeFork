@@ -210,6 +210,10 @@ function LineChart(options) {
     var numberOfPredictions = 20;
 
     // one single rectangle with multiple lines
+    // rectangle width 30*10
+    // lines at 30, 60, 90, 120...
+    // mouse event get size of the prediction line 
+    // 
 
     // draws the visual prediction space
     for (var i = 0; i < numberOfPredictions; i++) {
