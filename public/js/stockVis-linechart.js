@@ -213,7 +213,10 @@ function LineChart(options) {
     // rectangle width 30*10
     // lines at 30, 60, 90, 120...
     // mouse event get size of the prediction line 
-    // 
+    // convert x to closest 30 multiple
+    // get x/30 for future time step and get y 
+    // do greedy to fit a prediction path
+    // find a greedy JS library
 
     // draws the visual prediction space
     for (var i = 0; i < numberOfPredictions; i++) {
