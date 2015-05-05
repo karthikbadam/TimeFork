@@ -209,6 +209,8 @@ function LineChart(options) {
 
     var numberOfPredictions = 20;
 
+    // one single rectangle with multiple lines
+
     // draws the visual prediction space
     for (var i = 0; i < numberOfPredictions; i++) {
         var rect = _self.linechartSVG.append("svg:rect")
@@ -426,7 +428,7 @@ LineChart.prototype.moveToNextInstance = function () {
         .attr("x2", _self.lastValueX + _self.rectangle_width)
         .attr("y2", _self.y(_self.currentPrediction))
         //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#222")
+        .attr("stroke", "#fc8d59")
         .attr("stroke-opacity", 0.8)
         .attr("stroke-width", "2px");
 
@@ -577,9 +579,9 @@ LineChart.prototype.showOnly = function (b, empty) {
         .attr("x2", _self.lastValueX + _self.margin.right)
         .attr("y2", _self.y(_self.currentPrediction))
         //.attr("stroke", _self.color(_self.id))
-        .attr("stroke", "#222")
-        .attr("stroke-opacity", 0.4)
-        .attr("stroke-width", "1px");
+        .attr("stroke", "#fc8d59")
+        .attr("stroke-opacity", 0.8)
+        .attr("stroke-width", "2px");
 
 };
 
@@ -597,6 +599,6 @@ LineChart.prototype.addPrediction = function (predictionArray, opacity) {
         .attr("x2", _self.lastValueX + _self.rectangle_width)
         .attr("y2", _self.y(value))
         //.attr("stroke", _self.color(_self.id)) -- // change COLOR SCHEME
-        .attr("stroke", "#888")
+        .attr("stroke", "#91bfdb")
         .attr("stroke-opacity", opacity);
 };

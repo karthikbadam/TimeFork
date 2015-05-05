@@ -24,7 +24,7 @@ SpatialPrediction.prototype.getPredictions = function(prediction, stock_symbol) 
     for (var i = 0; i < _self.weightsSize; i++) {
         var distance = Math.abs(_self.weights[i][stockIndex]- prediction);
         if ( distance < 1 ) {
-            var opacity = 1 - distance;
+            var opacity = Math.pow(1 - distance, 2);
             _self.predictionArrays.push(_self.weights[i]);
             _self.predictionOpacities.push(opacity);
         }
