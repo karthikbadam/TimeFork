@@ -217,20 +217,33 @@ function LineChart(options) {
     // get x/30 for future time step and get y 
     // do greedy to fit a prediction path
     // find a greedy JS library
-
-    // draws the visual prediction space
-    for (var i = 0; i < numberOfPredictions; i++) {
-        var rect = _self.linechartSVG.append("svg:rect")
+    
+     var rect = _self.linechartSVG.append("svg:rect")
             .attr("class", "rect")
-            .attr("transform", "translate(" + (_self.width + i * rectangle_width - rect_offsetX) + "," + (-_self.margin.top) + ")")
-            .attr("width", rectangle_width)
+            .attr("transform", "translate(" + (_self.width - rect_offsetX) + "," + (-_self.margin.top) + ")")
+            .attr("width", numberOfPredictions * rectangle_width)
             .attr("height", rectangle_height)
             .on("mousedown", mousedown)
             .on("mousemove", mousemove)
             .on("mouseup", mouseup);
+    
+    
+    
+    
 
-        _self.predictionRects.push(rect);
-    }
+    // draws the visual prediction space
+//    for (var i = 0; i < numberOfPredictions; i++) {
+//        var rect = _self.linechartSVG.append("svg:rect")
+//            .attr("class", "rect")
+//            .attr("transform", "translate(" + (_self.width + i * rectangle_width - rect_offsetX) + "," + (-_self.margin.top) + ")")
+//            .attr("width", rectangle_width)
+//            .attr("height", rectangle_height)
+//            .on("mousedown", mousedown)
+//            .on("mousemove", mousemove)
+//            .on("mouseup", mouseup);
+//
+//        _self.predictionRects.push(rect);
+//    }
 
     // creates the variable for the prediction line -- variable updated when user actually draws a prediction    
     var draw = _self.linechartSVG.append("line").attr("id", "prediction")
