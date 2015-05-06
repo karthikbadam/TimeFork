@@ -28,7 +28,7 @@ function LineChart(options) {
 
     _self.margin = {
         top: 20,
-        right: 30,
+        right: 0,
         bottom: 30,
         left: 30
     };
