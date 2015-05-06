@@ -596,7 +596,7 @@ LineChart.prototype.showOnly = function (b, empty) {
         .attr("class", "temporalPredictionLine")
         .attr("x1", _self.lastValueX)
         .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX + _self.margin.right)
+        .attr("x2", _self.lastValueX + _self.rectangle_width)
         .attr("y2", _self.y(_self.currentPrediction))
         //.attr("stroke", _self.color(_self.id))
         .attr("stroke", "#fc8d59")
