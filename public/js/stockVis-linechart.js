@@ -219,7 +219,7 @@ function LineChart(options) {
     // find a greedy JS library
     
      var rect = _self.linechartSVG.append("svg:rect")
-            .attr("class", "rect")
+            .attr("class", "predictionRect")
             .attr("transform", "translate(" + (_self.width - rect_offsetX) + "," + (-_self.margin.top) + ")")
             .attr("width", numberOfPredictions * rectangle_width)
             .attr("height", rectangle_height)
@@ -227,10 +227,18 @@ function LineChart(options) {
             .on("mousemove", mousemove)
             .on("mouseup", mouseup);
     
-    
-    
-    
 
+    for (var i = 0; i < numberOfPredictions; i++) {
+        var rect = _self.linechartSVG.append("line")
+            .attr("class", "boundaryLine")
+            .attr("x1", _self.width + i * rectangle_width - rect_offsetX) 
+            .attr("y1", -_self.margin.top)
+            .attr("x2", _self.width + i * rectangle_width - rect_offsetX) 
+            .attr("y2", -_self.margin.top + rectangle_height)
+            .attr("stroke-dasharray", "5, 5");
+    }
+    
+    
     // draws the visual prediction space
 //    for (var i = 0; i < numberOfPredictions; i++) {
 //        var rect = _self.linechartSVG.append("svg:rect")
