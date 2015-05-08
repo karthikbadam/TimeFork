@@ -277,12 +277,14 @@ function LineChart(options) {
 
         /* Indirection to check if the user indeed wants a prediction */
         if (predictMouseClicked) {
-            draw.attr("x2", (_self.width - 2 * rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width))
+            //draw.attr("x2", (_self.width - 2 * rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width))
+            draw.attr("x2", _self.width - rect_offsetX + m[0])
                 .attr("y2", (m[1] - _self.margin.top))
                 //.attr("stroke", _self.color(_self.id)); //--change COLOR SCHEME
                 .attr("stroke", "#222");
 
             _self.predictedValueX = _self.width - rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width;
+            
             _self.predictedValueY = m[1] - _self.margin.top;
 
             _self.predictedY = _self.stockMaxValue - (_self.stockMaxValue - _self.stockMinValue) * (((m[1] - _self.margin.top)) / (_self.height));
