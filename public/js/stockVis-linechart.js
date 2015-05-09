@@ -298,7 +298,10 @@ function LineChart(options) {
 
     function mouseup() {
         if (!predictMouseClicked) {
+            
+            
             return;
+            
         }
 
         predictMouseClicked = false;
