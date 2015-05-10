@@ -217,41 +217,42 @@ function LineChart(options) {
     // get x/30 for future time step and get y 
     // do greedy to fit a prediction path
     // find a greedy JS library
-    
-     var rect = _self.linechartSVG.append("svg:rect")
-            .attr("class", "predictionRect")
-            .attr("transform", "translate(" + (_self.width - rect_offsetX) + "," + (-_self.margin.top) + ")")
-            .attr("width", numberOfPredictions * rectangle_width)
-            .attr("height", rectangle_height)
-            .on("mousedown", mousedown)
-            .on("mousemove", mousemove)
-            .on("mouseup", mouseup);
-    
+
+    var rect = _self.linechartSVG.append("svg:rect")
+        .attr("class", "predictionRect")
+        .attr("transform", "translate(" + (_self.width - rect_offsetX) + "," + (-_self.margin.top) + ")")
+        .attr("width", numberOfPredictions * rectangle_width)
+        .attr("height", rectangle_height)
+        .on("mousedown", mousedown)
+        .on("mousemove", mousemove)
+        .on("mouseup", mouseup);
+
 
     for (var i = 0; i < numberOfPredictions; i++) {
         var rect = _self.linechartSVG.append("line")
             .attr("class", "boundaryLine")
-            .attr("x1", _self.width + i * rectangle_width - rect_offsetX) 
+            .attr("x1", _self.width + i * rectangle_width - rect_offsetX)
             .attr("y1", -_self.margin.top)
-            .attr("x2", _self.width + i * rectangle_width - rect_offsetX) 
+            .attr("x2", _self.width + i * rectangle_width - rect_offsetX)
             .attr("y2", -_self.margin.top + rectangle_height)
             .attr("stroke-dasharray", "5, 5");
     }
     
     
+
     // draws the visual prediction space
-//    for (var i = 0; i < numberOfPredictions; i++) {
-//        var rect = _self.linechartSVG.append("svg:rect")
-//            .attr("class", "rect")
-//            .attr("transform", "translate(" + (_self.width + i * rectangle_width - rect_offsetX) + "," + (-_self.margin.top) + ")")
-//            .attr("width", rectangle_width)
-//            .attr("height", rectangle_height)
-//            .on("mousedown", mousedown)
-//            .on("mousemove", mousemove)
-//            .on("mouseup", mouseup);
-//
-//        _self.predictionRects.push(rect);
-//    }
+    //    for (var i = 0; i < numberOfPredictions; i++) {
+    //        var rect = _self.linechartSVG.append("svg:rect")
+    //            .attr("class", "rect")
+    //            .attr("transform", "translate(" + (_self.width + i * rectangle_width - rect_offsetX) + "," + (-_self.margin.top) + ")")
+    //            .attr("width", rectangle_width)
+    //            .attr("height", rectangle_height)
+    //            .on("mousedown", mousedown)
+    //            .on("mousemove", mousemove)
+    //            .on("mouseup", mouseup);
+    //
+    //        _self.predictionRects.push(rect);
+    //    }
 
     // creates the variable for the prediction line -- variable updated when user actually draws a prediction    
     var draw = _self.linechartSVG.append("line").attr("id", "prediction")
@@ -285,6 +286,8 @@ function LineChart(options) {
 
             _self.predictedValueX = _self.width - rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width;
             
+            _self.predictedValueX = m[0]; 
+            
             _self.predictedValueY = m[1] - _self.margin.top;
 
             _self.predictedY = _self.stockMaxValue - (_self.stockMaxValue - _self.stockMinValue) * (((m[1] - _self.margin.top)) / (_self.height));
@@ -298,10 +301,7 @@ function LineChart(options) {
 
     function mouseup() {
         if (!predictMouseClicked) {
-            
-            
             return;
-            
         }
 
         predictMouseClicked = false;
@@ -310,6 +310,13 @@ function LineChart(options) {
 
         var error = Math.abs((_self.predictedY - _self.tomorrowValue) * 100 / _self.tomorrowValue);
         console.log("Prediction error= " + error + "%" + " actual value " + _self.tomorrowValue + " predicted value " + _self.predictedY);
+        
+        
+        // Count number of time steps predicted 
+        console.log("time steps predicted: "+ Math.round(_self.predictedValueX /_self.rectangle_width));
+        _self.predictedTimeSteps = Math.round(_self.predictedValueX /_self.rectangle_width);
+        
+        
 
         //        if (error < 10) {
         //            var score = Number($('#score_value').text());
