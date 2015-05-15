@@ -36,6 +36,13 @@ var startDate = parseDate("20100506");
 
 var correlationViewer;
 
+
+// Decision tree!!
+// Take previous seven values -- build a decision tree 
+// maybe a random forest
+// add variation at each node -- check how much you get back
+
+
 //Download file for spatial prediction
 $.get("data/train/SOM_WEIGHTS.json", function (data) {
     console.log("Data: " + data);
