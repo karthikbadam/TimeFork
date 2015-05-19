@@ -111,6 +111,10 @@ option.ui-widget-content {
     color: gray;
 }
 
+.boundaryLine {
+    stroke: #EEE;
+}
+
 .expandClass:hover{
     /*background: url('../images/expand_color.png');*/
     color:black;   
@@ -147,11 +151,9 @@ option.ui-widget-content {
     pointer-events: all;
 }
 
-.rect {
-    fill: rgba(217, 217, 217, 0.1);
-    stroke: rgba(217, 217, 217, 0.2);
+.predictionRect {
+    fill: rgba(255, 227, 107, 0.1);
 }
-
 
 g.context rect.background {
     fill: transparent;
