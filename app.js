@@ -64,38 +64,41 @@ var stream = fs.createReadStream("data/iip.csv");
 
 var allStocks = [];
 var allData = {};
-var csvStream = csv
-    .fromStream(stream, {headers : true})
-    .on("data", function(data){
 
-        var symbol = data.symbols;
+// lets not do the training for now
 
-        allStocks.push(symbol);
-
-    })
-    .on("end", function(){
-        console.log(allStocks);
-        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
-        p.require(Stock);
-
-        p.map(function (data) {
-
-            console.log(data);
-            var fs = require('fs');
-            var companyName = data;
-            var symbol = data;
-            var content = fs.readFileSync("data/"+symbol+".csv", 'utf8');
-
-            Stock({
-                company: companyName,
-                symbol: symbol
-            });
-
-
-           return 1;
-
-        });
-    });
+//var csvStream = csv
+//    .fromStream(stream, {headers : true})
+//    .on("data", function(data){
+//
+//        var symbol = data.symbols;
+//
+//        allStocks.push(symbol);
+//
+//    })
+//    .on("end", function(){
+//        console.log(allStocks);
+//        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
+//        p.require(Stock);
+//
+//        p.map(function (data) {
+//
+//            console.log(data);
+//            var fs = require('fs');
+//            var companyName = data;
+//            var symbol = data;
+//            var content = fs.readFileSync("data/"+symbol+".csv", 'utf8');
+//
+//            Stock({
+//                company: companyName,
+//                symbol: symbol
+//            });
+//
+//
+//           return 1;
+//
+//        });
+//    });
 
 // error handlers
 
