@@ -316,6 +316,9 @@ function LineChart(options) {
         console.log("time steps predicted: "+ Math.round(_self.predictedValueX /_self.rectangle_width));
         _self.predictedTimeSteps = Math.round(_self.predictedValueX /_self.rectangle_width);
         
+        // Look through the past data to get the best fit
+        
+        
         
 
         //        if (error < 10) {
