@@ -494,11 +494,9 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.numberOfPredictionsMade = 0;
     _self.userPredicted = false;
     _self.startedPredictions = false;
-
-    //var x = this.x;
-    //var stockColumns = this.stockColumns;
+    
     _self.tomorrow = new Date();
-    //var y = this.y;
+    
     _self.dataFiltered = _self.stockObject.getFilteredData(b);
 
     if (_self.dataFiltered.length < 0) {
@@ -507,7 +505,12 @@ LineChart.prototype.showOnly = function (b, empty) {
 
     _self.dataFilteredForPrediction = _self.dataFiltered;
 
-    _self.x.domain(b);
+    _self.x.domain(d3.extent(_self.dataFiltered, function (stock) {
+        return stock[_self.stockColumns[0]];
+    }));
+    
+    b = _self.x.domain();
+    
     _self.chartContainer.select(".x.axis").call(_self.xAxis);
 
     _self.y.domain(d3.extent(_self.dataFiltered, function (stock) {

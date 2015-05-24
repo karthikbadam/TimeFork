@@ -19,6 +19,7 @@
     "d3": "*",
     "brain": "*",
     "paralleljs": "*",
-    "csv-load-sync": "*"
+    "csv-load-sync": "*",
+    "random-forest-classifier": "*"  
   }
 }
