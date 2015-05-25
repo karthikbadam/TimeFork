@@ -11,7 +11,7 @@ var csv = require('fast-csv');
 var fs = require('fs');
 var Parallel = require('paralleljs');
 
-var Stock = require('./stock2.js');
+var Stock = require('./stock-forest.js');
 
 
 //SOM
@@ -67,17 +67,25 @@ var allData = {};
 
 // lets not do the training for now
 
-//var csvStream = csv
-//    .fromStream(stream, {headers : true})
-//    .on("data", function(data){
-//
-//        var symbol = data.symbols;
-//
-//        allStocks.push(symbol);
-//
-//    })
-//    .on("end", function(){
-//        console.log(allStocks);
+var csvStream = csv
+    .fromStream(stream, {headers : true})
+    .on("data", function(data){
+
+        var symbol = data.symbols;
+
+        allStocks.push(symbol);
+        
+        var fs = require('fs');
+        var companyName = symbol;
+        
+        Stock({
+            company: companyName,
+            symbol: symbol
+        });
+
+    })
+    .on("end", function(){
+        console.log(allStocks);
 //        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
 //        p.require(Stock);
 //
@@ -94,11 +102,10 @@ var allData = {};
 //                symbol: symbol
 //            });
 //
-//
 //           return 1;
 //
 //        });
-//    });
+    });
 
 // error handlers
 
