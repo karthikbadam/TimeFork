@@ -237,11 +237,11 @@ $(document).ready(function () {
 });
 
 function createCorrelation() {
-    correlationViewer.add({
-        selectedSymbolsData: selectedSymbolsData,
-        stocks: stocks,
-        selectedSymbols: selectedSymbols,
-        color: color,
-    });
-    correlationViewer.refresh();
+//    correlationViewer.add({
+//        selectedSymbolsData: selectedSymbolsData,
+//        stocks: stocks,
+//        selectedSymbols: selectedSymbols,
+//        color: color,
+//    });
+//    correlationViewer.refresh();
 }
