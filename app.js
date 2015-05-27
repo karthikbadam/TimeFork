@@ -60,7 +60,7 @@ httpserver.listen(app.get('port'), function () {
 /* reading the files */
 
 //start with internet information providers
-var stream = fs.createReadStream("data/iip.csv");
+var stream = fs.createReadStream("data/stocks.csv");
 
 var allStocks = [];
 var allData = {};
@@ -78,10 +78,10 @@ var csvStream = csv
         var fs = require('fs');
         var companyName = symbol;
         
-        Stock({
-            company: companyName,
-            symbol: symbol
-        });
+//        Stock({
+//            company: companyName,
+//            symbol: symbol
+//        });
 
     })
     .on("end", function(){

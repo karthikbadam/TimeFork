@@ -44,12 +44,19 @@ function LineChart(options) {
     _self.width = (480 - _self.margin.left - _self.margin.right),
         _self.height = (150 - _self.margin.top - _self.margin.bottom);
 
-    _self.div = d3.select("#linecharts").append("div")
+    _self.div = d3.select("#linechart-viz").append("div")
         .attr("class", "stockChart").attr("id", "ID" + _self.id);
 
     _self.div.append("div").attr("class", "expandClass")
         .text(_self.stockName)
-        .on("click", expandChart);
+        .on("click", expandChart)
+        .style({
+                padding: "5px",
+                color: "black",
+                fontSize: "14px",
+                textAlign: "center",
+                "background-color": "#EEE",
+                "font": "sans-serif"});
 
     /* Manage visual space to handle prediction chaining */
     function expandChart() {

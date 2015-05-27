@@ -7,10 +7,10 @@ function OverviewChart(options) {
     _self.data = _self.stockObject.data;
     _self.stockColumns = options.columns;
     _self.margin = {
-        top: 10,
-        right: 30,
+        top: 1,
+        right: 5,
         bottom: 20,
-        left: 30
+        left: 5
     };
     
     _self.correlationViewer = options.correlationViewer;
@@ -18,7 +18,7 @@ function OverviewChart(options) {
     _self.color = options.color;
     _self.linecharts = options.linecharts;
     
-    _self.width = (2*$("#overviewchart-viz").parent().width()/3 - _self.margin.left - _self.margin.right),
+    _self.width = ($("#overviewchart-viz").parent().width() - _self.margin.left - _self.margin.right),
         _self.height = ($("#overviewchart-viz").parent().height() - _self.margin.top - _self.margin.bottom);
 
     _self.svg = d3.select("#overviewchart-viz").append("svg").attr("class", "overviewchart")
@@ -32,20 +32,23 @@ function OverviewChart(options) {
         .range([0, _self.width]);
 
     _self.y = d3.scale.linear()
-        .range([_self.height - 20, 0]);
+        .range([_self.height, 0]);
 
     
     _self.x.domain(d3.extent(_self.data, function(stock) {
         return stock[_self.stockColumns[0]];
     }));
 
-    _self.y.domain([0, 1]);
+    _self.y.domain(d3.extent(_self.data, function(stock) {
+        return stock["normalized"];
+    }));
 
     //x and y axis
     _self.xAxis = d3.svg.axis()
         .scale(_self.x)
-        .orient("bottom");
-    //.tickFormat(function(d) { return d3.time.format('%b')(new Date(d)); });
+        .orient("bottom")
+        .ticks(19)
+        .tickFormat(function(d) { return d3.time.format('%b-%y')(new Date(d)); });
 
     _self.yAxis = d3.svg.axis()
         .scale(_self.y)
@@ -74,11 +77,9 @@ function OverviewChart(options) {
     _self.chartContainer = _self.svg.append("g")
         .attr("width", _self.width).attr("height", _self.height);
 
-
     var brush = d3.svg.brush().x(_self.x).on("brush", onBrush);
     var context = _self.svg.append("g").attr("class", "context")
         .attr("transform", "translate(" + 0 + "," + (0) + ")");
-
 
     _self.b = _self.x.domain();
 
@@ -100,7 +101,7 @@ function OverviewChart(options) {
             }
         }
              
-        _self.correlationViewer.refresh();
+        //_self.correlationViewer.refresh();
     }
 
     //user study part!
@@ -149,16 +150,16 @@ OverviewChart.prototype.addLine = function(options) {
     _self.data = _self.stockObject.data;
     _self.id = options.id;
 
-    _self.chartContainer.append("path")
-        .attr("class", "line")
-        .attr("clip-path", "url(#clip)")
-        .data([_self.data])
-        .attr("d", _self.line)
-        //.attr("stroke", _self.color(options.id))
-        .attr("stroke", "#444")
-        .attr("fill", "transparent")
-        .attr("stroke-width", "1.5px")
-        .attr("opacity", 0.8).attr("z-index", 1);
+//    _self.chartContainer.append("path")
+//        .attr("class", "line")
+//        .attr("clip-path", "url(#clip)")
+//        .data([_self.data])
+//        .attr("d", _self.line)
+//        //.attr("stroke", _self.color(options.id))
+//        .attr("stroke", "#222")
+//        .attr("fill", "transparent")
+//        .attr("stroke-width", "1px")
+//        .attr("opacity", 0.8).attr("z-index", 1);
 
 };
 
