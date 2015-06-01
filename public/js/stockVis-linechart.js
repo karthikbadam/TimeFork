@@ -397,102 +397,104 @@ function LineChart(options) {
 }
 
 //move to next instance
-LineChart.prototype.moveToNextInstance = function () {
-    var _self = this;
-    _self.tomorrowValue = _self.predictedY;
-    var stockData = {};
-    stockData[_self.stockColumns[6]] = _self.tomorrowValue;
-    stockData[_self.stockColumns[0]] = _self.tomorrow;
-
-    var b = _self.tomorrow;
-    var tomorrow = _self.tomorrow;
-    //find the date of next day
-    tomorrow.setMonth(b.getMonth());
-    tomorrow.setFullYear(b.getFullYear());
-
-    tomorrow.setDate(b.getDate() + 1);
-    if (b.getDay() === 6) {
-        tomorrow.setDate(b.getDate() + 2);
-    }
-    if (b.getDay() === 5) {
-        tomorrow.setDate(b.getDate() + 3);
-    }
-
-    // goes through the data to find the actual tomorrow's value -- we do have training data
-    _self.tomorrowValue = 0;
-    for (var i = 0; i < _self.data.length; i++) {
-        var d = _self.data[i];
-        if (d[_self.stockColumns[0]].getDate() === tomorrow.getDate() && d[_self.stockColumns[0]].getMonth() === tomorrow.getMonth() && d[_self.stockColumns[0]].getFullYear() === tomorrow.getFullYear()) {
-            _self.tomorrowValue = d[_self.stockColumns[6]];
-            console.log("OWO");
-            break;
-        }
-    }
-
-    // reads the last 15 values -- this might have to contain the predictions    
-    var prData = [];
-    prData.push(stockData);
-    for (var i = 0; i < 15; i++) {
-        prData.push(_self.dataFilteredForPrediction[i]);
-    }
-    _self.dataFilteredForPrediction = prData;
-
-
-    // temporal input
-    var input = new Array(15);
-    for (var i = 0; i < 15; i++) {
-        input[i] = _self.stockObject.normalizeValue(prData[i][_self.stockColumns[6]]);
-    }
-
-    _self.numberOfPredictionsMade++;
-
-    //adding a line to the prediction space
-    _self.linechartSVG.append("line")
-        .attr("class", "userPredictionLine")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.predictedValueX)
-        .attr("y2", _self.predictedValueY)
-        //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#222")
-        .attr("stroke-opacity", 0.8)
-        .attr("stroke-width", "2px");
-
-    _self.linechartSVG.selectAll(".temporalPredictionLine")
-        .attr("stroke-opacity", 0.1);
-
-    _self.linechartSVG.selectAll(".predictionLine")
-        .attr("stroke-opacity", 0.03);
-
-    _self.lastValueX = _self.predictedValueX;
-    _self.lastValueY = _self.predictedValueY;
-
-    var predictor = _self.temporalPredictors[_self.stockSymbol];
-    var output = predictor.predict(input);
-    _self.currentPrediction = _self.stockObject.deNormalize(output[0]);
-    //console.log("prediction is "+((this.currentPrediction - tomorrowValue)*100/this.currentPrediction));
-    _self.linechartSVG.append("line")
-        .attr("class", "temporalPredictionLine")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX + _self.rectangle_width)
-        .attr("y2", _self.y(_self.currentPrediction))
-        //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#fc8d59")
-        .attr("stroke-opacity", 0.8)
-        .attr("stroke-width", "2px");
-
-    console.log("after all prediction --" + _self.lastValueX);
-    _self.linechartSVG.select("#prediction")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX)
-        .attr("y2", _self.lastValueY);
-
-    _self.userPredicted = false;
-    _self.startedPredictions = false;
-
-};
+//LineChart.prototype.moveToNextInstance = function () {
+//    var _self = this;
+//    _self.tomorrowValue = _self.predictedY;
+//    var stockData = {};
+//    stockData[_self.stockColumns[6]] = _self.tomorrowValue;
+//    stockData[_self.stockColumns[0]] = _self.tomorrow;
+//
+//    var b = _self.tomorrow;
+//    var tomorrow = _self.tomorrow;
+//    //find the date of next day
+//    tomorrow.setMonth(b.getMonth());
+//    tomorrow.setFullYear(b.getFullYear());
+//
+//    tomorrow.setDate(b.getDate() + 1);
+//    if (b.getDay() === 6) {
+//        tomorrow.setDate(b.getDate() + 2);
+//    }
+//    if (b.getDay() === 5) {
+//        tomorrow.setDate(b.getDate() + 3);
+//    }
+//
+//    // goes through the data to find the actual tomorrow's value -- we do have training data
+//    _self.tomorrowValue = 0;
+//    for (var i = 0; i < _self.data.length; i++) {
+//        var d = _self.data[i];
+//        if (d[_self.stockColumns[0]].getDate() === tomorrow.getDate() && d[_self.stockColumns[0]].getMonth() === tomorrow.getMonth() && d[_self.stockColumns[0]].getFullYear() === tomorrow.getFullYear()) {
+//            _self.tomorrowValue = d[_self.stockColumns[6]];
+//            console.log("OWO");
+//            break;
+//        }
+//    }
+//
+//    // reads the last 15 values -- this might have to contain the predictions    
+//    var prData = [];
+//     _self.TEMPORAL_INPUT_SIZE = 15
+//    prData.push(stockData);
+//    
+//    for (var i = 0; i <  _self.TEMPORAL_INPUT_SIZE; i++) {
+//        prData.push(_self.dataFilteredForPrediction[i]);
+//    }
+//    _self.dataFilteredForPrediction = prData;
+//
+//
+//    // temporal input
+//    var input = new Array(_self.TEMPORAL_INPUT_SIZE);
+//    for (var i = 0; i <  _self.TEMPORAL_INPUT_SIZE; i++) {
+//        input[i] = _self.stockObject.normalizeValue(prData[i][_self.stockColumns[6]]);
+//    }
+//
+//    _self.numberOfPredictionsMade++;
+//
+//    //adding a line to the prediction space
+//    _self.linechartSVG.append("line")
+//        .attr("class", "userPredictionLine")
+//        .attr("x1", _self.lastValueX)
+//        .attr("y1", _self.lastValueY)
+//        .attr("x2", _self.predictedValueX)
+//        .attr("y2", _self.predictedValueY)
+//        //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
+//        .attr("stroke", "#222")
+//        .attr("stroke-opacity", 0.8)
+//        .attr("stroke-width", "2px");
+//
+//    _self.linechartSVG.selectAll(".temporalPredictionLine")
+//        .attr("stroke-opacity", 0.1);
+//
+//    _self.linechartSVG.selectAll(".predictionLine")
+//        .attr("stroke-opacity", 0.03);
+//
+//    _self.lastValueX = _self.predictedValueX;
+//    _self.lastValueY = _self.predictedValueY;
+//
+//    var predictor = _self.temporalPredictors[_self.stockSymbol];
+//    var output = predictor.predict(input);
+//    _self.currentPrediction = _self.stockObject.deNormalize(output[0]);
+//    //console.log("prediction is "+((this.currentPrediction - tomorrowValue)*100/this.currentPrediction));
+//    _self.linechartSVG.append("line")
+//        .attr("class", "temporalPredictionLine")
+//        .attr("x1", _self.lastValueX)
+//        .attr("y1", _self.lastValueY)
+//        .attr("x2", _self.lastValueX + _self.rectangle_width)
+//        .attr("y2", _self.y(_self.currentPrediction))
+//        //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
+//        .attr("stroke", "#fc8d59")
+//        .attr("stroke-opacity", 0.8)
+//        .attr("stroke-width", "2px");
+//
+//    console.log("after all prediction --" + _self.lastValueX);
+//    _self.linechartSVG.select("#prediction")
+//        .attr("x1", _self.lastValueX)
+//        .attr("y1", _self.lastValueY)
+//        .attr("x2", _self.lastValueX)
+//        .attr("y2", _self.lastValueY);
+//
+//    _self.userPredicted = false;
+//    _self.startedPredictions = false;
+//
+//};
 
 //brushes each line chart based on the region selected on the overview
 LineChart.prototype.showOnly = function (b, empty) {
@@ -594,8 +596,11 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.linechartSVG.selectAll(".userPredictionLine").remove();
     _self.linechartSVG.selectAll(".predictionLine").remove();
 
-    var input = new Array(7);
-    for (var i = 0; i < 7; i++) {
+    _self.TEMPORAL_INPUT_SIZE = 6; 
+    
+    var input = new Array(_self.TEMPORAL_INPUT_SIZE);
+    
+    for (var i = _self.TEMPORAL_INPUT_SIZE - 1; i >=  0; i--) {
         input[i] = _self.stockObject.normalizeValue(_self.dataFiltered[i][_self.stockColumns[6]]);
     }
     //find the date of next day

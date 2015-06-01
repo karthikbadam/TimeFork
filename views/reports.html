@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="This is the dashbaord page for the Timefork user study">
+    <meta name="author" content="Shivalik Sen">
+
+    <title>TimeFork: Mixed initiative time series predictions</title>
+
+     <!-- Bootstrap Core CSS -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="css/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="bower_components/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Home</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- messages menu starts 
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>Read All Messages</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    /.dropdown-messages
+                    
+                </li>
+                <!-- messages menu ends -->
+
+
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+
+
+                    <ul class="dropdown-menu dropdown-tasks">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 1</strong>
+                                        <span class="pull-right text-muted">40% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 2</strong>
+                                        <span class="pull-right text-muted">20% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                            <span class="sr-only">20% Complete</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 3</strong>
+                                        <span class="pull-right text-muted">60% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                            <span class="sr-only">60% Complete (warning)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 4</strong>
+                                        <span class="pull-right text-muted">80% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                            <span class="sr-only">80% Complete (danger)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Tasks</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> New Comment
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> Tweet predictions
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-tasks fa-fw"></i> New Task
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Alerts</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a href="index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                          <li>
+                            <a href="overview"><i class="fa fa-table fa-fw"></i> Overview</a>
+                        </li>
+                         
+
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Stock Monitor<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="reports">Quarterly Reports</a>
+                                </li>
+                                <li>
+                                    <a href="#">Activity History</a>
+                                </li>
+                                
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                      
+                        <li>
+                            <a href="linecharts" target="_blank">Prediction Portal</a>
+                        </li>
+
+                        <li>
+                            <a href="faqs"> FAQs</a>
+                        </li>
+
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Settings<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">Account settings</a>
+                                </li>
+                                
+                                <li>
+                                    <a href="login">Login Page</a>
+                                </li>
+                                
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                       
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">Quarterly Reports</h1>
+                    </div>
+                    <!-- /.col-lg-12 -->
+                        <div class="col-lg-12" >
+                            <h2> Apple Q2 2015 financial results:</h2>
+
+                            <p class="lead"> Apple has reported its Q2 2015 financial results, with record-breaking figures but another decline in iPad sales</p>
+                            
+
+                               <p> Apple's earnings report took place on Monday 27 April, and were communicated to analysts and press via a conference call and press release. The results are for the quarter that began on 1 January and ended on 28 March Apple's financial year runs from September to September. 
+                                
+                            <p class="lead"> Apple financial results Q2 2015: How much money did Apple make? </p>
+                            <p>Apple announced quarterly revenue of $58 billion and quarterly net profit of $13.6 billion during the call, or $2.33 of diluted share. Compared with revenue of $45.6 billion and net profit of $10.2 billion, or $1.66 per diluted share in the year-ago quarter, so it's a significant improvement.
+
+                                
+                                Apple revealed that gross margin for the second quarter of 2015 was 40.8 percent compared to 39.3 percent in the year-ago quarter. International sales accounted for 69 percent of the quarter's revenue, compared with 65 percent last quarter.
+                                
+                                    "We are thrilled by the continued strength of iPhone, mac and the App Store, which drove our best March quarter results ever," said Tim Cook, Apple's CEO. </p>
+                               <p class="lead">   Apple financial results Q2 2015: How many iPhones did Apple sell? </p>
+
+                             <p>   Taking a closer look at Apple's successful quarter, the company sold 61.2 million units of the iPhone 6 and 6 Plus during the first three months of 2015, blasting past the 44 million it shipped during the same quarter of last year when the iPhone 5S was still new. It makes the quarter the second biggest for iPhone sales ever. (The first? Last quarter, when the Cupertino company sold 74.5 million iPhones).
+                                The iPhone 6 and 6 Plus have been big hits with customers. Apple had only gradually increased the screen size on the iPhone in recent years while makers experimented and found success with larger screens. The two new iPhones finally matched those larger displays and the result was record sales for the quarter.
+                                That also translated into a higher rate of people switching from competitors to the iPhone, the company said. "We're seeing a higher rate of people switching to iPhone than we've experienced in previous cycles, and we're off to an exciting start to the June quarter with the launch of Apple Watch," said Cook.
+                                Perhaps even more impressive than the 40 percent year-on-year jump in iPhone unit sales was the 55 percent jump in revenue from those sales. Thanks to higher average selling prices, revenue from iPhones jumped to $40 billion – or 69 percent of all Apple sales.
+                                Analysts expected Apple to sell 58.1 million iPhones, so Apple smashed that prediction. </p>
+                               
+                                <p class="lead">  Apple financial results Q2 2015: How many iPads did Apple sell? </p>
+    
+                                <p>For more than a year now (year-over-year sales have declined for eight quarters in a row), iPad sales have been shaky, and concern about the future of the tablet is rife.
+                                This quarter, Apple sold 12.62 million iPads, which is down a worrying 23 percent year-over-year. Those sales translate to roughly $5.43 billion, which is lower than the $5.6 billion generated by the Mac, representing the first time ever that Mac revenue has surpassed iPad revenue.
+                                The decline in sales is bound to spark talk about whether or not Apple will continue to update the iPad yearly or begin updating it less often. There may also be speculation about whether or not the rumoured iPad Pro could help the market or whether the decreasing iPad sales mean that the new product will be a flop, or perhaps not be launched at all.
+                                Analysts had hoped for 13.6 million iPad sales, but Apple didn't meet that target. </p>
+                                
+                                 <p class="lead"> Apple financial results Q2 2015: How many Macs did Apple sell? </p>
+
+                                <p> Apple has been impressing us with its Mac sales figures over the past few quarters, far surpassing analyst expectations and growing year-on-year and growing market share in the PC market despite the overall decline of PC sales.
+                                We've seen yet another good quarter for the Mac. Q2 2015 saw Apple sell 4.5 million units, up 10 percent year-over-year, but because the average price of those computers was lower due to Apple's new, more affordable starting prices, revenue was only up by 2 percent.
+                                Results didn't quite match analyst predictions of 4.7 million Macs. </p>
+                                
+                                 <p class="lead">  Apple financial results Q2 2015: Apple Watch sales </p>
+                                The Apple Watch only went on sale on 24 April, following a pre-order period that began on 10 April, so we expect to find out more about how successful it's been next quarter, which will represent the first full quarter of availability.
+                                However, Cook did talk a bit about the Apple Watch during the event, saying that he is "very happy" with the reception the Apple Watch has been enjoying.
+                                "Right now, demand is greater than supply," he said. "By some time in late June, we anticipate being in a position where we can sell the Apple Watch in additional countries."
+                                "Adding to the surprise and delight of Apple Watch are the more than 3500 apps that are already available," Cook continued. "We can't wait to see more of the inspiring apps developers dream up for Apple Watch as we head into our Worldwide Developers Conference six weeks from now." </p>
+
+                                 <p class="lead">  Apple financial results Q2 2015: Apple stock </p>
+                                Apple also announced plans to expand a share buyback scheme and raise its dividend for shareholders. The program was started in previous years as a way to burn through some of its substantial cash pile, but it's generating so much money that the scheme can be expanded.
+                                "We are in a very fortunate position of generating more cash than we need to run our business and make these investments," Cook said, referring to research and development investments and capital expenditures planned by Apple.
+                                
+                                Looking ahead, Apple said it expects revenue in the quarter to be between $46 billion and $48 billion, up from $37.4 billion in the same quarter last year.
+                                </p>
+                                <br>
+                                <br>
+                                <br>
+                             
+                            <h2>Tesla Q2 2015 financial results:</h2>
+
+                                <p class="lead"> Tesla loses less money than expected and looks positive.  </p>
+                           
+
+
+                               <p> Tesla just reported a net loss that was smaller than expected in the first quarter. 
+                                The electric-car maker reported an adjusted loss per share of $0.36 on adjusted revenue of $1.1 billion.
+                                Wall Street analysts were looking for a loss of $0.49 on revenue of $1.05 billion, according to data from Bloomberg. 
+
+                                The company delivered 10,045 Model S vehicles in the first quarter, which was in line with the company's April announcement of 10,030 vehicles.
+
+                                In the first quarter, Tesla produced 11,160 vehicles. 
+                                Following the report, Tesla shares were up as much as 5% in after-hours trade on Wednesday.
+                                In the second quarter, the company expects to produce about 12,500 vehicles, up 12% from the first quarter. Tesla plans to deliver between 10,000 and 11,000 vehicles in Q2. 
+
+                                The company said it is on track to deliver 55,000 Model S and X vehicles this year. The Model X is still on track to start deliveries in late Q3. 
+
+                                Tesla expects that the average transaction price will decline in the second quarter, with the dollar's 4% increase in value against the euro since the last time Tesla adjusted prices in Europe weighing on this number.
+                                The company said that in response to the dollar's rally, it has increased prices by 5% in Europe. 
+                                Tesla expects direct leasing of vehicles to be about the same in Q2 as it was in the first quarter, and the company still expects to spend about $1.5 billion on capital expenses in 2015. 
+                                </p>
+                                 <br>
+                                <br>
+                                <br>
+                             <h2>Facebook Q2 2015 financial results:</h2>
+
+                                <p class="lead">Mobile dominance lifts Facebook earnings to $0.42 per share as revenue grows 42% year over year </p>
+                                <p>Facebook reported its fiscal first-quarter earnings today, with revenue of $3.54 billion on non-GAAP earnings per share (EPS) of $0.42. These figures just missed analyst expectations of $3.56 billion in revenue but beat expectations of $0.40 EPS.</p>
+                                <p>Year over year, Facebook’s revenue is up by 41.7 percent over Q1 2014; For the same quarter a year ago, the company reported $2.50 billion in revenue and $0.34 non-GAAP EPS. Last quarter, Facebook posted revenue of $3.85 billion and $0.54 EPS. Advertising accounted for $3.32 billion of the company’s revenue, up 46 percent from the same time a year ago. The company also earned $226 million in payments and other fees.
+
+                                Mobile ad sales drove Facebook’s performance. For the quarter, the company reported such sales were 73 percent of its total revenue, up from 59 percent a year earlier. In the fourth quarter, mobile ads had accounted for 69 percent of revenues.</p>
+
+                                <p>Its continued strength in mobile ads clearly pleased Wall Street over the last quarter. The company’s stock was up about 9.1 percent over the last three months. As of this writing, the company’s stock was at $84.63, up 1.21 percent for the day.</p>
+
+                                <p>It’s no surprise that Facebook’s financial performance on mobile was so strong. According to App Annie, which analyzes mobile app sales and revenues, Facebook held the top four nongame spots among all apps worldwide. It said in a report earlier this week that Facebook Messenger, Facebook, WhatsApp, and Instagram were the four most-downloaded nongame apps and that Messenger was the most downloaded nongame app in the United States, France, the U.K., Brazil, and Germany.</p>
+
+                                <p>At quarter’s end, Facebook said it had 1.44 billion monthly active users, up 13 percent year over year, and 1.25 billion monthly mobile active users, up 24 percent from a year earlier. It also reported 936 million daily active users, up 17 percent from this time in 2014, and 798 million mobile daily active users. That was an increase of 31 percent from the first quarter of 2014.</p>
+
+                                <p>During the quarter, Facebook spent 29.9 percent of its revenue — $1.06 billion — on research and development, and of that, $566 million, or 53.3 percent, was spent on share-based compensation expenses. In other words, the company spent a lot on acquisitions and hiring during the quarter. During the first quarter of 2014, it spent just $181 million on similar expenses.</p>  
+                           
+
+
+
+                        </div>
+                    
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+
+
+    <!-- jQuery -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/sb-admin-2.js"></script>
+
+</body>
+
+</html>

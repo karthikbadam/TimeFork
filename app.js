@@ -11,11 +11,8 @@ var csv = require('fast-csv');
 var fs = require('fs');
 var Parallel = require('paralleljs');
 
-var Stock = require('./stock-forest.js');
-
-
-//SOM
-var SOM = require('ml-som');
+var Stock = require('./stock2.js');
+var SOM = require('./stock-som.js');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -40,6 +37,11 @@ app.engine('html', require('ejs').renderFile);
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/index', routes);
+app.use('/overview', routes);
+app.use('/linecharts', routes);
+app.use('/faq', routes);
+app.use('/reports', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -75,9 +77,9 @@ var csvStream = csv
 
         allStocks.push(symbol);
         
-        var fs = require('fs');
-        var companyName = symbol;
-        
+//        var fs = require('fs');
+//        var companyName = symbol;
+//        
 //        Stock({
 //            company: companyName,
 //            symbol: symbol
@@ -85,10 +87,18 @@ var csvStream = csv
 
     })
     .on("end", function(){
+        
         console.log(allStocks);
+        
+//        SOM({
+//            symbols: allStocks
+//        });
+        
+        return 1; 
+        
 //        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
 //        p.require(Stock);
-//
+
 //        p.map(function (data) {
 //
 //            console.log(data);
@@ -104,7 +114,7 @@ var csvStream = csv
 //
 //           return 1;
 //
-//        });
+//        });      
     });
 
 // error handlers

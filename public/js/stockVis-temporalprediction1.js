@@ -21,6 +21,7 @@ function TemporalPrediction(options) {
 };
 
 /* calculates temporal prediction */
+
 TemporalPrediction.prototype.predict = function(input) {
     var _self = this;
     
@@ -29,7 +30,11 @@ TemporalPrediction.prototype.predict = function(input) {
     
     var output = _self.network.run(input);
     
-    //console.log(output);
+    for (var i = 0; i < output.length; i++) {
+        output[i] = 2*output[i] - 1; 
+
+        output[i] = output[i]*input[input.length-1] + input[input.length-1];
+    }
     
     return output;
 };

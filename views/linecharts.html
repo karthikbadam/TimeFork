@@ -1,0 +1,80 @@
+<html>
+<head>
+    <title>TimeFork</title>
+</head>
+<body>
+    <link rel="stylesheet" href="css/style.css" />
+    <!--<link rel="stylesheet" href="http://code.jquery.com/ui/jquery-ui-git.css" />-->
+    <script src="js/queue.v1.min.js"></script>
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/encog-js-1.0.js"></script>
+    <script src="js/encog-widget-js-1.0.js"></script>
+    <script src="js/brain-0.6.0.min.js"></script>
+
+    <script src="js/stockVis-overviewchart.js"></script>
+    <script src="js/stockVis-correlationviewer.js"></script>
+    <script src="js/stockVis-stock.js"></script>
+    <script src="js/stockVis-spatialprediction.js"></script>
+    <script src="js/stockVis-temporalprediction1.js"></script>
+    <script src="js/stockVis-linechart.js"></script>
+    <script src="js/stockVis.client.js"></script>
+        
+    <div class="content">
+        <div id="linechart-viz">
+        </div>
+<!--
+        <div class="right" >
+
+            <div id="prediction_buttons"> 
+                <table border = "0">
+                    <tr><td>
+
+                        <label>Score</label>
+                        <label id="score_value">0</label>
+                        
+                    </td>
+                   
+                    <td id="next_button"></td>
+                    
+                    </tr>
+                    <tr><td>
+                          <div class="ui_button" id="request_temporal">
+                          <label id="start_prediction_label">Start Prediction</label>
+                        </div>
+                    </td></tr>
+                    
+                    
+                </table>
+            </div>
+
+            <div id="choosestock">
+                <table id="button_panel" border = "0">
+                    <tr>
+                        <td><div id="add_button"></div></td>
+                        <td><div id="remove_button"></div></td>
+                        <td><div id="expand_button"></div></td>
+                        <td><div id="settings_button"></div></td>
+                    </tr>
+                </table>
+                <div class="ui-widget" id="search_box">
+                  <input id="search"/>
+                </div>
+                <select name="stocks" multiple="multiple" id="stocklist"></select>
+            </div>
+            
+        </div>
+-->
+        
+        <div class="bottom">
+            
+            <div id="overviewchart-viz"></div>
+            
+        </div>
+        
+        <div id="dialog-confirm" title="Confirm Prediction"></div>
+    
+    </div>
+</body>
+</html>
