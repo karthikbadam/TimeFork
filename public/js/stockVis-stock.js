@@ -59,3 +59,11 @@ Stock.prototype.getFilteredData = function(brush) {
     
    return dataFiltered; 
 }; 
+
+Stock.prototype.getRecentValue = function() {
+
+    var _self = this; 
+    
+    return _self.dataFiltered[0][stockColumns[6]];
+    
+};

@@ -4,17 +4,65 @@ function SpatialPrediction(options) {
     var _self = this;
     _self.weights = options.weights;
     _self.trainingStocks = options.trainingStocks;
-    _self.stockSymbols = options.stockSymbols;
-
+    
     console.log(_self.weights);
-    _self.weightsSize = _self.weights.length;
-    console.log(_self.weightsSize);
-
-    _self.stocksSize = _self.stockSymbols.length;
-    console.log(_self.stocksSize);
+    
 }
 
 SpatialPrediction.prototype.getPredictions = function(prediction, stock_symbol) {
+    var _self = this;
+    
+    _self.predictionArrays = [];
+    _self.predictionOpacities = [];
+    
+    var stockIndex = _self.trainingStocks.indexOf(stock_symbol);
+    
+    /* Get the weights from the SOM to get the closest values from the history */
+    for (var i = 0; i < _self.weights.length; i++) {
+ 
+        for (var j = 0; j < _self.weights[i].length; j++) {
+            
+            var weightArray = [];
+            
+            for (var k = 0; k < _self.weights[i][j].length; k++) {
+                
+                weightArray.push(_self.weights[i][j][k]);
+                
+                weightArray[k] = (2*weightArray[k] - 1)/10; 
+                
+                var previous = stockObjects[_self.trainingStocks[stockIndex]].getRecentValue();
+                
+                weightArray[k] = weightArray[k]*100;
+                
+            }
+            
+            var distance = Math.abs(weightArray[stockIndex] - prediction);
+            
+            if ( Math.abs(distance) < 5) {
+                
+                var opacity = Math.pow(1 - distance/100, 2);
+                predictionObject.addSpatialPrediction(weightArray, opacity);
+                
+//                _self.predictionArrays.push(weightArray);
+//                _self.predictionOpacities.push(opacity);
+            }
+        }
+    }
+
+    
+    return predictionObject.getTopSpatialPredictions(); 
+    
+    var returnVal = [];
+    
+    returnVal.arrays = _self.predictionArrays;     
+    returnVal.opacities = _self.predictionOpacities; 
+    
+    return returnVal;
+};
+
+
+SpatialPrediction.prototype.getPredictions2 = function(prediction, stock_symbol) {
+    
     var _self = this;
     _self.predictionArrays = [];
     _self.predictionOpacities = [];

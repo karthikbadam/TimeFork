@@ -6,6 +6,8 @@ function LineChart(options) {
     _self.stockObject = options.stockObject;
     _self.stockColumns = options.columns;
     _self.charts = options.charts;
+    _self.chartObjects = options.chartObjects;
+    
     _self.color = options.color;
     _self.id = options.id;
 
@@ -381,8 +383,8 @@ function LineChart(options) {
                     //do something
                     var predictions = _self.spatialPrediction.getPredictions(_self.lineLength, _self.stockSymbol);
                     for (var i = 0; i < _self.charts.length; i++) {
-                        for (var j = 0; j < predictions.arrays.length; j++) {
-                            _self.charts[i].addPrediction(predictions.arrays[j], predictions.opacities[j]);
+                        for (var j = 0; j < predictions.length; j++) {
+                            _self.chartObjects[stockSymbols[i]].addPrediction(predictions[j].predictions, predictions[j].opacity);
                         }
                     }
                 },

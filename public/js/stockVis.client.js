@@ -22,6 +22,8 @@ var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 var charts = [];
 
+var chartObjects = {};
+
 var overviewChart;
 
 var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
@@ -36,28 +38,17 @@ var startDate = parseDate("2010-05-06");
 
 var correlationViewer;
 
+var predictionObject; 
 
 // Decision tree!!
 // Take previous seven values -- build a decision tree 
 // maybe a random forest
 // add variation at each node -- check how much you get back
 
-
-//Download file for spatial prediction
-$.get("data/train/SOM_WEIGHTS.json", function (data) {
-    console.log("Data: " + data);
-    trainingStockList = data.stocks;
-    weightsSOM = data.weights;
-    spatialPrediction = new SpatialPrediction({
-        weights: weightsSOM,
-        trainingStocks: trainingStockList,
-        stockSymbols: stockSymbols
-    });
-    console.log(spatialPrediction.weights);
-}, "json");
-
-
 $(document).ready(function () {
+    
+    //initialize a predictions object 
+    predictionObject = new Predictions(); 
 
     //create Correlation Viewer
     //correlationViewer = new CorrelationChart();
@@ -74,6 +65,21 @@ $(document).ready(function () {
         });
 
         var q = queue();
+
+        //Download file for spatial prediction
+        $.get("data/train/SOM_WEIGHTS.json", function (data) {
+            console.log("Data: ");
+
+            data = JSON.parse(JSON.stringify(data));
+            
+            trainingStockList = stockSymbols;
+            spatialPrediction = new SpatialPrediction({
+                weights: data.data,
+                trainingStocks: trainingStockList,
+                stockSymbols: stockSymbols
+            });
+            
+        }, "json");
 
         stockSymbols.forEach(function (stock_id) {
 
@@ -129,7 +135,7 @@ $(document).ready(function () {
 
                     stockObject.normalize(close_values);
 
-                    charts.push(new LineChart({
+                    var lc = new LineChart({
                         stockObject: stockObject,
                         id: selectedSymbols.indexOf(stock_id) % 10,
                         name: stock_name,
@@ -137,10 +143,14 @@ $(document).ready(function () {
                         color: color,
                         trainingStocks: trainingStockList,
                         charts: charts,
+                        chartObjects: chartObjects,
                         columns: stockColumns,
                         spatialPrediction: spatialPrediction,
                         temporalPredictors: temporalPredictors
-                    }));
+                    }); 
+                    
+                    charts.push(lc);
+                    chartObjects[stock_id] = lc; 
 
                     /* Checks if there is an overview chart created -- if not -- do it */
                     if ($("#overviewchart-viz").contents().length < 1) {
