@@ -9,13 +9,15 @@ function SpatialPrediction(options) {
     
 }
 
-SpatialPrediction.prototype.getPredictions = function(prediction, stock_symbol) {
+SpatialPrediction.prototype.getPredictions = function(stock_symbol, prediction) {
     var _self = this;
     
     _self.predictionArrays = [];
     _self.predictionOpacities = [];
     
     var stockIndex = _self.trainingStocks.indexOf(stock_symbol);
+    
+    predictionObject.newSpatialPredictions();
     
     /* Get the weights from the SOM to get the closest values from the history */
     for (var i = 0; i < _self.weights.length; i++) {
@@ -28,11 +30,13 @@ SpatialPrediction.prototype.getPredictions = function(prediction, stock_symbol) 
                 
                 weightArray.push(_self.weights[i][j][k]);
                 
-                weightArray[k] = (2*weightArray[k] - 1)/10; 
+                weightArray[k] = (2*weightArray[k] - 1)*100/10; 
                 
-                var previous = stockObjects[_self.trainingStocks[stockIndex]].getRecentValue();
+                //var previous = stockObjects[_self.trainingStocks[stockIndex]].getRecentValue();
                 
-                weightArray[k] = weightArray[k]*100;
+                //var actual = weightArray[k]*previous/10 + previous;
+                
+                //weightArray[k] = (actual - previous)*100/previous;
                 
             }
             

@@ -2,7 +2,6 @@
 
 function OverviewChart(options) {
     var _self = this;
-    _self.brush = [];
     _self.stockObject = options.stockObject;
     _self.data = _self.stockObject.data;
     _self.stockColumns = options.columns;
@@ -77,7 +76,8 @@ function OverviewChart(options) {
     _self.chartContainer = _self.svg.append("g")
         .attr("width", _self.width).attr("height", _self.height);
 
-    var brush = d3.svg.brush().x(_self.x).on("brush", onBrush);
+    var brush = _self.brush = d3.svg.brush().x(_self.x).on("brushend", onBrush);
+    
     var context = _self.svg.append("g").attr("class", "context")
         .attr("transform", "translate(" + 0 + "," + (0) + ")");
 
@@ -142,6 +142,13 @@ function OverviewChart(options) {
 
     });
 
+}
+
+OverviewChart.prototype.moveBrush = function (b) {
+
+    var _self = this; 
+    _self.brush.extent(b);
+    _self.brush(d3.select(".brush").transition());
 }
 
 OverviewChart.prototype.addLine = function(options) {

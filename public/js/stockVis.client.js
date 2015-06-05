@@ -28,7 +28,7 @@ var overviewChart;
 
 var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
 
-var temporalPredictors = [];
+var temporalPredictors = {};
 
 var stocks = [];
 
@@ -38,7 +38,42 @@ var startDate = parseDate("2010-05-06");
 
 var correlationViewer;
 
-var predictionObject; 
+var predictionObject;
+
+var userPredictions = {};
+
+var holidays = [parseDate("2013-01-01"), parseDate("2014-01-01"), parseDate("2015-01-01"), parseDate("2013-01-21"), parseDate("2014-01-20"), parseDate("2015-01-19"), parseDate("2013-02-18"), parseDate("2014-02-17"), parseDate("2015-02-16"), parseDate("2013-03-29"), parseDate("2014-04-18"), parseDate("2015-04-03"), parseDate("2013-05-27"), parseDate("2014-05-26"), parseDate("2015-05-25"), parseDate("2013-07-04"), parseDate("2014-07-04"), parseDate("2015-07-04"), parseDate("2013-09-02"), parseDate("2014-09-01"), parseDate("2015-09-07"), parseDate("2013-11-28"), parseDate("2014-11-27"), parseDate("2015-11-26"), parseDate("2013-12-25"), parseDate("2014-12-25"), parseDate("2015-12-25")];
+
+var totalEarnings = 100000;
+
+var investment = {};
+
+function getFutureDate(today) {
+
+    var tomorrow = new Date(today.getTime());
+
+    tomorrow.setMonth(today.getMonth());
+    tomorrow.setFullYear(today.getFullYear());
+
+    tomorrow.setDate(today.getDate() + 1);
+
+    if (today.getDay() == 6) {
+        tomorrow.setDate(today.getDate() + 2);
+    }
+
+    if (today.getDay() == 5) {
+        tomorrow.setDate(today.getDate() + 3);
+    }
+
+    for (var i = 0; i < holidays.length; i++) {
+        if (holidays[i].getTime() == tomorrow.getTime()) {
+            tomorrow = getFutureDate(tomorrow);
+        }
+    }
+
+    return tomorrow;
+
+}
 
 // Decision tree!!
 // Take previous seven values -- build a decision tree 
@@ -46,12 +81,15 @@ var predictionObject;
 // add variation at each node -- check how much you get back
 
 $(document).ready(function () {
-    
-    //initialize a predictions object 
-    predictionObject = new Predictions(); 
 
-    //create Correlation Viewer
-    //correlationViewer = new CorrelationChart();
+    //initialize a predictions object 
+    predictionObject = new Predictions();
+
+    // create Correlation Viewer
+    // correlationViewer = new CorrelationChart();
+
+    // play with forward and fast forward
+
 
     //reads the list of stocks first
     d3.csv(stockList, function (error, data) {
@@ -64,6 +102,120 @@ $(document).ready(function () {
 
         });
 
+        $("#forward").click(function (e) {
+
+            for (var i = 0; i < charts.length; i++) {
+
+                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
+
+                b[0] = getFutureDate(b[0]);
+                b[1] = getFutureDate(b[1]);
+
+                overviewChart.moveBrush(b);
+
+                charts[i].showOnly(b, null);
+            }
+
+        });
+
+        $("#fast-forward").click(function (e) {
+
+            for (var i = 0; i < charts.length; i++) {
+
+                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
+
+                for (var j = 0; j < 10; j++) {
+                    b[0] = getFutureDate(b[0]);
+                    b[1] = getFutureDate(b[1]);
+                }
+
+                overviewChart.moveBrush(b);
+
+                charts[i].showOnly(b, null);
+            }
+
+        });
+
+        $("#saveButton").click(function (e) {
+
+            var previousEarnings = totalEarnings;
+
+            for (var i = 0; i < charts.length; i++) {
+
+                var predictionInfo = charts[i].getCurrentPrediction();
+
+                if (userPredictions[predictionInfo["stockId"]] == null) {
+                    userPredictions[predictionInfo["stockId"]] = [];
+                }
+
+                var predicted = predictionInfo.predict;
+                var actual = predictionInfo.actual;
+                var past = predictionInfo.past;
+                var stockId = predictionInfo["stockId"];
+
+                if (investment[stockId] && investment[stockId] != 0) {
+
+                    var profit = (investment[stockId] / past) * (actual - past);
+
+                    totalEarnings = totalEarnings + profit + investment[stockId];
+                    
+                    previousEarnings += investment[stockId];
+
+                    investment[stockId] = 0;
+
+                    $('#currentInvestment' + stockId).html(0);
+
+                    console.log(totalEarnings);
+
+                    $("#currentEarnings").html(totalEarnings.toFixed(2));
+
+                }
+
+                userPredictions[predictionInfo["stockId"]].push(predictionInfo);
+
+
+            }
+
+            if (totalEarnings - previousEarnings > 0) {
+
+                $("#currentEarnings").css("color", "green");
+
+            } else if (totalEarnings - previousEarnings < 0) {
+
+                $("#currentEarnings").css("color", "red");
+
+            } else {
+
+                $("#currentEarnings").css("color", "black");
+
+            }
+        });
+
+
+        $("#investButton").click(function (e) {
+
+            var stockId = $('#stockOptions').val();
+            var investmentValue = +$('#investStock').val();
+
+            if (investmentValue > totalEarnings) {
+
+                alert("You don't have that money!.... yet");
+                return;
+            }
+
+            if (!investment[stockId])
+                investment[stockId] = investmentValue;
+            else
+                investment[stockId] += investmentValue;
+
+            $('#currentInvestment' + stockId).html(investment[stockId]);
+
+            totalEarnings = totalEarnings - investmentValue;
+
+            $("#currentEarnings").html(totalEarnings.toFixed(2));
+
+        });
+
         var q = queue();
 
         //Download file for spatial prediction
@@ -71,14 +223,14 @@ $(document).ready(function () {
             console.log("Data: ");
 
             data = JSON.parse(JSON.stringify(data));
-            
+
             trainingStockList = stockSymbols;
             spatialPrediction = new SpatialPrediction({
                 weights: data.data,
                 trainingStocks: trainingStockList,
                 stockSymbols: stockSymbols
             });
-            
+
         }, "json");
 
         stockSymbols.forEach(function (stock_id) {
@@ -147,10 +299,10 @@ $(document).ready(function () {
                         columns: stockColumns,
                         spatialPrediction: spatialPrediction,
                         temporalPredictors: temporalPredictors
-                    }); 
-                    
+                    });
+
                     charts.push(lc);
-                    chartObjects[stock_id] = lc; 
+                    chartObjects[stock_id] = lc;
 
                     /* Checks if there is an overview chart created -- if not -- do it */
                     if ($("#overviewchart-viz").contents().length < 1) {

@@ -1,7 +1,9 @@
 <html>
+
 <head>
     <title>TimeFork</title>
 </head>
+
 <body>
     <link rel="stylesheet" href="css/style.css" />
     <!--<link rel="stylesheet" href="http://code.jquery.com/ui/jquery-ui-git.css" />-->
@@ -11,20 +13,52 @@
     <script src="js/jquery-ui.js"></script>
     <script src="js/encog-js-1.0.js"></script>
     <script src="js/encog-widget-js-1.0.js"></script>
-    <script src="js/brain-0.6.0.min.js"></script>
+    <script src="js/brain-0.6.0.js"></script>
 
     <script src="js/stockVis-overviewchart.js"></script>
     <script src="js/stockVis-correlationviewer.js"></script>
+    <script src="js/stockVis-prediction.js"></script>
     <script src="js/stockVis-stock.js"></script>
     <script src="js/stockVis-spatialprediction.js"></script>
     <script src="js/stockVis-temporalprediction1.js"></script>
     <script src="js/stockVis-linechart.js"></script>
     <script src="js/stockVis.client.js"></script>
-        
+
     <div class="content">
         <div id="linechart-viz">
         </div>
-<!--
+
+        <div id="earnings-div">
+            <br/>
+            <br/> Hi, <span>Guest,</span>
+            <br/>
+            <br/> You currently have $<span id="currentEarnings">100,000</span> earnings!
+            <br/>
+            <br/> You invested
+            <li>$<span id="currentInvestmentAAPL">0</span> on Apple</li>
+            <li>$<span id="currentInvestmentFB">0</span> on Facebook</li>
+            <li>$<span id="currentInvestmentTSLA">0</span> on Tesla</li>
+
+            <br/>
+            <br/> You options are
+            <br/>
+            <br/> Invest
+            <input id="investStock" type="number" min=10000 /> in
+            <select id="stockOptions">
+                <option value="AAPL">Apple</option>
+                <option value="FB">Facebook</option>
+                <option value="TSLA">Tesla</option>
+            </select>
+
+            <br/>
+            <br/>
+            <button id="investButton" class="button">Submit</button>
+
+
+
+        </div>
+
+        <!--
         <div class="right" >
 
             <div id="prediction_buttons"> 
@@ -66,15 +100,23 @@
             
         </div>
 -->
-        
+        <div class="button" id="clearButton">Clear</div>
+        <div class="button" id="undoButton">Undo</div>
+
+        <div class="button" id="saveButton">Evaluate</div>
+        <div class="button" id="forward">Forward</div>
+        <div class="button" id="fast-forward">Fast-Forward</div>
+
         <div class="bottom">
-            
+
+
             <div id="overviewchart-viz"></div>
-            
+
         </div>
-        
+
         <div id="dialog-confirm" title="Confirm Prediction"></div>
-    
+
     </div>
 </body>
+
 </html>
