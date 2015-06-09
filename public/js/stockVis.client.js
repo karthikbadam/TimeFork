@@ -1,3 +1,15 @@
+/* user study initializations */
+
+var PREDICTION_SCENARIO = 1; //0 for no prediction, 1 for TimeFork
+
+var CALENDAR_TIME = 1; //0 for July, 1 for December
+
+var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+var brushes1 = [[parseDate("2014-07-01"), parseDate("2014-07-23")], [parseDate("2014-07-07"), parseDate("2014-07-31")], [parseDate("2014-07-13"), parseDate("2014-08-05")], [parseDate("2014-08-01"), parseDate("2014-08-23")]];
+
+var brushes2 = [[parseDate("2014-12-01"), parseDate("2014-12-23")], [parseDate("2014-12-07"), parseDate("2014-12-31")], [parseDate("2015-01-15"), parseDate("2015-02-05")], [parseDate("2015-02-01"), parseDate("2015-02-23")]];
+
 var stockList = 'data/stocks.csv';
 
 var stockSymbols = [];
@@ -18,13 +30,11 @@ var spatialPrediction;
 
 var color = d3.scale.category10();
 
-var parseDate = d3.time.format("%Y-%m-%d").parse;
-
 var charts = [];
 
 var chartObjects = {};
 
-var overviewChart;
+//var overviewChart;
 
 var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
 
@@ -47,6 +57,11 @@ var holidays = [parseDate("2013-01-01"), parseDate("2014-01-01"), parseDate("201
 var totalEarnings = 100000;
 
 var investment = {};
+
+var step1 = 0,
+    step2 = 0,
+    step3 = 0,
+    step4 = 0;
 
 function getFutureDate(today) {
 
@@ -88,8 +103,102 @@ $(document).ready(function () {
     // create Correlation Viewer
     // correlationViewer = new CorrelationChart();
 
-    // play with forward and fast forward
+    // steps click
+    $("#step1").click(function (e) {
 
+        if (step1 == 1)
+            return;
+
+        $("#step1").addClass("completed");
+
+        for (var i = 0; i < charts.length; i++) {
+
+
+            if (CALENDAR_TIME == 0) {
+
+                charts[i].showOnly(brushes1[0], null);
+
+            } else {
+
+                charts[i].showOnly(brushes2[0], null);
+
+
+            }
+        }
+
+
+    });
+
+    $("#step2").click(function (e) {
+
+        if (step2 == 1)
+            return;
+
+        $("#step2").addClass("completed");
+
+        for (var i = 0; i < charts.length; i++) {
+
+
+            if (CALENDAR_TIME == 0) {
+
+                charts[i].showOnly(brushes1[1], null);
+
+            } else {
+
+                charts[i].showOnly(brushes2[1], null);
+
+
+            }
+        }
+
+    });
+
+    $("#step3").click(function (e) {
+
+        if (step3 == 1)
+            return;
+
+        $("#step3").addClass("completed");
+
+        for (var i = 0; i < charts.length; i++) {
+
+
+            if (CALENDAR_TIME == 0) {
+
+                charts[i].showOnly(brushes1[2], null);
+
+            } else {
+
+                charts[i].showOnly(brushes2[2], null);
+
+
+            }
+        }
+
+    });
+
+    $("#step4").click(function (e) {
+
+        if (step4 == 1)
+            return;
+
+        $("#step4").addClass("completed");
+
+        for (var i = 0; i < charts.length; i++) {
+
+
+            if (CALENDAR_TIME == 0) {
+
+                charts[i].showOnly(brushes1[3], null);
+
+            } else {
+
+                charts[i].showOnly(brushes2[3], null);
+
+            }
+        }
+
+    });
 
     //reads the list of stocks first
     d3.csv(stockList, function (error, data) {
@@ -102,39 +211,39 @@ $(document).ready(function () {
 
         });
 
-        $("#forward").click(function (e) {
-
-            for (var i = 0; i < charts.length; i++) {
-
-                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
-
-                b[0] = getFutureDate(b[0]);
-                b[1] = getFutureDate(b[1]);
-
-                overviewChart.moveBrush(b);
-
-                charts[i].showOnly(b, null);
-            }
-
-        });
-
-        $("#fast-forward").click(function (e) {
-
-            for (var i = 0; i < charts.length; i++) {
-
-                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
-
-                for (var j = 0; j < 10; j++) {
-                    b[0] = getFutureDate(b[0]);
-                    b[1] = getFutureDate(b[1]);
-                }
-
-                overviewChart.moveBrush(b);
-
-                charts[i].showOnly(b, null);
-            }
-
-        });
+//        $("#forward").click(function (e) {
+//
+//            for (var i = 0; i < charts.length; i++) {
+//
+//                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
+//
+//                b[0] = getFutureDate(b[0]);
+//                b[1] = getFutureDate(b[1]);
+//
+//                overviewChart.moveBrush(b);
+//
+//                charts[i].showOnly(b, null);
+//            }
+//
+//        });
+//
+//        $("#fast-forward").click(function (e) {
+//
+//            for (var i = 0; i < charts.length; i++) {
+//
+//                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
+//
+//                for (var j = 0; j < 10; j++) {
+//                    b[0] = getFutureDate(b[0]);
+//                    b[1] = getFutureDate(b[1]);
+//                }
+//
+//                overviewChart.moveBrush(b);
+//
+//                charts[i].showOnly(b, null);
+//            }
+//
+//        });
 
         $("#saveButton").click(function (e) {
 
@@ -158,7 +267,7 @@ $(document).ready(function () {
                     var profit = (investment[stockId] / past) * (actual - past);
 
                     totalEarnings = totalEarnings + profit + investment[stockId];
-                    
+
                     previousEarnings += investment[stockId];
 
                     investment[stockId] = 0;
@@ -305,22 +414,22 @@ $(document).ready(function () {
                     chartObjects[stock_id] = lc;
 
                     /* Checks if there is an overview chart created -- if not -- do it */
-                    if ($("#overviewchart-viz").contents().length < 1) {
-                        overviewChart = new OverviewChart({
-                            stockObject: stockObject,
-                            id: selectedSymbols.indexOf(stock_id) % 10,
-                            name: stock_id,
-                            color: color,
-                            linecharts: charts,
-                            columns: [stockColumns[0], stockColumns[6]],
-                            correlationViewer: correlationViewer
-                        });
-                    }
-
-                    overviewChart.addLine({
-                        stockObject: stockObject,
-                        id: selectedSymbols.indexOf(stock_id) % 10
-                    });
+                    //                    if ($("#overviewchart-viz").contents().length < 1) {
+                    //                        overviewChart = new OverviewChart({
+                    //                            stockObject: stockObject,
+                    //                            id: selectedSymbols.indexOf(stock_id) % 10,
+                    //                            name: stock_id,
+                    //                            color: color,
+                    //                            linecharts: charts,
+                    //                            columns: [stockColumns[0], stockColumns[6]],
+                    //                            correlationViewer: correlationViewer
+                    //                        });
+                    //                    }
+                    //
+                    //                    overviewChart.addLine({
+                    //                        stockObject: stockObject,
+                    //                        id: selectedSymbols.indexOf(stock_id) % 10
+                    //                    });
 
                     callback(null, data);
 

@@ -70,7 +70,7 @@ Predictions.prototype.getTopSpatialPredictions = function () {
 
     _self.sortSpatial();
 
-    var sp = _self.sortedSpatialPredictions.splice(0, 10);
+    var sp = _self.sortedSpatialPredictions.splice(0, 7);
 
     if (!sp)
         return;
@@ -87,7 +87,7 @@ Predictions.prototype.getTopSpatialPredictions = function () {
     return sp;
 }
 
-Predictions.prototype.getProcessedTemporalInput = function (stockId, input) {
+Predictions.prototype.getProcessedTemporalInput = function (input) {
 
     var _self = this;
 
@@ -130,39 +130,42 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
 
     var _self = this;
 
-    var actualInput = _self.getProcessedTemporalInput(stockId, input);
+    var actualInput = _self.getProcessedTemporalInput(input);
 
     var allInputs = [];
 
     allInputs.push({
-        input: actualInput,
+        input: input,
         opacity: 1
     });
     
     for (var i = 0; i < _self.TEMPORAL_ALTERNATIVES; i++) {
 
-        var tempInput = actualInput.slice(0);
+        //var tempInput = actualInput.slice(0);
+        var tempInput = input.slice(0);
 
         //get a random number 
-        var alternations = i; // Math.ceil(Math.random() * _self.TEMPORAL_ALTERNATIVES);
+        var alternations = Math.ceil(Math.random() * _self.TEMPORAL_ALTERNATIVES); //i
 
         for (var j = 0; j < alternations; j++) {
 
             var index = Math.floor(Math.random() * _self.TEMPORAL_ALTERNATIVES);
 
             if (Math.random() < 0.5) {
-
-                tempInput[index] = tempInput[index] + 0.4 > 1? 1: tempInput[index] + 0.4;
+                
+                tempInput[index] = tempInput[index] + 0.05*tempInput[index];
+                //tempInput[index] = tempInput[index] + 0.4 > 1? 1: tempInput[index] + 0.4;
 
             } else {
-
-                tempInput[index] = tempInput[index] - 0.4 > -1? -1: tempInput[index] - 0.4;
+                
+                tempInput[index] = tempInput[index] - 0.05*tempInput[index];
+                //tempInput[index] = tempInput[index] - 0.4 > -1? -1: tempInput[index] - 0.4;
             }
         }
 
         allInputs.push({
             input: tempInput,
-            opacity: (_self.TEMPORAL_INPUT_SIZE - alternations) / _self.TEMPORAL_INPUT_SIZE
+            opacity: (_self.TEMPORAL_ALTERNATIVES - alternations) / _self.TEMPORAL_ALTERNATIVES
         });
 
     }
@@ -174,13 +177,14 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
 
     for (var i = 0; i < allInputs.length; i++) {
 
-        var output = predictor.predict(allInputs[i].input);
+        var output = predictor.predict(_self.getProcessedTemporalInput(allInputs[i].input));
 
         var processedOutput = processPrediction(output[0], input[0]);
         
         allPredictions.push({
             prediction: processedOutput,
-            opacity: allInputs[i].opacity
+            opacity: allInputs[i].opacity, 
+            input: allInputs[i].input
         });
 
     }
@@ -270,10 +274,7 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
                 step: i
             });
             
-            
-
         }
-        
        
         pastBestPredictions.push(output[0].prediction);
         
