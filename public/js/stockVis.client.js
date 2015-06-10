@@ -1,14 +1,22 @@
 /* user study initializations */
 
+var participantID = "T1";
+
 var PREDICTION_SCENARIO = 1; //0 for no prediction, 1 for TimeFork
 
-var CALENDAR_TIME = 1; //0 for July, 1 for December
+var CALENDAR_TIME = 1; //0 for July, 1 for December, 2 for training
+
+var stepNumber = 0; 
+
+var userPredictions = {}; 
 
 var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 var brushes1 = [[parseDate("2014-07-01"), parseDate("2014-07-23")], [parseDate("2014-07-07"), parseDate("2014-07-31")], [parseDate("2014-07-13"), parseDate("2014-08-05")], [parseDate("2014-08-01"), parseDate("2014-08-23")]];
 
-var brushes2 = [[parseDate("2014-12-01"), parseDate("2014-12-23")], [parseDate("2014-12-07"), parseDate("2014-12-31")], [parseDate("2015-01-15"), parseDate("2015-02-05")], [parseDate("2015-02-01"), parseDate("2015-02-23")]];
+var brushes2 = [[parseDate("2014-01-07"), parseDate("2014-01-27")], [parseDate("2015-01-11"), parseDate("2015-02-11")], [parseDate("2015-02-03"), parseDate("2015-02-23")], [parseDate("2014-03-01"), parseDate("2014-03-18")]];
+
+var tBrushes = [[parseDate("2013-07-01"), parseDate("2013-07-23")], [parseDate("2013-07-07"), parseDate("2013-07-31")], [parseDate("2013-07-13"), parseDate("2013-08-05")], [parseDate("2013-08-01"), parseDate("2013-08-23")]];
 
 var stockList = 'data/stocks.csv';
 
@@ -94,7 +102,6 @@ function getFutureDate(today) {
 // Take previous seven values -- build a decision tree 
 // maybe a random forest
 // add variation at each node -- check how much you get back
-
 $(document).ready(function () {
 
     //initialize a predictions object 
@@ -108,6 +115,8 @@ $(document).ready(function () {
 
         if (step1 == 1)
             return;
+        
+        stepNumber = 1; 
 
         $("#step1").addClass("completed");
 
@@ -118,10 +127,13 @@ $(document).ready(function () {
 
                 charts[i].showOnly(brushes1[0], null);
 
-            } else {
+            } else if (CALENDAR_TIME == 1) {
 
                 charts[i].showOnly(brushes2[0], null);
 
+            } else {
+
+                charts[i].showOnly(tBrushes[0], null);
 
             }
         }
@@ -133,6 +145,8 @@ $(document).ready(function () {
 
         if (step2 == 1)
             return;
+        
+        stepNumber = 2; 
 
         $("#step2").addClass("completed");
 
@@ -143,10 +157,13 @@ $(document).ready(function () {
 
                 charts[i].showOnly(brushes1[1], null);
 
-            } else {
+            } else if (CALENDAR_TIME == 1) {
 
                 charts[i].showOnly(brushes2[1], null);
 
+            } else {
+
+                charts[i].showOnly(tBrushes[1], null);
 
             }
         }
@@ -157,6 +174,8 @@ $(document).ready(function () {
 
         if (step3 == 1)
             return;
+        
+        stepNumber = 3; 
 
         $("#step3").addClass("completed");
 
@@ -167,10 +186,13 @@ $(document).ready(function () {
 
                 charts[i].showOnly(brushes1[2], null);
 
-            } else {
+            } else if (CALENDAR_TIME == 1) {
 
                 charts[i].showOnly(brushes2[2], null);
 
+            } else {
+
+                charts[i].showOnly(tBrushes[2], null);
 
             }
         }
@@ -182,6 +204,8 @@ $(document).ready(function () {
         if (step4 == 1)
             return;
 
+        stepNumber = 4; 
+
         $("#step4").addClass("completed");
 
         for (var i = 0; i < charts.length; i++) {
@@ -191,9 +215,13 @@ $(document).ready(function () {
 
                 charts[i].showOnly(brushes1[3], null);
 
-            } else {
+            } else if (CALENDAR_TIME == 1) {
 
                 charts[i].showOnly(brushes2[3], null);
+
+            } else {
+
+                charts[i].showOnly(tBrushes[3], null);
 
             }
         }
@@ -263,10 +291,27 @@ $(document).ready(function () {
                 var stockId = predictionInfo["stockId"];
 
                 if (investment[stockId] && investment[stockId] != 0) {
+                    
+                    
 
                     var profit = (investment[stockId] / past) * (actual - past);
+                    
 
                     totalEarnings = totalEarnings + profit + investment[stockId];
+                    
+                    var sendData = {
+                        id: participantID,
+                        phase: stepNumber,
+                        stockId: stockId,
+                        ps: PREDICTION_SCENARIO,
+                        ct: CALENDAR_TIME,
+                        investment: investment[stockId],
+                        profit:  profit,
+                        totalEarnings: totalEarnings
+                         
+                    };
+                    
+                    $.post("/userlog", sendData, function (data, error) {});
 
                     previousEarnings += investment[stockId];
 

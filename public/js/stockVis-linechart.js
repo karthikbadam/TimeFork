@@ -30,7 +30,7 @@ function LineChart(options) {
     temporalPredictors[_self.stockSymbol] = temporalprediction;
 
     _self.margin = {
-        top: 20,
+        top: 50,
         right: 0,
         bottom: 30,
         left: 30
@@ -45,7 +45,7 @@ function LineChart(options) {
     _self.predictionRects = [];
 
     _self.width = (480 - _self.margin.left - _self.margin.right),
-        _self.height = (150 - _self.margin.top - _self.margin.bottom);
+        _self.height = (180 - _self.margin.top - _self.margin.bottom);
 
     _self.div = d3.select("#linechart-viz").append("div")
         .attr("class", "stockChart").attr("id", "ID" + _self.id);
@@ -58,7 +58,7 @@ function LineChart(options) {
             color: "black",
             fontSize: "14px",
             textAlign: "center",
-            "background-color": "#EEE",
+            "background-color": "transparent",
             "font": "sans-serif"
         });
 
@@ -78,7 +78,7 @@ function LineChart(options) {
     _self.volumeSVG = _self.div.append("svg")
         .attr("class", "volumeBar")
         .attr("width", _self.width + _self.margin.left + _self.margin.right)
-        .attr("height", (_self.height + _self.margin.top + _self.margin.bottom) / 5)
+        .attr("height", (_self.height + _self.margin.top + _self.margin.bottom) / 7)
         .append("g")
         .attr("transform", "translate(" + (_self.margin.left) + "," + _self.margin.top / 4 + ")");
 
@@ -324,10 +324,25 @@ function LineChart(options) {
             }
         }
 
+        // clear existing spatial predictions
+        _self.predictedTimeSteps = Math.round(_self.predictedValueX / _self.rectangle_width);
+
+
         if (PREDICTION_SCENARIO == 1) {
 
-            // clear existing spatial predictions
-            _self.predictedTimeSteps = Math.round(_self.predictedValueX / _self.rectangle_width);
+            var sendData = {
+                id: participantID,
+                phase: stepNumber,
+                stockId: _self.stockSymbol,
+                ps: PREDICTION_SCENARIO,
+                ct: CALENDAR_TIME,
+                prediction: _self.lineLength,
+                timeSteps: _self.predictedTimeSteps
+            };
+
+
+            $.post("/userlog", sendData, function (data, error) {});
+
 
             var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true).spatial;
 
