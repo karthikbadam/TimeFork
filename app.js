@@ -1,3 +1,7 @@
+/**
+ * Created by Shivalik Sen and Karthik Badam on 6/11/15.
+ */
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -11,11 +15,8 @@ var csv = require('fast-csv');
 var fs = require('fs');
 var Parallel = require('paralleljs');
 
-var Stock = require('./stock-forest.js');
-
-
-//SOM
-var SOM = require('ml-som');
+var Stock = require('./stock2.js');
+var SOM = require('./stock-som.js');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -75,17 +76,19 @@ var csvStream = csv
 
         allStocks.push(symbol);
         
-        var fs = require('fs');
         var companyName = symbol;
         
-        Stock({
-            company: companyName,
-            symbol: symbol
-        });
+//        Stock({
+//            company: companyName,
+//            symbol: symbol
+//        });
 
     })
     .on("end", function(){
         console.log(allStocks);
+
+        
+//        
 //        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
 //        p.require(Stock);
 //

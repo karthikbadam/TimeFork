@@ -1,5 +1,7 @@
 var stockList = 'data/internet information providers.csv';
 
+var parseDate = d3.time.format("%Y%m%d").parse;
+
 var stockSymbols = [];
 
 var companyNames = [];
@@ -18,70 +20,89 @@ var spatialPrediction;
 
 var color = d3.scale.category10();
 
-var parseDate = d3.time.format("%Y%m%d").parse;
-
 var charts = [];
+
+var chartObjects = {};
 
 var overviewChart;
 
 var stockColumns = ['date', 'open price', 'close price', 'high price', 'low price', 'volume', 'adjusted price'];
 
-var temporalPredictors = [];
+var temporalPredictors = {};
 
 var stocks = [];
 
 var stockObjects = {};
 
-var startDate = parseDate("20100506");
+var startDate = parseDate("2010-05-06");
 
 var correlationViewer;
 
+var predictionObject;
 
-// Decision tree!!
-// Take previous seven values -- build a decision tree 
-// maybe a random forest
-// add variation at each node -- check how much you get back
+var userPredictions = {};
 
+var holidays = [parseDate("20130101"), parseDate("20140101"), parseDate("20150101"), parseDate("20130121"), parseDate("20140120"), parseDate("20150119"), parseDate("20130218"), parseDate("20140217"), parseDate("20150216"), parseDate("20130329"), parseDate("20140418"), parseDate("20150403"), parseDate("20130527"), parseDate("20140526"), parseDate("20150525"), parseDate("20130704"), parseDate("20140704"), parseDate("20150704"), parseDate("20130902"), parseDate("20140901"), parseDate("20150907"), parseDate("20131128"), parseDate("20141127"), parseDate("20151126"), parseDate("20131225"), parseDate("20141225"), parseDate("20151225")];
 
-//Download file for spatial prediction
-$.get("data/train/SOM_WEIGHTS.json", function (data) {
-    console.log("Data: " + data);
-    trainingStockList = data.stocks;
-    weightsSOM = data.weights;
-    spatialPrediction = new SpatialPrediction({
-        weights: weightsSOM,
-        trainingStocks: trainingStockList,
-        stockSymbols: stockSymbols
-    });
-    console.log(spatialPrediction.weights);
-}, "json");
+// Earnings for the stock market game
+var totalEarnings = 100000;
 
+var investment = {};
+
+var step1 = 0,
+    step2 = 0,
+    step3 = 0,
+    step4 = 0;
+
+function getFutureDate(today) {
+
+    var tomorrow = new Date(today.getTime());
+
+    tomorrow.setMonth(today.getMonth());
+    tomorrow.setFullYear(today.getFullYear());
+
+    tomorrow.setDate(today.getDate() + 1);
+
+    if (today.getDay() == 6) {
+        tomorrow.setDate(today.getDate() + 2);
+    }
+
+    if (today.getDay() == 5) {
+        tomorrow.setDate(today.getDate() + 3);
+    }
+
+    for (var i = 0; i < holidays.length; i++) {
+        if (holidays[i].getTime() == tomorrow.getTime()) {
+            tomorrow = getFutureDate(tomorrow);
+        }
+    }
+
+    return tomorrow;
+
+}
 
 $(document).ready(function () {
 
     //create Correlation Viewer
     correlationViewer = new CorrelationChart();
 
-    //Temporal prediction request handler
-    //$("#request_temporal").on('click', function (e) {
-    //Download file from servlet
-    //$("#start_prediction_label").html("Prediction Started");
-    //  selectedSymbols.forEach(function (stockSymbol) {
-    //$.get("/StockVisServlet/TemporalPrediction", {"symbols[]": stockSymbol}, function (data, error) {
+    //initialize a predictions object 
+    predictionObject = new Predictions();
 
-    //});
-    // });
+    //Download file for spatial prediction
+    $.get("data/train/SOM_WEIGHTS.json", function (data) {
+        console.log("Data: ");
 
-    //        correlationViewer = new CorrelationChart({
-    //            selectedSymbolsData: selectedSymbolsData,
-    //            stocks: stocks,
-    //            selectedSymbols: selectedSymbols,
-    //            color: color,
-    //        });
+        data = JSON.parse(JSON.stringify(data));
 
-    //        correlationViewer.refresh();
+        trainingStockList = stockSymbols;
+        spatialPrediction = new SpatialPrediction({
+            weights: data.data,
+            trainingStocks: trainingStockList,
+            stockSymbols: stockSymbols
+        });
 
-    // });
+    }, "json");
 
     //reads the list of stocks first
     d3.csv(stockList, function (error, data) {
@@ -186,7 +207,7 @@ $(document).ready(function () {
 
                             stockObject.normalize(close_values);
 
-                            charts.push(new LineChart({
+                            var lcObject = new LineChart({
                                 stockObject: stockObject,
                                 id: selectedSymbols.indexOf(stock_id) % 10,
                                 name: stock_name,
@@ -194,10 +215,14 @@ $(document).ready(function () {
                                 color: color,
                                 trainingStocks: trainingStockList,
                                 charts: charts,
+                                chartObjects: chartObjects,
                                 columns: stockColumns,
                                 spatialPrediction: spatialPrediction,
                                 temporalPredictors: temporalPredictors
-                            }));
+                            });
+
+                            charts.push(lcObject);
+                            chartObjects[stock_id] = lcObject;
 
                             /* Checks if there is an overview chart created -- if not -- do it */
                             if ($("#overviewchart-viz").contents().length < 1) {

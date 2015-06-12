@@ -237,8 +237,8 @@ function LineChart(options) {
             .attr("y2", -_self.margin.top + rectangle_height)
             .attr("stroke-dasharray", "5, 5");
     }
-    
-    
+
+
 
     // draws the visual prediction space
     //    for (var i = 0; i < numberOfPredictions; i++) {
@@ -285,9 +285,9 @@ function LineChart(options) {
                 .attr("stroke", "#222");
 
             _self.predictedValueX = _self.width - rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width;
-            
-            _self.predictedValueX = m[0]; 
-            
+
+            _self.predictedValueX = m[0];
+
             _self.predictedValueY = m[1] - _self.margin.top;
 
             _self.predictedY = _self.stockMaxValue - (_self.stockMaxValue - _self.stockMinValue) * (((m[1] - _self.margin.top)) / (_self.height));
@@ -308,184 +308,69 @@ function LineChart(options) {
 
         _self.userPredicted = true;
 
-        var error = Math.abs((_self.predictedY - _self.tomorrowValue) * 100 / _self.tomorrowValue);
-        console.log("Prediction error= " + error + "%" + " actual value " + _self.tomorrowValue + " predicted value " + _self.predictedY);
-        
-        
-        // Count number of time steps predicted 
-        console.log("time steps predicted: "+ Math.round(_self.predictedValueX /_self.rectangle_width));
-        _self.predictedTimeSteps = Math.round(_self.predictedValueX /_self.rectangle_width);
-        
-        // Look through the past data to get the best fit
-        
-        
-        
+        // clear existing spatial predictions
+        _self.predictedTimeSteps = Math.round(_self.predictedValueX / _self.rectangle_width);
 
-        //        if (error < 10) {
-        //            var score = Number($('#score_value').text());
-        //            $('#score_value').html((score + 1));
-        //            console.log("score - " + score);
-        //        }
+        var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true).spatial;
 
-        var count = 0;
-        for (var i = 0; i < _self.charts.length; i++) {
+        for (var j = 0; j < _self.charts.length; j++) {
+            _self.chartObjects[stockSymbols[j]].linechartSVG.selectAll(".predictionLine").remove();
 
-            if (_self.charts[i].userPredicted === true) {
-
-                count++;
-                continue;
-
-            } else {
-
-                break;
-
-            }
         }
 
-        // TODO - clean up here when prediction on all the charts happens
-        if (count === _self.charts.length) {
-            for (var i = 0; i < _self.charts.length; i++) {
-                _self.charts[i].moveToNextInstance();
-            }
-            return;
-        }
+        for (var i = 0; i < allPredictions.length; i++) {
 
-        // when moving to the next prediction stage during chaing, record the current value
-        if (_self.startedPredictions) {
-            var actualValue = _self.tomorrowValue;
-            return;
-        }
+            var p = allPredictions[i];
 
-        // pop up a confirm dialog box for spatial prediction
-        $("#dialog-confirm").dialog({
-            resizable: false,
-            height: 140,
-            modal: true,
-            open: function (event, ui) {
-                var textarea = '<p id="predictionText"><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Do you want to predict other stocks?</p>';
-                if ($("#predictionText").contents().length < 1) {
-                    $("#dialog-confirm").append(textarea);
-                }
-            },
+            var predictions = p.predictions;
+            var step = p.step;
 
-            buttons: {
-                OK: function () {
-                    $(this).dialog("close");
-                    //do something
-                    var predictions = _self.spatialPrediction.getPredictions(_self.lineLength, _self.stockSymbol);
-                    for (var i = 0; i < _self.charts.length; i++) {
-                        for (var j = 0; j < predictions.arrays.length; j++) {
-                            _self.charts[i].addPrediction(predictions.arrays[j], predictions.opacities[j]);
-                        }
-                    }
-                },
-                Cancel: function () {
-                    $(this).dialog("close");
+            for (var j = 0; j < _self.charts.length; j++) {
+
+                for (var k = 0; k < predictions.length; k++) {
+
+                    _self.chartObjects[stockSymbols[j]].addPrediction(predictions[k].predictions, predictions[k].opacity, step);
+
                 }
             }
-
-        });
+        }
     }
 
 }
 
-//move to next instance
-LineChart.prototype.moveToNextInstance = function () {
+LineChart.prototype.getCurrentPrediction = function () {
+
     var _self = this;
-    _self.tomorrowValue = _self.predictedY;
-    var stockData = {};
-    stockData[_self.stockColumns[6]] = _self.tomorrowValue;
-    stockData[_self.stockColumns[0]] = _self.tomorrow;
 
-    var b = _self.tomorrow;
-    var tomorrow = _self.tomorrow;
-    //find the date of next day
-    tomorrow.setMonth(b.getMonth());
-    tomorrow.setFullYear(b.getFullYear());
+    //#8066A6
+    var percentIncrease = _self.lineLength;
+    var numberOfTimeSteps = _self.predictedTimeSteps;
+    var previousValue = _self.dataFiltered[0][_self.stockColumns[6]];
+    var predictedValue = previousValue + previousValue * percentIncrease / 100;
+    var previousDate = _self.dataFiltered[0][_self.stockColumns[0]];
+    var predictedDate = previousDate;
 
-    tomorrow.setDate(b.getDate() + 1);
-    if (b.getDay() === 6) {
-        tomorrow.setDate(b.getDate() + 2);
-    }
-    if (b.getDay() === 5) {
-        tomorrow.setDate(b.getDate() + 3);
+    for (var i = 0; i < numberOfTimeSteps; i++) {
+        predictedDate = getFutureDate(predictedDate);
     }
 
-    // goes through the data to find the actual tomorrow's value -- we do have training data
-    _self.tomorrowValue = 0;
-    for (var i = 0; i < _self.data.length; i++) {
-        var d = _self.data[i];
-        if (d[_self.stockColumns[0]].getDate() === tomorrow.getDate() && d[_self.stockColumns[0]].getMonth() === tomorrow.getMonth() && d[_self.stockColumns[0]].getFullYear() === tomorrow.getFullYear()) {
-            _self.tomorrowValue = d[_self.stockColumns[6]];
-            console.log("OWO");
-            break;
-        }
-    }
+    var actual = _self.data.filter(function (d) {
 
-    // reads the last 15 values -- this might have to contain the predictions    
-    var prData = [];
-    prData.push(stockData);
-    for (var i = 0; i < 15; i++) {
-        prData.push(_self.dataFilteredForPrediction[i]);
-    }
-    _self.dataFilteredForPrediction = prData;
+        return predictedDate.getTime() == d[stockColumns[0]].getTime();
+    });
 
+    var predictionInfo = {
+        stockId: _self.stockSymbol,
+        date1: previousDate,
+        date2: predictedDate,
+        past: previousValue,
+        predict: predictedValue,
+        actual: actual[0][stockColumns[6]]
+    };
 
-    // temporal input
-    var input = new Array(15);
-    for (var i = 0; i < 15; i++) {
-        input[i] = _self.stockObject.normalizeValue(prData[i][_self.stockColumns[6]]);
-    }
+    return predictionInfo;
 
-    _self.numberOfPredictionsMade++;
-
-    //adding a line to the prediction space
-    _self.linechartSVG.append("line")
-        .attr("class", "userPredictionLine")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.predictedValueX)
-        .attr("y2", _self.predictedValueY)
-        //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#222")
-        .attr("stroke-opacity", 0.8)
-        .attr("stroke-width", "2px");
-
-    _self.linechartSVG.selectAll(".temporalPredictionLine")
-        .attr("stroke-opacity", 0.1);
-
-    _self.linechartSVG.selectAll(".predictionLine")
-        .attr("stroke-opacity", 0.03);
-
-    _self.lastValueX = _self.predictedValueX;
-    _self.lastValueY = _self.predictedValueY;
-
-    var predictor = _self.temporalPredictors[_self.stockSymbol];
-    var output = predictor.predict(input);
-    _self.currentPrediction = _self.stockObject.deNormalize(output[0]);
-    //console.log("prediction is "+((this.currentPrediction - tomorrowValue)*100/this.currentPrediction));
-    _self.linechartSVG.append("line")
-        .attr("class", "temporalPredictionLine")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX + _self.rectangle_width)
-        .attr("y2", _self.y(_self.currentPrediction))
-        //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#fc8d59")
-        .attr("stroke-opacity", 0.8)
-        .attr("stroke-width", "2px");
-
-    console.log("after all prediction --" + _self.lastValueX);
-    _self.linechartSVG.select("#prediction")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX)
-        .attr("y2", _self.lastValueY);
-
-    _self.userPredicted = false;
-    _self.startedPredictions = false;
-
-};
+}
 
 //brushes each line chart based on the region selected on the overview
 LineChart.prototype.showOnly = function (b, empty) {
@@ -494,9 +379,11 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.numberOfPredictionsMade = 0;
     _self.userPredicted = false;
     _self.startedPredictions = false;
-    
+    _self.lineLength = 0;
+    _self.predictedTimeSteps = 0;
+
     _self.tomorrow = new Date();
-    
+
     _self.dataFiltered = _self.stockObject.getFilteredData(b);
 
     if (_self.dataFiltered.length < 0) {
@@ -508,9 +395,9 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.x.domain(d3.extent(_self.dataFiltered, function (stock) {
         return stock[_self.stockColumns[0]];
     }));
-    
+
     b = _self.x.domain();
-    
+
     _self.chartContainer.select(".x.axis").call(_self.xAxis);
 
     _self.y.domain(d3.extent(_self.dataFiltered, function (stock) {
@@ -587,64 +474,93 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.linechartSVG.selectAll(".userPredictionLine").remove();
     _self.linechartSVG.selectAll(".predictionLine").remove();
 
-    var input = new Array(7);
-    for (var i = 0; i < 7; i++) {
-        input[i] = _self.stockObject.normalizeValue(_self.dataFiltered[i][_self.stockColumns[6]]);
-    }
-    //find the date of next day
-    _self.tomorrow.setMonth(b[1].getMonth());
-    _self.tomorrow.setFullYear(b[1].getFullYear());
+    _self.linechartSVG.selectAll(".temporalPredictionLine").remove();
+    _self.linechartSVG.selectAll(".savedPredictionLine").remove();
 
-    _self.tomorrow.setDate(b[1].getDate() + 1);
-    if (b[1].getDay() === 6) {
-        _self.tomorrow.setDate(b[1].getDate() + 2);
-    }
-    if (b[1].getDay() === 5) {
-        _self.tomorrow.setDate(b[1].getDate() + 3);
-    }
-    //go through the data to find the actual value
-    _self.tomorrowValue = 0;
-    for (var i = 0; i < _self.data.length; i++) {
-        var d = _self.data[i];
-        if (d[_self.stockColumns[0]].getDate() === _self.tomorrow.getDate() && d[_self.stockColumns[0]].getMonth() === _self.tomorrow.getMonth() && d[_self.stockColumns[0]].getFullYear() === _self.tomorrow.getFullYear()) {
-            _self.tomorrowValue = d[_self.stockColumns[6]];
-            break;
+    var savedPredictions = userPredictions[_self.stockSymbol];
+
+    if (savedPredictions != null) {
+        for (var i = 0; i < savedPredictions.length; i++) {
+
+            var savedPrediction = savedPredictions[i];
+            var date1 = savedPrediction["date1"];
+            var date2 = savedPrediction["date2"];
+            var pastValue = savedPrediction["past"];
+            var predictedValue = savedPrediction["predict"];
+
+            if (date1.getTime() >= b[0].getTime() && date2.getTime() <= b[1].getTime() && date2.getTime() != date1.getTime()) {
+
+                //show already made predictions
+                _self.linechartSVG.append("line")
+                    .attr("class", "savedPredictionLine")
+                    .attr("x1", _self.x(date1))
+                    .attr("y1", _self.y(pastValue))
+                    .attr("x2", _self.x(date2))
+                    .attr("y2", _self.y(predictedValue))
+                    //.attr("stroke", _self.color(_self.id))
+                    .attr("stroke", "#8066A6")
+                    .attr("stroke-opacity", 1)
+                    .attr("stroke-width", "2px");
+            }
         }
     }
 
-    _self.linechartSVG.selectAll(".temporalPredictionLine").remove();
-    var predictor = _self.temporalPredictors[_self.stockSymbol];
-    var output = predictor.predict(input);
-    _self.currentPrediction = _self.stockObject.deNormalize(output[0]);
 
-    //console.log("prediction is "+((this.currentPrediction - tomorrowValue)*100/this.currentPrediction));
-    _self.linechartSVG.append("line")
-        .attr("class", "temporalPredictionLine")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX + _self.rectangle_width)
-        .attr("y2", _self.y(_self.currentPrediction))
-        //.attr("stroke", _self.color(_self.id))
-        .attr("stroke", "#fc8d59")
-        .attr("stroke-opacity", 0.8)
-        .attr("stroke-width", "2px");
+    _self.topTemporalPredictions = new Array(20);
+    _self.topTemporalPredictions[0] = _self.dataFiltered[0][_self.stockColumns[6]];
+
+    //get a list of predictions at each step
+    var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, 20, _self.dataFiltered, false);
+    var temporal = _self.currentTemporalPredictions = allPredictions.temporal;
+
+    var xDate;
+
+    for (var i = 0; i < temporal.length; i++) {
+
+        var currentDate = temporal[i].date;
+        var prediction = temporal[i].prediction;
+        var opacity = temporal[i].opacity;
+        var past = temporal[i].past;
+        var step = temporal[i].step;
+
+        _self.topTemporalPredictions[step] = past;
+
+
+        if (i == 0) {
+            xDate = currentDate;
+        }
+
+
+        _self.linechartSVG.append("line")
+            .attr("class", "temporalPredictionLine")
+            .attr("x1", _self.x(xDate) + step * _self.rectangle_width)
+            .attr("y1", _self.y(past))
+            .attr("x2", _self.x(xDate) + (step + 1) * _self.rectangle_width)
+            .attr("y2", _self.y(prediction))
+            //.attr("stroke", _self.color(_self.id))
+            .attr("stroke", "#fc8d59")
+            .attr("stroke-opacity", opacity)
+            .attr("stroke-width", "1px");
+    }
+
 
 };
 
 // Adds spatial predictions
-LineChart.prototype.addPrediction = function (predictionArray, opacity) {
+LineChart.prototype.addPrediction = function (predictionArray, opacity, step) {
     var _self = this;
     _self.startedPredictions = true;
-    var stockIndex = _self.trainingStocks.indexOf(_self.stockSymbol);
-    var value = _self.closingValue + _self.closingValue * predictionArray[stockIndex] / 100;
+    var stockIndex = stockSymbols.indexOf(_self.stockSymbol);
+    var value = _self.topTemporalPredictions[step] + _self.topTemporalPredictions[step] * predictionArray[stockIndex] / 100;
     //console.log("Index "+stockIndex+" Value "+value);
     _self.linechartSVG.append("line")
         .attr("class", "predictionLine")
-        .attr("x1", _self.lastValueX)
-        .attr("y1", _self.lastValueY)
-        .attr("x2", _self.lastValueX + _self.rectangle_width)
+        .attr("x1", _self.lastValueX + (step) * _self.rectangle_width)
+        .attr("y1", _self.y(_self.topTemporalPredictions[step]))
+        .attr("x2", _self.lastValueX + (step + 1) * _self.rectangle_width)
         .attr("y2", _self.y(value))
         //.attr("stroke", _self.color(_self.id)) -- // change COLOR SCHEME
         .attr("stroke", "#91bfdb")
+        .attr("stroke-width", "1px")
         .attr("stroke-opacity", opacity);
 };

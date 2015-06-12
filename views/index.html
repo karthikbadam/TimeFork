@@ -12,7 +12,7 @@
     <script src="js/encog-js-1.0.js"></script>
     <script src="js/encog-widget-js-1.0.js"></script>
     <script src="js/brain-0.6.0.min.js"></script>
-
+    <script src="js/stockVis-prediction.js"></script>
     <script src="js/stockVis-overviewchart.js"></script>
     <script src="js/stockVis-correlationviewer.js"></script>
     <script src="js/stockVis-stock.js"></script>
@@ -26,30 +26,8 @@
             <div id="linecharts">
             </div>
         </div>
+        
         <div class="right" >
-<!--
-            <div id="prediction_buttons"> 
-                <table border = "0">
-                    <tr><td>
-
-                        <label>Score</label>
-                        <label id="score_value">0</label>
-                        
-                    </td>
-                   
-                    <td id="next_button"></td>
-                    
-                    </tr>
-                    <tr><td>
-                          <div class="ui_button" id="request_temporal">
-                          <label id="start_prediction_label">Start Prediction</label>
-                        </div>
-                    </td></tr>
-                    
-                    
-                </table>
-            </div>
--->
             <div id="choosestock">
                 <table id="button_panel" border = "0">
                     <tr>
@@ -64,14 +42,13 @@
                 </div>
                 <select name="stocks" multiple="multiple" id="stocklist"></select>
             </div>
-            
         </div>
         
-        <div class="bottom">
-            
+        <div class="bottom">    
             <div id="overviewchart-viz"></div>
             <div id="correlation-viewer"></div>
         </div>
+        
         <div id="dialog-confirm" title="Confirm Prediction"></div>
     </div>
 </body>
