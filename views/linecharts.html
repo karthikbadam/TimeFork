@@ -33,44 +33,29 @@
             <br/>
             <br/> Hi, <span>Guest,</span>
             <br/>
-            <br/> You currently have $<span id="currentEarnings">100,000</span> earnings!
+            <br/> You currently have $<span id="currentEarnings">100,000</span> earnings.
             <br/>
             <br/> You invested
-            <li>$<span id="currentInvestmentAAPL">0</span> on Apple</li>
-            <li>$<span id="currentInvestmentFB">0</span> on Facebook</li>
-            <li>$<span id="currentInvestmentTSLA">0</span> on Tesla</li>
+            <br/>
+            <div id="investmentDiv">
+                
+                <li>$<span id="currentInvestmentAAPL"><input id="investStockAAPL" class="investStock" type="number" min=10000 max=100000 step=100 value=0 /></span> on Apple</li>
+                <li>$<span id="currentInvestmentFB"><input id="investStockFB" class="investStock" type="number" min=10000 max=100000 step=100 value=0 /></span> on Facebook</li>
+                <li>$<span id="currentInvestmentTSLA"><input id="investStockTSLA" class="investStock" type="number" min=10000 max=100000 step=100 value=0 /></span> on Tesla</li>
+                <br/>
+            </div>
 
             <br/>
-            <br/> Your options are
-            <br/>
-            <br/> Invest
-            <input id="investStock" type="number" min=10000 /> in
-            <select id="stockOptions">
-                <option value="AAPL">Apple</option>
-                <option value="FB">Facebook</option>
-                <option value="TSLA">Tesla</option>
-            </select>
-
-            <br/>
-            <br/>
-            <button id="investButton" class="button">Invest</button>
-            <button class="button" id="saveButton">Evaluate</button>
+            <div id="investButtonsDiv">
+                <button id="saveButton" class="button">Evaluate</button>
+            </div>
         </div>
-
-<!--
-        <div class="button" id="clearButton">Clear</div>
-        <div class="button" id="undoButton">Undo</div>
--->     
-<!--
-        <div class="button" id="forward">Forward</div>
-        <div class="button" id="fast-forward">Fast-Forward</div>
--->
 
         <div class="bottom">
             <ul class="progress-indicator">
                 <li id="step1"> <span class="bubble"></span> Step 1. </li>
                 <li id="step2"> <span class="bubble"></span> Step 2. </li>
-                <li id="step3">  <span class="bubble"></span> Step 3. </li>
+                <li id="step3"> <span class="bubble"></span> Step 3. </li>
                 <li id="step4"> <span class="bubble"></span> Step 4. </li>
             </ul>
         </div>

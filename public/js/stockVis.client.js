@@ -4,7 +4,7 @@ var participantID = "T1";
 
 var PREDICTION_SCENARIO = 1; //0 for no prediction, 1 for TimeFork
 
-var CALENDAR_TIME = 1; //0 for July, 1 for December, 2 for training
+var CALENDAR_TIME = 2; //0 for July, 1 for December, 2 for training
 
 var stepNumber = 0;
 
@@ -104,6 +104,9 @@ function getFutureDate(today) {
 // maybe a random forest
 // add variation at each node -- check how much you get back
 $(document).ready(function () {
+
+    //link to earnings reports
+    $("#linechart-viz").append('<p><a href="/reports' + CALENDAR_TIME + '" target="_blank">Link to earning reports.</a></p>');
 
     //initialize a predictions object 
     predictionObject = new Predictions();
@@ -347,77 +350,77 @@ $(document).ready(function () {
 
 
         $("#investStockAAPL").change(function () {
-            
+
             var stockId = "AAPL";
 
             var investmentValue = +$("#investStockAAPL").val();
 
             var earningsChange = investmentValue;
-            
+
             if (investment[stockId]) {
-                
+
                 var previous = investment[stockId];
-                
-                earningsChange = investmentValue - previous; 
-                
+
+                earningsChange = investmentValue - previous;
+
             }
-            
+
             investment[stockId] = investmentValue;
-            
+
             totalEarnings = totalEarnings - earningsChange;
 
             $("#currentEarnings").html(Math.floor(totalEarnings));
-            
+
         });
-        
+
         $("#investStockFB").change(function () {
-            
+
             var stockId = "FB";
 
             var investmentValue = +$("#investStockFB").val();
 
             var earningsChange = investmentValue;
-            
+
             if (investment[stockId]) {
-                
+
                 var previous = investment[stockId];
-                
-                earningsChange = investmentValue - previous; 
-                
+
+                earningsChange = investmentValue - previous;
+
             }
-            
+
             investment[stockId] = investmentValue;
-            
+
             totalEarnings = totalEarnings - earningsChange;
 
             $("#currentEarnings").html(Math.floor(totalEarnings));
 
-            
+
         });
-        
-         $("#investStockTSLA").change(function () {
-            
+
+        $("#investStockTSLA").change(function () {
+
             var stockId = "TSLA";
 
             var investmentValue = +$("#investStockTSLA").val();
 
             var earningsChange = investmentValue;
-            
+
             if (investment[stockId]) {
-                
+
                 var previous = investment[stockId];
-                
-                earningsChange = investmentValue - previous; 
-                
+
+                earningsChange = investmentValue - previous;
+
             }
-            
+
             investment[stockId] = investmentValue;
-            
+
             totalEarnings = totalEarnings - earningsChange;
 
             $("#currentEarnings").html(Math.floor(totalEarnings));
 
-            
+
         });
 
         var q = queue();
