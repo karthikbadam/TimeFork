@@ -16,7 +16,7 @@ function Predictions(options) {
 
     _self.pastValues = {};
 
-    _self.TEMPORAL_ALTERNATIVES = 4;
+    _self.TEMPORAL_ALTERNATIVES = 7;
 
     _self.TEMPORAL_INPUT_SIZE = 6;
 
@@ -92,7 +92,7 @@ Predictions.prototype.getProcessedTemporalInput = function (input) {
     var _self = this;
 
     var processedInput = [];
-    
+
     var past = input[0];
 
     for (var i = 1; i < input.length; i++) {
@@ -111,19 +111,19 @@ Predictions.prototype.getProcessedTemporalInput = function (input) {
         processedInput.push((1 + change) / 2);
 
     }
-    
+
     return processedInput;
 
 }
 
-function processPrediction (prediction, previous) {
-    
-    prediction = (2*prediction - 1); 
+function processPrediction(prediction, previous) {
 
-    prediction = prediction*previous/10 + previous;
-    
+    prediction = (2 * prediction - 1);
+
+    prediction = prediction * previous / 10 + previous;
+
     return prediction;
-    
+
 }
 
 Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
@@ -138,7 +138,7 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
         input: input,
         opacity: 1
     });
-    
+
     for (var i = 0; i < _self.TEMPORAL_ALTERNATIVES; i++) {
 
         //var tempInput = actualInput.slice(0);
@@ -149,16 +149,18 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
 
         for (var j = 0; j < alternations; j++) {
 
-            var index = Math.floor(Math.random() * _self.TEMPORAL_ALTERNATIVES);
+            //var index = Math.floor(Math.random() * _self.TEMPORAL_ALTERNATIVES);
+
+            var index = _self.TEMPORAL_INPUT_SIZE - 1 - j < 0? 2*_self.TEMPORAL_INPUT_SIZE - 1 - j: _self.TEMPORAL_INPUT_SIZE - 1 - j;
 
             if (Math.random() < 0.5) {
-                
-                tempInput[index] = tempInput[index] + 0.05*tempInput[index];
+
+                tempInput[index] = tempInput[index] + 0.05 * tempInput[index];
                 //tempInput[index] = tempInput[index] + 0.4 > 1? 1: tempInput[index] + 0.4;
 
             } else {
-                
-                tempInput[index] = tempInput[index] - 0.05*tempInput[index];
+
+                tempInput[index] = tempInput[index] - 0.05 * tempInput[index];
                 //tempInput[index] = tempInput[index] - 0.4 > -1? -1: tempInput[index] - 0.4;
             }
         }
@@ -180,15 +182,15 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
         var output = predictor.predict(_self.getProcessedTemporalInput(allInputs[i].input));
 
         var processedOutput = processPrediction(output[0], input[0]);
-        
+
         allPredictions.push({
             prediction: processedOutput,
-            opacity: allInputs[i].opacity, 
+            opacity: allInputs[i].opacity,
             input: allInputs[i].input
         });
 
     }
-    
+
     return allPredictions;
 }
 
@@ -201,38 +203,18 @@ Predictions.prototype.setCurrentPresent = function (stockId, dataFiltered) {
 
     _self.stockPresent[stockId] = dataFiltered[0][stockColumns[0]];
 
-    var input = new Array(_self.TEMPORAL_INPUT_SIZE+1);
+    var input = new Array(_self.TEMPORAL_INPUT_SIZE + 1);
 
     //no normalization
     for (var i = _self.TEMPORAL_INPUT_SIZE; i >= 0; i--) {
-        input[i] = dataFiltered[_self.TEMPORAL_INPUT_SIZE-i][stockColumns[6]];
+        input[i] = dataFiltered[_self.TEMPORAL_INPUT_SIZE - i][stockColumns[6]];
     }
 
     _self.stockPastValues[stockId] = input;
 
 }
 
-//function getFutureDate(today) {
-//
-//    var tomorrow = new Date(today.getTime());
-//
-//    tomorrow.setMonth(today.getMonth());
-//    tomorrow.setFullYear(today.getFullYear());
-//
-//    tomorrow.setDate(today.getDate() + 1);
-//
-//    if (today.getDay() === 6) {
-//        tomorrow.setDate(today.getDate() + 2);
-//    }
-//    if (today.getDay() === 5) {
-//        tomorrow.setDate(today.getDate() + 3);
-//    }
-//    
-//    return tomorrow;
-//
-//}
-
-Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFiltered, predictSpatial) {
+Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFiltered, predictSpatial, userPrediction) {
 
     var _self = this;
 
@@ -243,13 +225,13 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
     var spatialPreds = [];
 
     _self.setCurrentPresent(stockId, dataFiltered);
-    
+
     var future = new Date(_self.stockPresent[stockId].getTime());
 
-    var pastBestPredictions = []; 
-    
+    var pastBestPredictions = [];
+
     for (var i = 0; i < nTimes; i++) {
-        
+
         var presentDate = new Date(future.getTime());
 
         future = getFutureDate(future);
@@ -258,29 +240,62 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
 
         input = input.concat(pastBestPredictions);
 
-        previous = input[input.length-1];
-        
+        previous = input[input.length - 1];
+
         var output = _self.generateTemporalPredictions(stockId, input);
 
         for (var j = 0; j < output.length; j++) {
 
-            var bestPrediction = output[j].prediction;
+            var currPrediction = output[j].prediction;
 
             predictions.push({
-                prediction: bestPrediction,
+                prediction: currPrediction,
                 date: presentDate,
                 past: previous,
                 opacity: output[j].opacity,
                 step: i
             });
-            
+
         }
-       
-        pastBestPredictions.push(output[0].prediction);
-        
+
+        // lets fit the high confidence till the last step
+
+        var bestPrediction = output[0].prediction;
+
+        if (i != nTimes - 1) {
+
+            pastBestPredictions.push(bestPrediction);
+
+        } else {
+
+            var minIndex = 0;
+            var min = 10000000;
+
+            for (var j = 0; j < output.length; j++) {
+
+                var currPrediction = output[j].prediction;
+
+                var difference = Math.abs(currPrediction - userPrediction);
+
+                if (min > difference) {
+
+                    min = difference;
+
+                    minIndex = j;
+                }
+
+            }
+
+            bestPrediction = output[minIndex].prediction;
+
+            pastBestPredictions.push(bestPrediction);
+        }
+
+
+
         if (predictSpatial) {
 
-            var change = (output[0].prediction - previous) * 100 / previous;
+            var change = (bestPrediction - previous) * 100 / previous;
 
             var spatialPred = spatialPrediction.getPredictions(stockId, change);
 

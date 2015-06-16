@@ -35,7 +35,7 @@ Stock.prototype.normalize = function(close_values) {
     
     _self.min = _self.min - 0.0002;
     _self.normalization = _self.max - _self.min + 0.0003;
-    console.log(_self.companyName +" min -" + _self.min+" norm -" + _self.normalization);
+   
     
 };
 

@@ -6,9 +6,9 @@ var PREDICTION_SCENARIO = 1; //0 for no prediction, 1 for TimeFork
 
 var CALENDAR_TIME = 1; //0 for July, 1 for December, 2 for training
 
-var stepNumber = 0; 
+var stepNumber = 0;
 
-var userPredictions = {}; 
+var userPredictions = {};
 
 var parseDate = d3.time.format("%Y-%m-%d").parse;
 
@@ -62,6 +62,7 @@ var userPredictions = {};
 
 var holidays = [parseDate("2013-01-01"), parseDate("2014-01-01"), parseDate("2015-01-01"), parseDate("2013-01-21"), parseDate("2014-01-20"), parseDate("2015-01-19"), parseDate("2013-02-18"), parseDate("2014-02-17"), parseDate("2015-02-16"), parseDate("2013-03-29"), parseDate("2014-04-18"), parseDate("2015-04-03"), parseDate("2013-05-27"), parseDate("2014-05-26"), parseDate("2015-05-25"), parseDate("2013-07-04"), parseDate("2014-07-04"), parseDate("2015-07-04"), parseDate("2013-09-02"), parseDate("2014-09-01"), parseDate("2015-09-07"), parseDate("2013-11-28"), parseDate("2014-11-27"), parseDate("2015-11-26"), parseDate("2013-12-25"), parseDate("2014-12-25"), parseDate("2015-12-25")];
 
+// Earnings for the stock market game
 var totalEarnings = 100000;
 
 var investment = {};
@@ -115,8 +116,8 @@ $(document).ready(function () {
 
         if (step1 == 1)
             return;
-        
-        stepNumber = 1; 
+
+        stepNumber = 1;
 
         $("#step1").addClass("completed");
 
@@ -145,8 +146,8 @@ $(document).ready(function () {
 
         if (step2 == 1)
             return;
-        
-        stepNumber = 2; 
+
+        stepNumber = 2;
 
         $("#step2").addClass("completed");
 
@@ -174,8 +175,8 @@ $(document).ready(function () {
 
         if (step3 == 1)
             return;
-        
-        stepNumber = 3; 
+
+        stepNumber = 3;
 
         $("#step3").addClass("completed");
 
@@ -204,7 +205,7 @@ $(document).ready(function () {
         if (step4 == 1)
             return;
 
-        stepNumber = 4; 
+        stepNumber = 4;
 
         $("#step4").addClass("completed");
 
@@ -239,39 +240,39 @@ $(document).ready(function () {
 
         });
 
-//        $("#forward").click(function (e) {
-//
-//            for (var i = 0; i < charts.length; i++) {
-//
-//                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
-//
-//                b[0] = getFutureDate(b[0]);
-//                b[1] = getFutureDate(b[1]);
-//
-//                overviewChart.moveBrush(b);
-//
-//                charts[i].showOnly(b, null);
-//            }
-//
-//        });
-//
-//        $("#fast-forward").click(function (e) {
-//
-//            for (var i = 0; i < charts.length; i++) {
-//
-//                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
-//
-//                for (var j = 0; j < 10; j++) {
-//                    b[0] = getFutureDate(b[0]);
-//                    b[1] = getFutureDate(b[1]);
-//                }
-//
-//                overviewChart.moveBrush(b);
-//
-//                charts[i].showOnly(b, null);
-//            }
-//
-//        });
+        //        $("#forward").click(function (e) {
+        //
+        //            for (var i = 0; i < charts.length; i++) {
+        //
+        //                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
+        //
+        //                b[0] = getFutureDate(b[0]);
+        //                b[1] = getFutureDate(b[1]);
+        //
+        //                overviewChart.moveBrush(b);
+        //
+        //                charts[i].showOnly(b, null);
+        //            }
+        //
+        //        });
+        //
+        //        $("#fast-forward").click(function (e) {
+        //
+        //            for (var i = 0; i < charts.length; i++) {
+        //
+        //                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
+        //
+        //                for (var j = 0; j < 10; j++) {
+        //                    b[0] = getFutureDate(b[0]);
+        //                    b[1] = getFutureDate(b[1]);
+        //                }
+        //
+        //                overviewChart.moveBrush(b);
+        //
+        //                charts[i].showOnly(b, null);
+        //            }
+        //
+        //        });
 
         $("#saveButton").click(function (e) {
 
@@ -291,33 +292,32 @@ $(document).ready(function () {
                 var stockId = predictionInfo["stockId"];
 
                 if (investment[stockId] && investment[stockId] != 0) {
-                    
-                    
 
                     var profit = (investment[stockId] / past) * (actual - past);
-                    
+
 
                     totalEarnings = totalEarnings + profit + investment[stockId];
-                    
+
                     var sendData = {
                         id: participantID,
+                        timestamp: new Date(),
                         phase: stepNumber,
                         stockId: stockId,
                         ps: PREDICTION_SCENARIO,
                         ct: CALENDAR_TIME,
                         investment: investment[stockId],
-                        profit:  profit,
-                        totalEarnings: totalEarnings
-                         
+                        profit: profit.toFixed(2),
+                        totalEarnings: totalEarnings.toFixed(2)
+
                     };
-                    
+
                     $.post("/userlog", sendData, function (data, error) {});
 
                     previousEarnings += investment[stockId];
 
                     investment[stockId] = 0;
 
-                    $('#currentInvestment' + stockId).html(0);
+                    $('#investStock' + stockId).val(0);
 
                     console.log(totalEarnings);
 
@@ -346,28 +346,78 @@ $(document).ready(function () {
         });
 
 
-        $("#investButton").click(function (e) {
+        $("#investStockAAPL").change(function () {
+            
+            var stockId = "AAPL";
 
-            var stockId = $('#stockOptions').val();
-            var investmentValue = +$('#investStock').val();
+            var investmentValue = +$("#investStockAAPL").val();
 
-            if (investmentValue > totalEarnings) {
-
-                alert("You don't have that money!.... yet");
-                return;
+            var earningsChange = investmentValue;
+            
+            if (investment[stockId]) {
+                
+                var previous = investment[stockId];
+                
+                earningsChange = investmentValue - previous; 
+                
             }
+            
+            investment[stockId] = investmentValue;
+            
+            totalEarnings = totalEarnings - earningsChange;
 
-            if (!investment[stockId])
-                investment[stockId] = investmentValue;
-            else
-                investment[stockId] += investmentValue;
+            $("#currentEarnings").html(Math.floor(totalEarnings));
+            
+        });
+        
+        $("#investStockFB").change(function () {
+            
+            var stockId = "FB";
 
-            $('#currentInvestment' + stockId).html(investment[stockId]);
+            var investmentValue = +$("#investStockFB").val();
 
-            totalEarnings = totalEarnings - investmentValue;
+            var earningsChange = investmentValue;
+            
+            if (investment[stockId]) {
+                
+                var previous = investment[stockId];
+                
+                earningsChange = investmentValue - previous; 
+                
+            }
+            
+            investment[stockId] = investmentValue;
+            
+            totalEarnings = totalEarnings - earningsChange;
 
-            $("#currentEarnings").html(totalEarnings.toFixed(2));
+            $("#currentEarnings").html(Math.floor(totalEarnings));
 
+            
+        });
+        
+         $("#investStockTSLA").change(function () {
+            
+            var stockId = "TSLA";
+
+            var investmentValue = +$("#investStockTSLA").val();
+
+            var earningsChange = investmentValue;
+            
+            if (investment[stockId]) {
+                
+                var previous = investment[stockId];
+                
+                earningsChange = investmentValue - previous; 
+                
+            }
+            
+            investment[stockId] = investmentValue;
+            
+            totalEarnings = totalEarnings - earningsChange;
+
+            $("#currentEarnings").html(Math.floor(totalEarnings));
+
+            
         });
 
         var q = queue();

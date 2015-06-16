@@ -42,7 +42,7 @@ SpatialPrediction.prototype.getPredictions = function(stock_symbol, prediction) 
             
             var distance = Math.abs(weightArray[stockIndex] - prediction);
             
-            if ( Math.abs(distance) < 5) {
+            if ( Math.abs(distance) < 10) {
                 
                 var opacity = Math.pow(1 - distance/100, 2);
                 predictionObject.addSpatialPrediction(weightArray, opacity);

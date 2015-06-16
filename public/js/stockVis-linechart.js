@@ -104,7 +104,7 @@ function LineChart(options) {
         .scale(_self.x)
         .orient("bottom").ticks(6)
         .tickFormat(function (d) {
-            return d3.time.format('%b%d')(new Date(d));
+            return d3.time.format('%b%d\'%y')(new Date(d));
         });
 
     _self.yAxis = d3.svg.axis()
@@ -220,15 +220,6 @@ function LineChart(options) {
 
     var numberOfPredictions = 20;
 
-    // one single rectangle with multiple lines
-    // rectangle width 30*10
-    // lines at 30, 60, 90, 120...
-    // mouse event get size of the prediction line 
-    // convert x to closest 30 multiple
-    // get x/30 for future time step and get y 
-    // do greedy to fit a prediction path
-    // find a greedy JS library
-
     var rect = _self.linechartSVG.append("svg:rect")
         .attr("class", "predictionRect")
         .attr("transform", "translate(" + (_self.width - rect_offsetX) + "," + (-_self.margin.top) + ")")
@@ -272,7 +263,7 @@ function LineChart(options) {
 
         /* Indirection to check if the user indeed wants a prediction */
         if (predictMouseClicked) {
-            //draw.attr("x2", (_self.width - 2 * rect_offsetX + (_self.numberOfPredictionsMade + 1) * rectangle_width))
+
             draw.attr("x2", _self.width - rect_offsetX + m[0])
                 .attr("y2", (m[1] - _self.margin.top))
                 //.attr("stroke", _self.color(_self.id)); //--change COLOR SCHEME
@@ -302,10 +293,6 @@ function LineChart(options) {
 
         _self.userPredicted = true;
 
-        var error = Math.abs((_self.predictedY - _self.tomorrowValue) * 100 / _self.tomorrowValue);
-
-        console.log("Prediction error= " + error + "%" + " actual value " + _self.tomorrowValue + " predicted value " + _self.predictedY);
-
         // Count number of time steps predicted 
         console.log("time steps predicted: " + Math.round(_self.predictedValueX / _self.rectangle_width));
 
@@ -333,10 +320,11 @@ function LineChart(options) {
             var sendData = {
                 id: participantID,
                 phase: stepNumber,
+                timestamp: new Date(),
                 stockId: _self.stockSymbol,
                 ps: PREDICTION_SCENARIO,
                 ct: CALENDAR_TIME,
-                prediction: _self.lineLength,
+                userPrediction: _self.lineLength.toFixed(2),
                 timeSteps: _self.predictedTimeSteps
             };
 
@@ -344,7 +332,7 @@ function LineChart(options) {
             $.post("/userlog", sendData, function (data, error) {});
 
 
-            var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true).spatial;
+            var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true, _self.predictedY).spatial;
 
             for (var j = 0; j < _self.charts.length; j++) {
                 _self.chartObjects[stockSymbols[j]].linechartSVG.selectAll(".predictionLine").remove();
