@@ -20,6 +20,8 @@
     "brain": "*",
     "paralleljs": "*",
     "csv-load-sync": "*",
-    "random-forest-classifier": "*"  
+    "random-forest-classifier": "*",
+    "node-som": "*",
+    "historic": "*"
   }
 }

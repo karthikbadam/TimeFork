@@ -3,7 +3,7 @@ body, html { /* set size of body to full page and remove margins */
     height: 99%;
     padding: 5px;
     margin: 0;
-    font-family: Helvetica-Light, monospace;
+    font-family: Helvetica-Light, FFDinWebPro,"Helvetica Neue", Helvetica, Arial,sans-serif;
 }
 
 #stocklist {

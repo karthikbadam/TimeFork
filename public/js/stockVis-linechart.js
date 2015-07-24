@@ -1,11 +1,13 @@
 //Stock value + volume visualization: Creates a line chart of the value and a bar chart of the volume
 
 function LineChart(options) {
-
+ 
     var _self = this;
     _self.stockObject = options.stockObject;
     _self.stockColumns = options.columns;
     _self.charts = options.charts;
+    _self.chartObjects = options.chartObjects;
+
     _self.color = options.color;
     _self.id = options.id;
 
@@ -18,6 +20,7 @@ function LineChart(options) {
     _self.spatialPrediction = options.spatialPrediction;
     _self.temporalPredictors = options.temporalPredictors;
     _self.numberOfPredictionsMade = 0;
+    _self.topTemporalPredictions = [];
 
     var temporalprediction = new TemporalPrediction({
         //encog_file: data,
@@ -27,11 +30,12 @@ function LineChart(options) {
     temporalPredictors[_self.stockSymbol] = temporalprediction;
 
     _self.margin = {
-        top: 20,
+        top: 50,
         right: 0,
         bottom: 30,
         left: 30
     };
+
 
     _self.tomorrow = new Date();
 

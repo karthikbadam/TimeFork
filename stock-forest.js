@@ -103,7 +103,7 @@ function Stock (options) {
     console.log("I am reading the stock data for "+_self.symbol);
 
     var loader = require('csv-load-sync');
-    var csv1 = loader("data/"+_self.symbol+".csv");
+    var csv1 = loader("public/data/"+_self.symbol+".csv");
     
     // normalizing
     for (var i = 0; i < csv1.length; i++) {

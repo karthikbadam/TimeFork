@@ -1,6 +1,6 @@
-var stockList = 'data/internet information providers.csv';
+var stockList = 'data/topInternetStocks.csv';
 
-var parseDate = d3.time.format("%Y%m%d").parse;
+var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 var stockSymbols = [];
 
@@ -26,7 +26,7 @@ var chartObjects = {};
 
 var overviewChart;
 
-var stockColumns = ['date', 'open price', 'close price', 'high price', 'low price', 'volume', 'adjusted price'];
+var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
 
 var temporalPredictors = {};
 
@@ -42,7 +42,7 @@ var predictionObject;
 
 var userPredictions = {};
 
-var holidays = [parseDate("20130101"), parseDate("20140101"), parseDate("20150101"), parseDate("20130121"), parseDate("20140120"), parseDate("20150119"), parseDate("20130218"), parseDate("20140217"), parseDate("20150216"), parseDate("20130329"), parseDate("20140418"), parseDate("20150403"), parseDate("20130527"), parseDate("20140526"), parseDate("20150525"), parseDate("20130704"), parseDate("20140704"), parseDate("20150704"), parseDate("20130902"), parseDate("20140901"), parseDate("20150907"), parseDate("20131128"), parseDate("20141127"), parseDate("20151126"), parseDate("20131225"), parseDate("20141225"), parseDate("20151225")];
+var holidays = [parseDate("2013-01-01"), parseDate("2014-01-01"), parseDate("2015-01-01"), parseDate("2013-01-21"), parseDate("2014-01-20"), parseDate("2015-01-19"), parseDate("2013-02-18"), parseDate("2014-02-17"), parseDate("2015-02-16"), parseDate("2013-03-29"), parseDate("2014-04-18"), parseDate("2015-04-03"), parseDate("2013-05-27"), parseDate("2014-05-26"), parseDate("2015-05-25"), parseDate("2013-07-04"), parseDate("2014-07-04"), parseDate("2015-07-04"), parseDate("2013-09-02"), parseDate("2014-09-01"), parseDate("2015-09-07"), parseDate("2013-11-28"), parseDate("2014-11-27"), parseDate("2015-11-26"), parseDate("2013-12-25"), parseDate("2014-12-25"), parseDate("2015-12-25")];
 
 // Earnings for the stock market game
 var totalEarnings = 100000;
@@ -161,15 +161,21 @@ $(document).ready(function () {
 
                         /* Loads the data for this particular stock */
                         // TODO: How about using a browser database?
-                        d3.csv('data/' + stock_id + '.csv', function (error, data) {
-                            //Data downloaded 
-                            if (error) {
-                                console.log("Data for " + stock_id + " not found");
-                                return;
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/stockData",
+                            data: {
+                                stock: stock_id
                             }
+                        }).done(function (data) {
 
+                            //d3.csv('data/' + stock_id + '.csv', function (error, data) {
+                            //Data downloaded 
                             console.log('Downloaded data for stock ' + stock_id);
-
+                            
+                            data = JSON.parse(data); 
+                            
                             //add stock to selected list
                             selectedSymbols.push(stock_id);
                             selectedSymbolsData.push(data);
@@ -242,7 +248,7 @@ $(document).ready(function () {
                                 id: selectedSymbols.indexOf(stock_id) % 10
                             });
 
-                            document.getElementById(stock_id).style.color = color(selectedSymbols.indexOf(stock_id) % 10);
+//                            document.getElementById(stock_id).style.color = color(selectedSymbols.indexOf(stock_id) % 10);
 
                             document.getElementById(stock_id).style.backgroundColor = "#EEEEEE";
 
