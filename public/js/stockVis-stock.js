@@ -50,10 +50,29 @@ Stock.prototype.normalizeValue = function(value) {
 
 Stock.prototype.getFilteredData = function(brush) {
     var _self = this;
-    var dataFiltered = _self.dataFiltered = _self.data.filter(function(d, i) {
+    var dataFiltered = _self.dataFiltered = 
+        _self.data.filter(function(d, i) {
         if ( (d[dateCol] >= brush[0]) 
             && (d[dateCol] <= brush[1]) ) {
-            return d[adjCol];
+            return true;
+        }
+    });
+    
+   return dataFiltered; 
+}; 
+
+Stock.prototype.getRawBandData = function(brush) {
+    var _self = this;
+    
+    for (var i = 0; i < _self.data.length; i++) {
+        var d = _self.data[i]; 
+        
+    }
+    var dataFiltered = _self.dataFiltered = 
+        _self.data.filter(function(d, i) {
+        if ( (d[dateCol] == brush[0]) 
+            && (d[dateCol] == brush[1]) ) {
+            return true;
         }
     });
     

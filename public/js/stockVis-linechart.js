@@ -503,7 +503,9 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.chartContainer.selectAll(".area.bands").remove();
     _self.chartContainer.selectAll(".line.ma.bands").remove();
 
-    var bandsData = _self.getBollingerBands(20, 2,                                         _self.dataFiltered.slice(0));
+    var bandRawData = _self.stockObject.getRawBandData(b);
+    
+    var bandsData = _self.getBollingerBands(20, 2, bandRawData);
 
     _self.chartContainer.append("path")
         .datum(bandsData)
