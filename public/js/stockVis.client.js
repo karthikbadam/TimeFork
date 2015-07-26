@@ -26,7 +26,22 @@ var chartObjects = {};
 
 var overviewChart;
 
-var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
+//var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
+
+// columns
+var dateCol = "Date";
+
+var openCol = "Open";
+
+var highCol = "High";
+
+var lowCol = "Low";
+
+var closeCol = "Close";
+
+var volumeCol = "Volume";
+
+var adjCol = "Adj Close";
 
 var temporalPredictors = {};
 
@@ -185,17 +200,17 @@ $(document).ready(function () {
                             //look inside the csv data
                             data.forEach(function (stock_instance) {
                                 //convert date format
-                                stock_instance[stockColumns[0]] = parseDate(String(stock_instance[stockColumns[0]]));
+                                stock_instance[dateCol] = parseDate(String(stock_instance[dateCol]));
 
                                 //convert other column values to numbers
-                                stock_instance[stockColumns[1]] = +stock_instance[stockColumns[1]];
-                                stock_instance[stockColumns[2]] = +stock_instance[stockColumns[2]];
-                                stock_instance[stockColumns[3]] = +stock_instance[stockColumns[3]];
-                                stock_instance[stockColumns[4]] = +stock_instance[stockColumns[4]];
-                                stock_instance[stockColumns[5]] = +stock_instance[stockColumns[5]];
-                                stock_instance[stockColumns[6]] = +stock_instance[stockColumns[6]];
-                                stock_instance['normalized'] = stock_instance[stockColumns[6]];
-                                close_values.push(stock_instance[stockColumns[6]]);
+                                stock_instance[openCol] = +stock_instance[openCol];
+                                stock_instance[highCol] = +stock_instance[highCol];
+                                stock_instance[lowCol] = +stock_instance[lowCol];
+                                stock_instance[closeCol] = +stock_instance[closeCol];
+                                stock_instance[volumeCol] = +stock_instance[volumeCol];
+                                stock_instance[adjCol] = +stock_instance[adjCol];
+                                stock_instance['normalized'] = stock_instance[adjCol];
+                                close_values.push(stock_instance[adjCol]);
 
                             });
 
@@ -205,7 +220,7 @@ $(document).ready(function () {
                                 companyName: stock_name,
                                 symbol: stock_id,
                                 startDate: startDate,
-                                stockColumns: stockColumns
+                                
                             });
 
                             stocks.push(stockObject);
@@ -222,7 +237,6 @@ $(document).ready(function () {
                                 trainingStocks: trainingStockList,
                                 charts: charts,
                                 chartObjects: chartObjects,
-                                columns: stockColumns,
                                 spatialPrediction: spatialPrediction,
                                 temporalPredictors: temporalPredictors
                             });
@@ -238,7 +252,7 @@ $(document).ready(function () {
                                     name: stock_id,
                                     color: color,
                                     linecharts: charts,
-                                    columns: [stockColumns[0], stockColumns[6]],
+                                    columns: [dateCol, adjCol],
                                     correlationViewer: correlationViewer
                                 });
                             }

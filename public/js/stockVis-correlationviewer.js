@@ -80,8 +80,8 @@ CorrelationChart.prototype.refresh = function () {
 
             link1.value = _self.getCorrelationValue(data1, data2);
             //console.log(link1.value);
-            //var value1 = 100*(data1[0][stockColumns[6]] - data1[1][stockColumns[6]])/data1[1][stockColumns[6]];
-            //var value2 = 100*(data2[0][stockColumns[6]] - data2[1][stockColumns[6]])/data2[1][stockColumns[6]];
+            //var value1 = 100*(data1[0][adjCol] - data1[1][adjCol])/data1[1][adjCol];
+            //var value2 = 100*(data2[0][adjCol] - data2[1][adjCol])/data2[1][adjCol];
             //link1.value = Math.pow(value1 - value2, 2);
 
             _self.links.push(link1);
@@ -217,9 +217,9 @@ CorrelationChart.prototype.getCorrelationValue = function (x, y) {
     var y2 = [];
 
     for (var i = 0; i < shortestArrayLength; i++) {
-        xy.push(x[i][stockColumns[6]] * y[i][stockColumns[6]]);
-        x2.push(x[i][stockColumns[6]] * x[i][stockColumns[6]]);
-        y2.push(y[i][stockColumns[6]] * y[i][stockColumns[6]]);
+        xy.push(x[i][adjCol] * y[i][adjCol]);
+        x2.push(x[i][adjCol] * x[i][adjCol]);
+        y2.push(y[i][adjCol] * y[i][adjCol]);
 
     }
 
@@ -230,8 +230,8 @@ CorrelationChart.prototype.getCorrelationValue = function (x, y) {
     var sum_y2 = 0;
 
     for (var i = 0; i < shortestArrayLength; i++) {
-        sum_x += x[i][stockColumns[6]];
-        sum_y += y[i][stockColumns[6]];
+        sum_x += x[i][adjCol];
+        sum_y += y[i][adjCol];
         sum_xy += xy[i];
         sum_x2 += x2[i];
         sum_y2 += y2[i];

@@ -5,7 +5,6 @@ function OverviewChart(options) {
     _self.brush = [];
     _self.stockObject = options.stockObject;
     _self.data = _self.stockObject.data;
-    _self.stockColumns = options.columns;
     _self.margin = {
         top: 10,
         right: 30,
@@ -36,7 +35,7 @@ function OverviewChart(options) {
 
     
     _self.x.domain(d3.extent(_self.data, function(stock) {
-        return stock[_self.stockColumns[0]];
+        return stock[dateCol];
     }));
 
     _self.y.domain([0, 1]);
@@ -54,7 +53,7 @@ function OverviewChart(options) {
     _self.line = d3.svg.line()
         .interpolate("monotone")
         .x(function(d) {
-            return _self.x(d[_self.stockColumns[0]]);
+            return _self.x(d[dateCol]);
         })
         .y(function(d) {
             return _self.y(d.normalized);
@@ -75,7 +74,7 @@ function OverviewChart(options) {
         .attr("width", _self.width).attr("height", _self.height);
 
 
-    var brush = d3.svg.brush().x(_self.x).on("brush", onBrush);
+    var brush = d3.svg.brush().x(_self.x).on("brushend", onBrush);
     var context = _self.svg.append("g").attr("class", "context")
         .attr("transform", "translate(" + 0 + "," + (0) + ")");
 

@@ -1,10 +1,9 @@
 //Stock value + volume visualization: Creates a line chart of the value and a bar chart of the volume
 
 function LineChart(options) {
- 
+
     var _self = this;
     _self.stockObject = options.stockObject;
-    _self.stockColumns = options.columns;
     _self.charts = options.charts;
     _self.chartObjects = options.chartObjects;
 
@@ -30,7 +29,7 @@ function LineChart(options) {
     temporalPredictors[_self.stockSymbol] = temporalprediction;
 
     _self.margin = {
-        top: 50,
+        top: 20,
         right: 0,
         bottom: 30,
         left: 30
@@ -45,7 +44,7 @@ function LineChart(options) {
 
     _self.predictionRects = [];
 
-    _self.width = (480 - _self.margin.left - _self.margin.right),
+    _self.width = (400 - _self.margin.left - _self.margin.right),
         _self.height = (150 - _self.margin.top - _self.margin.bottom);
 
     _self.div = d3.select("#linecharts").append("div")
@@ -84,11 +83,11 @@ function LineChart(options) {
         .range([_self.height, 0]);
 
     _self.x.domain(d3.extent(_self.dataFiltered, function (stock) {
-        return stock[_self.stockColumns[0]];
+        return stock[dateCol];
     }));
 
     _self.y.domain(d3.extent(_self.dataFiltered, function (stock) {
-        return stock[_self.stockColumns[6]];
+        return stock[adjCol];
     }));
 
 
@@ -108,12 +107,46 @@ function LineChart(options) {
     _self.line = d3.svg.line()
         .interpolate("Monotone")
         .x(function (d) {
-            return _self.x(d[_self.stockColumns[0]]);
+            return _self.x(d[dateCol]);
         })
         .y(function (d) {
-            return _self.y(d[_self.stockColumns[6]]);
+            return _self.y(d[adjCol]);
         });
 
+    _self.ma = d3.svg.line()
+        .x(function (d) {
+            return _self.x(d.date);
+        })
+        .y(function (d) {
+            return _self.y(d.mean);
+        });
+
+    _self.lowBand = d3.svg.line()
+        .x(function (d) {
+            return _self.x(d.date);
+        })
+        .y(function (d) {
+            return _self.y(d.low);
+        });
+
+    _self.highBand = d3.svg.line()
+        .x(function (d) {
+            return _self.x(d.date);
+        })
+        .y(function (d) {
+            return _self.y(d.high);
+        });
+
+    _self.bandsArea = d3.svg.area()
+        .x(function (d) {
+            return _self.x(d.date);
+        })
+        .y0(function (d) {
+            return _self.y(d.low);
+        })
+        .y1(function (d) {
+            return _self.y(d.high);
+        });
 
     //general definitions to keep everything within boundaries 
     _self.linechartSVG.append("defs")
@@ -172,7 +205,7 @@ function LineChart(options) {
     //creates y-axis for the volume bar chart 
     _self.volumeY = d3.scale.linear().range([_self.height / 4, 0]);
     _self.volumeY.domain(d3.extent(_self.data, function (stock) {
-        return stock[stockColumns[5]];
+        return stock[volumeCol];
     }));
 
 
@@ -182,14 +215,14 @@ function LineChart(options) {
         .enter().append("rect")
         .attr("class", "bar")
         .attr("x", function (d) {
-            return _self.x(d[_self.stockColumns[0]]);
+            return _self.x(d[dateCol]);
         })
         .attr("width", 2)
         .attr("y", function (d) {
-            return _self.volumeY(d[stockColumns[5]]);
+            return _self.volumeY(d[volumeCol]);
         })
         .attr("height", function (d) {
-            return _self.height / 4 - _self.volumeY(d[stockColumns[5]]);
+            return _self.height / 4 - _self.volumeY(d[volumeCol]);
         })
         //.attr("fill", _self.color(_self.id)) //--change COLOR THEME
         .attr("fill", "#222")
@@ -197,11 +230,11 @@ function LineChart(options) {
 
 
     // initializes parameters to show the prediction line at end of each chart
-    _self.lastValueY = _self.y(_self.data[0][_self.stockColumns[6]]);
-    _self.lastValueX = _self.x(_self.data[0][_self.stockColumns[0]]);
+    _self.lastValueY = _self.y(_self.data[0][adjCol]);
+    _self.lastValueX = _self.x(_self.data[0][dateCol]);
     _self.stockMaxValue = _self.y.domain()[1];
     _self.stockMinValue = _self.y.domain()[0];
-    _self.closingValue = _self.data[0][_self.stockColumns[6]];
+    _self.closingValue = _self.data[0][adjCol];
 
     _self.predictionValueX = _self.lastValueX;
     _self.predictionValueY = _self.lastValueY;
@@ -318,7 +351,7 @@ function LineChart(options) {
         var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true).spatial;
 
         for (var j = 0; j < _self.charts.length; j++) {
-            _self.chartObjects[stockSymbols[j]].linechartSVG.selectAll(".predictionLine").remove();
+            _self.chartObjects[selectedSymbols[j]].linechartSVG.selectAll(".predictionLine").remove();
 
         }
 
@@ -333,7 +366,7 @@ function LineChart(options) {
 
                 for (var k = 0; k < predictions.length; k++) {
 
-                    _self.chartObjects[stockSymbols[j]].addPrediction(predictions[k].predictions, predictions[k].opacity, step);
+                    _self.chartObjects[selectedSymbols[j]].addPrediction(predictions[k].predictions, predictions[k].opacity, step);
 
                 }
             }
@@ -349,9 +382,9 @@ LineChart.prototype.getCurrentPrediction = function () {
     //#8066A6
     var percentIncrease = _self.lineLength;
     var numberOfTimeSteps = _self.predictedTimeSteps;
-    var previousValue = _self.dataFiltered[0][_self.stockColumns[6]];
+    var previousValue = _self.dataFiltered[0][adjCol];
     var predictedValue = previousValue + previousValue * percentIncrease / 100;
-    var previousDate = _self.dataFiltered[0][_self.stockColumns[0]];
+    var previousDate = _self.dataFiltered[0][dateCol];
     var predictedDate = previousDate;
 
     for (var i = 0; i < numberOfTimeSteps; i++) {
@@ -360,7 +393,7 @@ LineChart.prototype.getCurrentPrediction = function () {
 
     var actual = _self.data.filter(function (d) {
 
-        return predictedDate.getTime() == d[stockColumns[0]].getTime();
+        return predictedDate.getTime() == d[dateCol].getTime();
     });
 
     var predictionInfo = {
@@ -369,11 +402,44 @@ LineChart.prototype.getCurrentPrediction = function () {
         date2: predictedDate,
         past: previousValue,
         predict: predictedValue,
-        actual: actual[0][stockColumns[6]]
+        actual: actual[0][adjCol]
     };
 
     return predictionInfo;
 
+}
+
+
+LineChart.prototype.getBollingerBands = function (n, k, data) {
+
+    var bands = []; //{ ma: 0, low: 0, high: 0 }
+    
+    data.sort(function (a, b) {
+        return new Date(a[dateCol]) - new Date(b[dateCol]);
+    });
+
+    for (var i = n - 1, len = data.length; i < len; i++) {
+
+        var slice = data.slice(i + 1 - n, i);
+
+        var mean = d3.mean(slice, function (d) {
+            return d[adjCol];
+        });
+
+        var stdDev = Math.sqrt(d3.mean(slice.map(function (d) {
+            return Math.pow(d[adjCol] - mean, 2);
+        })));
+
+        bands.push({
+            date: data[i][dateCol],
+            mean: mean,
+            low: mean - (k * stdDev),
+            high: mean + (k * stdDev)
+        });
+
+    }
+
+    return bands;
 }
 
 //brushes each line chart based on the region selected on the overview
@@ -397,7 +463,7 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.dataFilteredForPrediction = _self.dataFiltered;
 
     _self.x.domain(d3.extent(_self.dataFiltered, function (stock) {
-        return stock[_self.stockColumns[0]];
+        return stock[dateCol];
     }));
 
     b = _self.x.domain();
@@ -405,7 +471,7 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.chartContainer.select(".x.axis").call(_self.xAxis);
 
     _self.y.domain(d3.extent(_self.dataFiltered, function (stock) {
-        return stock[_self.stockColumns[6]];
+        return stock[adjCol];
     }));
 
     _self.y.domain([_self.y.domain()[0] - _self.y.domain()[0] / 50, _self.y.domain()[1] + _self.y.domain()[1] / 50]);
@@ -413,10 +479,10 @@ LineChart.prototype.showOnly = function (b, empty) {
 
 
     //parameters to find the ending value of each chart
-    _self.lastValueY = _self.y(_self.dataFiltered[0][_self.stockColumns[6]]);
-    _self.lastValueX = _self.x(_self.dataFiltered[0][_self.stockColumns[0]]);
+    _self.lastValueY = _self.y(_self.dataFiltered[0][adjCol]);
+    _self.lastValueX = _self.x(_self.dataFiltered[0][dateCol]);
 
-    _self.closingValue = _self.dataFiltered[0][_self.stockColumns[6]];
+    _self.closingValue = _self.dataFiltered[0][adjCol];
     _self.stockMaxValue = _self.y.domain()[1];
     _self.stockMinValue = _self.y.domain()[0];
 
@@ -427,10 +493,37 @@ LineChart.prototype.showOnly = function (b, empty) {
         .attr("y2", _self.lastValueY);
 
 
-    var volumeY = _self.volumeY.domain(d3.extent(_self.dataFiltered, function (stock) {
-        return stock[stockColumns[5]];
-    }));
+    var volumeY = _self.volumeY.domain(
+        d3.extent(_self.dataFiltered, function (stock) {
+            return stock[volumeCol];
+        }));
 
+    //draws the bolinger bands
+    _self.chartContainer.selectAll(".line.bands").remove();
+    _self.chartContainer.selectAll(".area.bands").remove();
+    _self.chartContainer.selectAll(".line.ma.bands").remove();
+
+    var bandsData = _self.getBollingerBands(20, 2,                                         _self.dataFiltered.slice(0));
+
+    _self.chartContainer.append("path")
+        .datum(bandsData)
+        .attr("class", "area bands")
+        .attr("d", _self.bandsArea);
+
+    _self.chartContainer.append("path")
+        .datum(bandsData)
+        .attr("class", "line bands")
+        .attr("d", _self.lowBand);
+
+    _self.chartContainer.append("path")
+        .datum(bandsData)
+        .attr("class", "line bands")
+        .attr("d", _self.highBand);
+
+    _self.chartContainer.append("path")
+        .datum(bandsData)
+        .attr("class", "line ma bands")
+        .attr("d", _self.ma);
 
     //updates volume chart below the line chart
     _self.volumeSVG.selectAll(".bar").remove();
@@ -439,14 +532,14 @@ LineChart.prototype.showOnly = function (b, empty) {
         .enter().append("rect")
         .attr("class", "bar")
         .attr("x", function (d) {
-            return _self.x(d[_self.stockColumns[0]]);
+            return _self.x(d[dateCol]);
         })
         .attr("width", 4)
         .attr("y", function (d) {
-            return volumeY(d[stockColumns[5]]);
+            return volumeY(d[volumeCol]);
         })
         .attr("height", function (d) {
-            return _self.height / 4 - volumeY(d[stockColumns[5]]);
+            return _self.height / 4 - volumeY(d[volumeCol]);
         })
         //.attr("fill", color(_self.id))
         .attr("fill", "#222") //--change COLOR THEME
@@ -456,7 +549,6 @@ LineChart.prototype.showOnly = function (b, empty) {
         .attr("clip-path", "url(#clip-" + _self.id + ")")
         .data([_self.dataFiltered])
         .attr("d", _self.line);
-
 
     //re-renders each dot on the linechart    
     _self.chartContainer.selectAll(".dot").remove();
@@ -511,7 +603,7 @@ LineChart.prototype.showOnly = function (b, empty) {
 
 
     _self.topTemporalPredictions = new Array(20);
-    _self.topTemporalPredictions[0] = _self.dataFiltered[0][_self.stockColumns[6]];
+    _self.topTemporalPredictions[0] = _self.dataFiltered[0][adjCol];
 
     //get a list of predictions at each step
     var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, 20, _self.dataFiltered, false);
