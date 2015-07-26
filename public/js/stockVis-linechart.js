@@ -510,21 +510,25 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.chartContainer.append("path")
         .datum(bandsData)
         .attr("class", "area bands")
+        .attr("clip-path", "url(#clip-" + _self.id + ")")
         .attr("d", _self.bandsArea);
 
     _self.chartContainer.append("path")
         .datum(bandsData)
         .attr("class", "line bands")
+        .attr("clip-path", "url(#clip-" + _self.id + ")")
         .attr("d", _self.lowBand);
 
     _self.chartContainer.append("path")
         .datum(bandsData)
         .attr("class", "line bands")
+        .attr("clip-path", "url(#clip-" + _self.id + ")")
         .attr("d", _self.highBand);
 
     _self.chartContainer.append("path")
         .datum(bandsData)
         .attr("class", "line ma bands")
+        .attr("clip-path", "url(#clip-" + _self.id + ")")
         .attr("d", _self.ma);
 
     //updates volume chart below the line chart

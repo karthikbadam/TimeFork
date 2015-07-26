@@ -1,9 +1,12 @@
-body, html { /* set size of body to full page and remove margins */
+body,
+html {
+    /* set size of body to full page and remove margins */
+    
     width: 99%;
     height: 99%;
     padding: 5px;
     margin: 0;
-    font-family: Helvetica-Light, FFDinWebPro,"Helvetica Neue", Helvetica, Arial,sans-serif;
+    font-family: Helvetica-Light, FFDinWebPro, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #stocklist {
@@ -37,7 +40,7 @@ option.ui-widget-content {
     cursor: pointer;
 }
 
-#next_button:hover{
+#next_button:hover {
     background: url('../images/next_button.png') no-repeat;
     background-size: 30px 30px;
     width: 30px;
@@ -47,7 +50,7 @@ option.ui-widget-content {
     box-shadow: 0px 0px 5px #666;
 }
 
-#next_button:click{
+#next_button:click {
     background: url('../images/next_button.png') no-repeat;
     background-size: 30px 30px;
     width: 30px;
@@ -65,7 +68,7 @@ option.ui-widget-content {
     cursor: pointer;
 }
 
-#add_button:hover{
+#add_button:hover {
     background: url('../images/add_color.png');
     background-size: 30px 30px;
     width: 30px;
@@ -80,7 +83,7 @@ option.ui-widget-content {
     cursor: pointer;
 }
 
-#remove_button:hover{
+#remove_button:hover {
     background: url('../images/remove_color.png');
     background-size: 30px 30px;
     width: 30px;
@@ -95,7 +98,7 @@ option.ui-widget-content {
     cursor: pointer;
 }
 
-#expand_button:hover{
+#expand_button:hover {
     background: url('../images/expand_color.png');
     background-size: 30px 30px;
     width: 30px;
@@ -103,7 +106,8 @@ option.ui-widget-content {
 }
 
 .expandClass {
-/*    background: url('../images/expand_grey.png');*/
+    /*    background: url('../images/expand_grey.png');*/
+    
     background-size: 15px 15px;
     width: 100%;
     height: 15px;
@@ -115,9 +119,10 @@ option.ui-widget-content {
     stroke: #EEE;
 }
 
-.expandClass:hover{
+.expandClass:hover {
     /*background: url('../images/expand_color.png');*/
-    color:black;   
+    
+    color: black;
 }
 
 #settings_button {
@@ -146,6 +151,7 @@ option.ui-widget-content {
     stroke: #D9D9D9;
     shape-rendering: crispEdges;
 }
+
 .overlay {
     fill: none;
     pointer-events: all;
@@ -186,7 +192,7 @@ g.context g.axis line {
 svg {
     font-size: 9px;
     font-weight: 500;
-    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(217, 217, 217, 0.2);
 }
 
@@ -211,7 +217,7 @@ g.tick text {
     color: rgba(244, 0, 0, 0.5);
 }
 
-#dialog-confirm{
+#dialog-confirm {
     visibility: visible;
     width: auto;
     height: auto;
@@ -221,7 +227,7 @@ g.tick text {
     visibility: visible;
     font-size: 11px;
     font-weight: 500;
-    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 .content {
@@ -246,7 +252,7 @@ g.tick text {
     width: 49%;
     height: 200px;
     padding: 0px;
-    float: left; 
+    float: left;
     border: 1px solid rgba(180, 180, 180, 0.2);
     overflow-x: scroll;
     display: block;
@@ -259,11 +265,11 @@ g.tick text {
 }
 
 .volumeBar {
-    float:bottom;
+    float: bottom;
     vertical-align: bottom;
 }
 
-.content #linechart-viz:hover{
+.content #linechart-viz:hover {
     overflow-y: scroll;
 }
 
@@ -277,18 +283,17 @@ g.tick text {
     -moz-box-shadow: 0px 0px 5px #ccc;
     -webkit-box-shadow: 0px 0px 5px #ccc;
     box-shadow: 0px 0px 5px #ccc;
-
 }
 
 .content .bottom #overviewchart-viz {
-    float: left; 
-    background-color: rgba(255,255,255,0.8);
+    float: left;
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .overviewchart {
     margin-left: auto;
     margin-right: auto;
-    display:block;
+    display: block;
     border: 1px;
     background-color: #EEEEEE;
 }
@@ -296,7 +301,7 @@ g.tick text {
 .content .bottom #correlation-viewer {
     font-size: 12px;
     font-weight: 500;
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .content .right {
@@ -306,16 +311,16 @@ g.tick text {
     font-size: 12px;
     font-weight: 500;
 }
- 
+
 .predictionLine {
-     stroke-dasharray: 3,3;
-     stroke-width: 2px;
+    stroke-dasharray: 3, 3;
+    stroke-width: 2px;
 }
 
 #search_box {
     font-size: 14px;
     font-weight: 500;
-    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
     padding: 0px;
 }
 
@@ -323,7 +328,7 @@ input#search {
     width: 100%;
     font-size: 12px;
     font-weight: 500;
-    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
     padding: 0px;
 }
 
@@ -336,8 +341,8 @@ div#prediction_buttons {
 div#prediction_buttons table {
     background-color: #D9D9D9;
 }
-    
-div#prediction_buttons table td{
+
+div#prediction_buttons table td {
     padding: 3px;
 }
 
@@ -348,14 +353,13 @@ div.ui_button {
     font-size: 12px;
     font-weight: 500;
     text-align: center;
-    line-height: 30px; 
-    border: 1px solid; 
+    line-height: 30px;
+    border: 1px solid;
     padding: 3px;
 }
 
 div.ui_button:hover {
-    background-color: #888  ;
-    
+    background-color: #888;
 }
 
 .ui_button label {
@@ -368,7 +372,7 @@ div.ui_button:hover {
     border: 1px solid #ddd;
 }
 
-.ui-dialog-content{
+.ui-dialog-content {
     background-color: #ccc;
 }
 
@@ -381,3 +385,19 @@ div.ui_button:hover {
     background-color: #888;
 }
 
+.line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+.line.bands {
+    stroke: black;
+    stroke-opacity: 0.1;
+}
+
+.area.bands {
+    fill: black;
+    fill-opacity: 0.05;
+    stroke: none;
+}

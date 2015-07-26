@@ -65,26 +65,29 @@ Stock.prototype.getRawBandData = function (brush, n) {
 
     var index1 = 0,
         index2 = 0;
+    
+    var val1 = _self.dataFiltered[0];
+    var val2 = _self.dataFiltered[_self.dataFiltered.length-1];
 
     for (var i = 0; i < _self.data.length; i++) {
 
         var d = _self.data[i];
 
-        if (d[dateCol] == new Date(brush[1])) {
+        if (d[dateCol].getTime() === val1[dateCol].getTime()) {
             index1 = i;
         }
 
 
-        if (d[dateCol] == new Date(brush[0])) {
+        if (d[dateCol].getTime() === val2[dateCol].getTime()) {
             index2 = i;
         }
 
     }
 
-    index2 = index2 > data.length - 1 - 20 ?
-        data.length - 1 : index2 + n;
+    index2 = index2 > _self.data.length - 1 - 20 ?
+        _self.data.length - 1 : index2 + n;
 
-    var rawData = _self.data.slice(index1, index2 + 1);
+    var rawData = _self.data.slice(index1, index2+1);
 
     return rawData;
 };
