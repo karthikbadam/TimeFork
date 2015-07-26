@@ -503,7 +503,7 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.chartContainer.selectAll(".area.bands").remove();
     _self.chartContainer.selectAll(".line.ma.bands").remove();
 
-    var bandRawData = _self.stockObject.getRawBandData(b);
+    var bandRawData = _self.stockObject.getRawBandData(b, 20);
     
     var bandsData = _self.getBollingerBands(20, 2, bandRawData);
 
