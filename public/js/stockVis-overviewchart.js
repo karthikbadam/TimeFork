@@ -17,6 +17,14 @@ function OverviewChart(options) {
     _self.color = options.color;
     _self.linecharts = options.linecharts;
     
+    
+    // horizon charts  
+    // small multiples
+    // brushing at the x-axis!
+    
+    
+    
+    
     _self.width = (2*$("#overviewchart-viz").parent().width()/3 - _self.margin.left - _self.margin.right),
         _self.height = ($("#overviewchart-viz").parent().height() - _self.margin.top - _self.margin.bottom);
 
