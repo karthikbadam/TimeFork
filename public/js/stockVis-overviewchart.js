@@ -22,7 +22,9 @@ function OverviewChart(options) {
     // small multiples
     // brushing at the x-axis!
     
-    
+    // cubism plugin
+    // divide space to redraw charts
+    // Change the axis lines
     
     
     _self.width = (2*$("#overviewchart-viz").parent().width()/3 - _self.margin.left - _self.margin.right),
