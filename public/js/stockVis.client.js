@@ -12,6 +12,8 @@ var selectedSymbolsData = [];
 
 var newlySelectedSymbols = [];
 
+var totalSelectedStocks = 0; 
+
 var trainingStockList;
 
 var weightsSOM;
@@ -153,7 +155,9 @@ $(document).ready(function () {
             newlySelectedSymbols.length = 0;
             $("select option:selected").each(function () {
                 theID = $(this).attr('id');
-                newlySelectedSymbols.push(theID);
+                if (selectedSymbols.indexOf(theID) <= -1) {
+                    newlySelectedSymbols.push(theID);
+                }
             });
         });
 
@@ -163,6 +167,8 @@ $(document).ready(function () {
 
             //queue for handling file reading
             var q = queue();
+
+            totalSelectedStocks += newlySelectedSymbols.length;
 
             //goes through the newlySelectedSymbols list and download each stock data file
             newlySelectedSymbols.forEach(function (stock_id) {
@@ -246,7 +252,7 @@ $(document).ready(function () {
 
                             /* Checks if there is an overview chart created -- if not -- do it */
                             if ($("#overviewchart-viz").contents().length < 1) {
-                                overviewChart = new OverviewLineChart({
+                                overviewChart = new OverviewHorizonChart({
                                     stockObject: stockObject,
                                     id: selectedSymbols.indexOf(stock_id) % 10,
                                     name: stock_id,
@@ -257,7 +263,7 @@ $(document).ready(function () {
                                 });
                             }
 
-                            overviewChart.addLine({
+                            overviewChart.addHorizon({
                                 stockObject: stockObject,
                                 id: selectedSymbols.indexOf(stock_id) % 10
                             });
