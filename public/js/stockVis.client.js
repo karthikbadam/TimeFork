@@ -188,9 +188,9 @@ $(document).ready(function () {
                             //d3.csv('data/' + stock_id + '.csv', function (error, data) {
                             //Data downloaded 
                             console.log('Downloaded data for stock ' + stock_id);
-                            
-                            data = JSON.parse(data); 
-                            
+
+                            data = JSON.parse(data);
+
                             //add stock to selected list
                             selectedSymbols.push(stock_id);
                             selectedSymbolsData.push(data);
@@ -220,7 +220,7 @@ $(document).ready(function () {
                                 companyName: stock_name,
                                 symbol: stock_id,
                                 startDate: startDate,
-                                
+
                             });
 
                             stocks.push(stockObject);
@@ -246,7 +246,7 @@ $(document).ready(function () {
 
                             /* Checks if there is an overview chart created -- if not -- do it */
                             if ($("#overviewchart-viz").contents().length < 1) {
-                                overviewChart = new OverviewChart({
+                                overviewChart = new OverviewLineChart({
                                     stockObject: stockObject,
                                     id: selectedSymbols.indexOf(stock_id) % 10,
                                     name: stock_id,
@@ -262,7 +262,7 @@ $(document).ready(function () {
                                 id: selectedSymbols.indexOf(stock_id) % 10
                             });
 
-//                            document.getElementById(stock_id).style.color = color(selectedSymbols.indexOf(stock_id) % 10);
+                            //                            document.getElementById(stock_id).style.color = color(selectedSymbols.indexOf(stock_id) % 10);
 
                             document.getElementById(stock_id).style.backgroundColor = "#EEEEEE";
 
@@ -282,11 +282,14 @@ $(document).ready(function () {
 });
 
 function createCorrelation() {
-    correlationViewer.add({
-        selectedSymbolsData: selectedSymbolsData,
-        stocks: stocks,
-        selectedSymbols: selectedSymbols,
-        color: color,
-    });
-    correlationViewer.refresh();
+
+    // Uncommenting it for now!
+
+    //    correlationViewer.add({
+    //        selectedSymbolsData: selectedSymbolsData,
+    //        stocks: stocks,
+    //        selectedSymbols: selectedSymbols,
+    //        color: color,
+    //    });
+    //    correlationViewer.refresh();
 }
