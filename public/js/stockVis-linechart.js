@@ -52,6 +52,7 @@ function LineChart(options) {
 
     _self.div.append("div").attr("class", "expandClass")
         .text(_self.stockName)
+        .style("color", "#000000")
         .on("click", expandChart);
 
     /* Manage visual space to handle prediction chaining */

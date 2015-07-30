@@ -11,7 +11,7 @@ function OverviewHorizonChart(options) {
     _self.margin = {
         top: 2,
         right: 0,
-        bottom: 20,
+        bottom: 25,
         left: 0
     };
 
@@ -47,7 +47,7 @@ OverviewHorizonChart.prototype.addHorizon = function (options) {
     var chart = d3.horizon()
         .width(_self.horizonWidth)
         .height(_self.horizonHeight)
-        .bands(1)
+        .bands(2)
         .mode("mirror")
         .interpolate("basis");
 
@@ -55,9 +55,14 @@ OverviewHorizonChart.prototype.addHorizon = function (options) {
         .attr("width", _self.horizonWidth + _self.margin.left + _self.margin.right)
         .attr("height", _self.horizonHeight + _self.margin.top);
 
-
     // Render the chart.
     svg.data([parsedData]).call(chart);
-    
-    svg.call(chart.bands(2));
+
+    svg.append("text")
+        .attr("dx", "1em")
+        .attr("dy", "1em")
+        .text(_self.stockObject.companyName)
+        .style("font-size", "12px")
+        .style("fill", "#000000");
+        
 }

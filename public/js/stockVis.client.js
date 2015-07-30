@@ -101,7 +101,7 @@ function getFutureDate(today) {
 $(document).ready(function () {
 
     //create Correlation Viewer
-    correlationViewer = new CorrelationChart();
+    //correlationViewer = new CorrelationChart();
 
     //initialize a predictions object 
     predictionObject = new Predictions();
