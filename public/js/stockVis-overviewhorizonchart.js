@@ -9,7 +9,7 @@ function OverviewHorizonChart(options) {
     _self.data = _self.stockObject.data;
 
     _self.margin = {
-        top: 2,
+        top: 0,
         right: 0,
         bottom: 25,
         left: 0
@@ -20,9 +20,64 @@ function OverviewHorizonChart(options) {
     _self.color = options.color;
     _self.linecharts = options.linecharts;
 
-    _self.width = $("#overviewchart-viz").parent().width();
+    _self.width = $("#overviewchart-viz").parent().width() - 2;
 
     _self.height = $("#overviewchart-viz").parent().height();
+
+    _self.x = d3.time.scale().range([0, _self.width]);
+
+    _self.x.domain(d3.extent(_self.data, function (stock) {
+        return stock[dateCol];
+    }));
+
+    _self.axisHeight = 25;
+
+    _self.xAxis = d3.svg.axis()
+        .scale(_self.x)
+        .orient("top");
+
+    _self.svg = d3.select("#overviewchart-viz").append("svg")
+        .attr("width", _self.width)
+        .attr("height", _self.axisHeight);
+
+    _self.svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (_self.axisHeight - 5) + ")")
+        .call(_self.xAxis);
+
+    var brush = d3.svg.brush()
+        .x(_self.x)
+        .on("brushend", onBrush);
+
+    _self.svg.append("g")
+        .attr("class", "x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("y", 2)
+        .attr("height",  _self.axisHeight);
+
+    function onBrush() {
+
+        _self.b = brush.empty() ?
+            _self.x.domain() : brush.extent();
+
+        var empty = brush.empty() ? 1 : 0;
+
+        for (var i = 0; i < _self.linecharts.length; i++) {
+
+            try {
+
+                _self.linecharts[i].showOnly(_self.b, empty);
+
+            } catch (err) {
+
+                console.log("error caught -" + err);
+
+            }
+        }
+
+        //_self.correlationViewer.refresh();
+    }
 
 }
 
@@ -64,5 +119,5 @@ OverviewHorizonChart.prototype.addHorizon = function (options) {
         .text(_self.stockObject.companyName)
         .style("font-size", "12px")
         .style("fill", "#000000");
-        
+
 }
