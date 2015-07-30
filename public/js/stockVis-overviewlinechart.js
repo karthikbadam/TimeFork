@@ -21,14 +21,6 @@ function OverviewLineChart(options) {
 
     _self.height = $("#overviewchart-viz").parent().height() - _self.margin.top - _self.margin.bottom;
 
-    // horizon charts  
-    // small multiples
-    // brushing at the x-axis!
-
-    // cubism plugin
-    // divide space to redraw charts
-    // Change the axis lines
-
     _self.svg = d3.select("#overviewchart-viz").append("svg").attr("class", "overviewchart")
         .attr("width", _self.width + _self.margin.left + _self.margin.right)
         .attr("height", _self.height + _self.margin.top + _self.margin.bottom)
