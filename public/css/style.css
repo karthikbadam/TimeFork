@@ -26,9 +26,9 @@ html {
 option.ui-widget-content {
     margin: 2px;
     padding: 3px;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 500;
-    height: 12px;
+    height: 18px;
     cursor: pointer;
     border: 1px solid;
 }
@@ -67,7 +67,7 @@ option.ui-widget-content {
     height: 50px;
     position: absolute;
     left: 79%;
-    top: 28%;
+    top: 32%;
     cursor: pointer;
     border-radius: 50%;
     border: 10px solid #4679BD;
@@ -177,7 +177,8 @@ g.context g.brush rect.background {
 }
 
 .x.brush {
-    fill: transparent;
+    fill: #4679BD;
+    fill-opacity: 0.1;
     stroke: #4679BD;
     stroke-size: 5px;
 }
@@ -314,11 +315,12 @@ g.tick text {
 
 #correlation-viewer {
     width: 100%;
-    height: 40%;
+    height: 35%;
     font-size: 12px;
     font-weight: 500;
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
+    margin-bottom: 5px;
 }
 
 .content .right {
@@ -343,7 +345,7 @@ g.tick text {
 
 input#search {
     width: 100%;
-    height: 30px;
+    height: 3%;
     text-align: left;
     font-size: 12px;
     font-weight: 500;
@@ -386,10 +388,6 @@ div.ui_button:hover {
     vertical-align: middle;
 }
 
-#correlation-viewer_label {
-    padding: 0px;
-    border: 1px solid #ddd;
-}
 
 .ui-dialog-content {
     background-color: #ccc;
@@ -422,7 +420,7 @@ div.ui_button:hover {
 }
 
 #correlationViewer {
-    padding: 50px;   
+    padding: 50px;
 }
 
 #choosestock {
@@ -430,5 +428,15 @@ div.ui_button:hover {
     border: 1px solid black;
     overflow: hidden;
     width: 100%;
+    margin-bottom: 5px;
+}
+
+#twitter-viewer {
+    width: 100%;
+    height: 30%;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
     margin-bottom: 5px;
 }

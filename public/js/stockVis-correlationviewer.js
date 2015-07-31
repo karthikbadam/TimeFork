@@ -12,7 +12,7 @@ function CorrelationChart(options) {
     _self.nodes = [];
     _self.links = [];
 
-    _self.margin = {top: 50, right: 50, bottom: 50, left: 50};
+    _self.margin = {top: 10, right: 50, bottom: 10, left: 10};
     
     _self.width = ($("#correlation-viewer").width() - _self.margin.left - _self.margin.right);
     
