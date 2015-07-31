@@ -12,14 +12,16 @@ function CorrelationChart(options) {
     _self.nodes = [];
     _self.links = [];
 
-    _self.margin = {top: 10, right: 10, bottom: 10, left: 10};
-    _self.width = ($("#correlation-viewer").parent().width() / 3 - _self.margin.left - _self.margin.right - 5);
-    _self.height = ($("#correlation-viewer").parent().height() - _self.margin.top - _self.margin.bottom);
+    _self.margin = {top: 50, right: 50, bottom: 50, left: 50};
+    
+    _self.width = ($("#correlation-viewer").width() - _self.margin.left - _self.margin.right);
+    
+    _self.height = ($("#correlation-viewer").height() - _self.margin.top - _self.margin.bottom);
 
     _self.force = d3.layout.force()
             .charge(-120)
             .linkDistance(function (d) {
-                return _self.width / 3 - _self.width * d.value / 3;
+                return _self.width - _self.width * d.value;
             })
             .size([_self.width, _self.height]);
 
@@ -139,8 +141,8 @@ CorrelationChart.prototype.refresh = function () {
                 //CHANGE COLOR SCHEME
                 //return color(d.id);
                 return "#67655D";
-            });
-    //.call(_self.force.drag);
+            })
+    .call(_self.force.drag);
 
     _self.node.append("text")
             .attr("dx", 12)

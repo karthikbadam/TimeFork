@@ -12,7 +12,7 @@
 
         var color = d3.scale.linear()
             .domain([-1, 0, 0, 1])
-            .range(["#006d2c", "#bae4b3", "#ffffff", "#bdbdbd"]);
+            .range(["#006d2c", "#bae4b3", "#ffffff", "#969696"]);
 
         // For each small multiple…
         function horizon(g) {

@@ -15,8 +15,8 @@ html {
     list-style-type: none;
     margin: 0;
     width: 100%;
-    height: 70%;
-    padding: 5px;
+    height: 100%;
+    border: none;
 }
 
 #button_panel {
@@ -67,7 +67,7 @@ option.ui-widget-content {
     height: 50px;
     position: absolute;
     left: 79%;
-    top: 30%;
+    top: 28%;
     cursor: pointer;
     border-radius: 50%;
     border: 10px solid #4679BD;
@@ -177,8 +177,9 @@ g.context g.brush rect.background {
 }
 
 .x.brush {
-    fill: rgba(1, 1, 1, 0.1);
-    stroke: #de2d26;
+    fill: transparent;
+    stroke: #4679BD;
+    stroke-size: 5px;
 }
 
 g.context g.axis path {
@@ -290,9 +291,11 @@ g.tick text {
     top: 73%;
     font-size: 12px;
     font-weight: 500;
+/*
     -moz-box-shadow: 0px 0px 5px #ccc;
     -webkit-box-shadow: 0px 0px 5px #ccc;
     box-shadow: 0px 0px 5px #ccc;
+*/
     border: 1px solid black;
 }
 
@@ -309,10 +312,13 @@ g.tick text {
     background-color: transparent;
 }
 
-.content .bottom #correlation-viewer {
+#correlation-viewer {
+    width: 100%;
+    height: 40%;
     font-size: 12px;
     font-weight: 500;
     background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
 }
 
 .content .right {
@@ -321,10 +327,6 @@ g.tick text {
     float: right;
     font-size: 12px;
     font-weight: 500;
-    border: 1px solid black;
-    -moz-box-shadow: 0px 0px 5px #ccc;
-    -webkit-box-shadow: 0px 0px 5px #ccc;
-    box-shadow: 0px 0px 5px #ccc;
 }
 
 .predictionLine {
@@ -341,6 +343,8 @@ g.tick text {
 
 input#search {
     width: 100%;
+    height: 30px;
+    text-align: left;
     font-size: 12px;
     font-weight: 500;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
@@ -415,4 +419,16 @@ div.ui_button:hover {
     fill: black;
     fill-opacity: 0.05;
     stroke: none;
+}
+
+#correlationViewer {
+    padding: 50px;   
+}
+
+#choosestock {
+    height: 30%; 
+    border: 1px solid black;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 5px;
 }

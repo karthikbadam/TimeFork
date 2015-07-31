@@ -12,7 +12,7 @@ var selectedSymbolsData = [];
 
 var newlySelectedSymbols = [];
 
-var totalSelectedStocks = 0; 
+var totalSelectedStocks = 0;
 
 var trainingStockList;
 
@@ -101,7 +101,7 @@ function getFutureDate(today) {
 $(document).ready(function () {
 
     //create Correlation Viewer
-    //correlationViewer = new CorrelationChart();
+    correlationViewer = new CorrelationChart();
 
     //initialize a predictions object 
     predictionObject = new Predictions();
@@ -289,13 +289,11 @@ $(document).ready(function () {
 
 function createCorrelation() {
 
-    // Uncommenting it for now!
-
-    //    correlationViewer.add({
-    //        selectedSymbolsData: selectedSymbolsData,
-    //        stocks: stocks,
-    //        selectedSymbols: selectedSymbols,
-    //        color: color,
-    //    });
-    //    correlationViewer.refresh();
+    correlationViewer.add({
+        selectedSymbolsData: selectedSymbolsData,
+        stocks: stocks,
+        selectedSymbols: selectedSymbols,
+        color: color,
+    });
+    correlationViewer.refresh();
 }

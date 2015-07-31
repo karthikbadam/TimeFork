@@ -76,7 +76,7 @@ function OverviewHorizonChart(options) {
             }
         }
 
-        //_self.correlationViewer.refresh();
+        _self.correlationViewer.refresh();
     }
 
 }
