@@ -11,7 +11,7 @@ function OverviewHorizonChart(options) {
     _self.margin = {
         top: 0,
         right: 0,
-        bottom: 25,
+        bottom: 30,
         left: 0
     };
 
@@ -54,7 +54,7 @@ function OverviewHorizonChart(options) {
         .call(brush)
         .selectAll("rect")
         .attr("y", 2)
-        .attr("height",  _self.axisHeight);
+        .attr("height",  _self.axisHeight - 2);
 
     function onBrush() {
 
@@ -108,14 +108,15 @@ OverviewHorizonChart.prototype.addHorizon = function (options) {
 
     var svg = d3.select("#overviewchart-viz").append("svg")
         .attr("width", _self.horizonWidth + _self.margin.left + _self.margin.right)
-        .attr("height", _self.horizonHeight + _self.margin.top);
+        .attr("height", _self.horizonHeight + _self.margin.top)
+        .style("border-bottom", "1px solid #000000");
 
     // Render the chart.
     svg.data([parsedData]).call(chart);
 
     svg.append("text")
         .attr("dx", "1em")
-        .attr("dy", "1em")
+        .attr("y", 2*_self.horizonHeight/3)
         .text(_self.stockObject.companyName)
         .style("font-size", "12px")
         .style("fill", "#000000");
