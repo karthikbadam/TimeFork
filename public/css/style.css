@@ -66,8 +66,8 @@ option.ui-widget-content {
     width: 50px;
     height: 50px;
     position: absolute;
-    left: 79%;
-    top: 32%;
+    left: 95%;
+    top: 25%;
     cursor: pointer;
     border-radius: 50%;
     border: 10px solid #4679BD;
@@ -439,4 +439,6 @@ div.ui_button:hover {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
     margin-bottom: 5px;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
