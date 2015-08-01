@@ -21,7 +21,7 @@ function Predictions(options) {
     _self.TEMPORAL_INPUT_SIZE = 6;
 
     _self.stockPastValues = {};
-    
+
     _self.SPATIAL_ALTERNATIVES = 10;
 
 }
@@ -233,13 +233,15 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
     var pastBestPredictions = [];
 
     var temporalBands = [];
-    
+
+    var spatialBands = [];
+
     temporalBands.push({
         high: dataFiltered[0][adjCol],
         low: dataFiltered[0][adjCol],
         step: -1
     });
-    
+
     for (var i = 0; i < nTimes; i++) {
 
         var presentDate = new Date(future.getTime());
@@ -312,11 +314,8 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
             var change = (bestPrediction - previous) * 100 / previous;
 
             var spatialPred = spatialPrediction.getPredictions(stockId, change);
-            
-            // run a for loop to invert the array and 
-            // calculate high lows
-            
-            
+
+            var bands = getSPredictionBand(spatialPred, i);
 
             spatialPreds.push({
                 predictions: spatialPred,
@@ -325,6 +324,7 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
                 step: i
             });
 
+            spatialBands.push(bands);
         }
 
     }
@@ -332,7 +332,8 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
     return {
         temporal: predictions,
         temporalband: temporalBands,
-        spatial: spatialPreds
+        spatial: spatialPreds,
+        spatialband: spatialBands
     };
 
 }
@@ -373,34 +374,60 @@ function getTPredictionBand(data, step) {
 
 function getSPredictionBand(data, step) {
 
-    var band = {}; //{ step: 0, low: 0, high: 0 }
+    var bands = {}; //{ step: 0, low: 0, high: 0 }
 
-    band.step = step;
+    if (!data) {
+        return;
+    }
 
-    var wsum = d3.sum(data, function (d) {
-        return d.prediction * d.opacity;
-    });
+    var means = [];
+    var lows = [];
+    var highs = [];
 
-    var osum = d3.sum(data, function (d) {
-        return d.opacity;
-    });
+    var numOfStocks = data[0].predictions.length;
 
-    var mean = wsum / osum;
+    for (var i = 0; i < numStocks; i++) {
 
-    band.mean = mean;
+        var wsum = d3.sum(data, function (d) {
+            return d.predictions[i] * d.opacity;
+        });
 
-    wsum = d3.sum(data, function (d) {
-        return Math.pow(d.prediction - mean, 2) * d.opacity;
-    });
+        var osum = d3.sum(data, function (d) {
+            return d.opacity;
+        });
 
-    osum = d3.sum(data, function (d) {
-        return d.opacity;
-    });
+        var mean = wsum / osum;
 
-    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+        wsum = d3.sum(data, function (d) {
+            return Math.pow(d.prediction[i] - mean, 2) * d.opacity;
+        });
 
-    band.low = mean - 2 * stdDev;
-    band.high = mean + 2 * stdDev;
+        osum = d3.sum(data, function (d) {
+            return d.opacity;
+        });
 
-    return band;
+        var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+
+
+        var low = mean - 2 * stdDev;
+
+        var high = mean + 2 * stdDev;
+
+        highs.push(high);
+
+        lows.push(low);
+
+        means.push(mean);
+
+    }
+
+    bands.step = step;
+
+    bands.lows = lows;
+
+    bands.means = means;
+
+    bands.highs = highs;
+
+    return bands;
 }
