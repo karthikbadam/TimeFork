@@ -413,7 +413,7 @@ div.ui_button:hover {
 
 .tprediction.bands {
     fill: #fc8d59;
-    fill-opacity: 0.2;
+    fill-opacity: 0.3;
     stroke: none;
     stroke-width: 1px;
     pointer-events: none;
@@ -421,7 +421,7 @@ div.ui_button:hover {
 
 .sprediction.bands {
     fill: #91bfdb;
-    fill-opacity: 0.2;
+    fill-opacity: 0.3;
     stroke: none;
     stroke-width: 1px;
     pointer-events: none;
@@ -461,6 +461,10 @@ div.ui_button:hover {
     border: 1px solid black;
 }
 
-#temporalPredictionLine {
+.temporalPredictionLine {
+    pointer-events: none;
+}
+
+.spatialPredictionLine {
     pointer-events: none;
 }
