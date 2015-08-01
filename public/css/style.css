@@ -413,11 +413,20 @@ div.ui_button:hover {
 
 .tprediction.bands {
     fill: #fc8d59;
-    fill-opacity: 0.3;
+    fill-opacity: 0.2;
     stroke: none;
     stroke-width: 1px;
     pointer-events: none;
 }
+
+.sprediction.bands {
+    fill: #91bfdb;
+    fill-opacity: 0.2;
+    stroke: none;
+    stroke-width: 1px;
+    pointer-events: none;
+}
+
 
 #correlationViewer {
     padding: 50px;

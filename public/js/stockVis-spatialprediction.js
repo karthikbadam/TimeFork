@@ -37,7 +37,8 @@ SpatialPrediction.prototype.getPredictions = function (stock_symbol, prediction)
             if (Math.abs(distance) < 20) {
 
                 var opacity = Math.pow(1 - distance / 100, 2);
-                predictionObject.addSpatialPrediction(weightArray, opacity);
+                predictionObject.addSpatialPrediction(weightArray,
+                                                      opacity);
             }
         }
     }

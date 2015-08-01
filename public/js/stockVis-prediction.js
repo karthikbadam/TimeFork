@@ -379,17 +379,26 @@ function getSPredictionBand(data, step) {
     if (!data) {
         return;
     }
-
-    var means = [];
-    var lows = [];
-    var highs = [];
-
+    
     var numOfStocks = data[0].predictions.length;
 
-    for (var i = 0; i < numStocks; i++) {
+    for (var i = 0; i < numOfStocks; i++) {
+
+        // get the actual value at that step
+        var stockId = stockSymbols[i];
+
+        if (selectedSymbols.indexOf(stockId) <= -1) {
+            continue;
+        }
+        
+        if (!bands[stockId]) {
+            bands[stockId] = {};
+        }
 
         var wsum = d3.sum(data, function (d) {
-            return d.predictions[i] * d.opacity;
+            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
+
+            return value * d.opacity;
         });
 
         var osum = d3.sum(data, function (d) {
@@ -399,7 +408,9 @@ function getSPredictionBand(data, step) {
         var mean = wsum / osum;
 
         wsum = d3.sum(data, function (d) {
-            return Math.pow(d.prediction[i] - mean, 2) * d.opacity;
+            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
+
+            return Math.pow(value - mean, 2) * d.opacity;
         });
 
         osum = d3.sum(data, function (d) {
@@ -413,21 +424,15 @@ function getSPredictionBand(data, step) {
 
         var high = mean + 2 * stdDev;
 
-        highs.push(high);
+        bands[stockId].high = high;
 
-        lows.push(low);
+        bands[stockId].low = low;
 
-        means.push(mean);
+        bands[stockId].mean = mean;
 
     }
 
     bands.step = step;
-
-    bands.lows = lows;
-
-    bands.means = means;
-
-    bands.highs = highs;
 
     return bands;
 }

@@ -349,12 +349,24 @@ function LineChart(options) {
         // clear existing spatial predictions
         _self.predictedTimeSteps = Math.round(_self.predictedValueX / _self.rectangle_width);
 
-        var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true).spatial;
+        var pred = predictionObject
+            .predictFutureSteps(_self.stockSymbol,
+                _self.predictedTimeSteps,
+                _self.dataFiltered, true,
+                _self.predictedY);
+
+        var allPredictions = pred.spatial;
 
         for (var j = 0; j < _self.charts.length; j++) {
-            _self.chartObjects[selectedSymbols[j]].linechartSVG.selectAll(".predictionLine").remove();
+
+            _self.chartObjects[selectedSymbols[j]].linechartSVG
+                .selectAll(".predictionLine").remove();
+
+            _self.chartObjects[selectedSymbols[j]].linechartSVG
+                .selectAll(".sprediction.bands").remove();
 
         }
+
 
         for (var i = 0; i < allPredictions.length; i++) {
 
@@ -367,11 +379,29 @@ function LineChart(options) {
 
                 for (var k = 0; k < predictions.length; k++) {
 
-                    _self.chartObjects[selectedSymbols[j]].addPrediction(predictions[k].predictions, predictions[k].opacity, step);
+                    _self.chartObjects[selectedSymbols[j]]
+                        .addPrediction(predictions[k].predictions,
+                            predictions[k].opacity,
+                            step);
 
                 }
+
+
             }
         }
+
+        if (!pred.spatialband) {
+            return;
+        }
+
+        var spatialBandData = pred.spatialband;
+
+        for (var j = 0; j < _self.charts.length; j++) {
+
+            _self.chartObjects[selectedSymbols[j]]
+                .addSpatialBand(spatialBandData);
+        }
+
     }
 
 }
@@ -646,6 +676,9 @@ LineChart.prototype.showOnly = function (b, empty) {
             .attr("stroke-width", "1px");
     }
 
+    _self.linechartSVG.selectAll(".sprediction.bands").remove();
+    _self.linechartSVG.selectAll(".tprediction.bands").remove();
+
     // Drawing all the bands at once
     if (!allPredictions.temporalband) {
         return;
@@ -664,7 +697,6 @@ LineChart.prototype.showOnly = function (b, empty) {
             return _self.y(d.high);
         });
 
-    _self.linechartSVG.selectAll(".tprediction.bands").remove();
     _self.linechartSVG.append("path")
         .datum(predictionBandData)
         .attr("class", "tprediction bands")
@@ -689,4 +721,39 @@ LineChart.prototype.addPrediction = function (predictionArray, opacity, step) {
         .attr("stroke", "#91bfdb")
         .attr("stroke-width", "1px")
         .attr("stroke-opacity", opacity);
+};
+
+// Adds spatial predictions band
+LineChart.prototype.addSpatialBand = function (data) {
+    var _self = this;
+
+
+    var bands = [];
+
+    var band = {};
+    band.low = _self.topTemporalPredictions[0];
+    band.high = _self.topTemporalPredictions[0];
+    band.mean = _self.topTemporalPredictions[0];
+    band.step = -1;
+
+    bands.push(band);
+
+    for (var i = 0; i < data.length; i++) {
+        var d = data[i];
+        var band = {};
+        band.low = d[_self.stockSymbol].low;
+        band.high = d[_self.stockSymbol].high;
+        band.mean = d[_self.stockSymbol].mean;
+        band.step = d.step;
+
+        bands.push(band);
+    }
+
+    _self.linechartSVG.selectAll(".sprediction.bands").remove();
+
+    _self.linechartSVG.append("path")
+        .datum(bands)
+        .attr("class", "sprediction bands")
+        .attr("d", _self.pArea);
+
 };
