@@ -26,7 +26,7 @@ html {
 option.ui-widget-content {
     margin: 2px;
     padding: 3px;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
     height: 18px;
     cursor: pointer;
@@ -164,7 +164,8 @@ option.ui-widget-content {
 }
 
 .predictionRect {
-    fill: rgba(255, 227, 107, 0.1);
+/*    fill: rgba(255, 227, 107, 0.1);*/
+    fill: transparent;
 }
 
 g.context rect.background {
@@ -317,7 +318,7 @@ g.tick text {
     width: 19%;
     height: 100%;
     float: right;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
 }
 
@@ -410,6 +411,14 @@ div.ui_button:hover {
     stroke: none;
 }
 
+.tprediction.bands {
+    fill: #fc8d59;
+    fill-opacity: 0.3;
+    stroke: none;
+    stroke-width: 1px;
+    pointer-events: none;
+}
+
 #correlationViewer {
     padding: 50px;
 }
@@ -441,4 +450,8 @@ div.ui_button:hover {
     font-weight: 500;
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
+}
+
+#temporalPredictionLine {
+    pointer-events: none;
 }

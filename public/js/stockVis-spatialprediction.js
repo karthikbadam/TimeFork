@@ -45,12 +45,12 @@ SpatialPrediction.prototype.getPredictions = function (stock_symbol, prediction)
 
     return predictionObject.getTopSpatialPredictions();
 
-    var returnVal = [];
-
-    returnVal.arrays = _self.predictionArrays;
-    returnVal.opacities = _self.predictionOpacities;
-
-    return returnVal;
+//    var returnVal = [];
+//
+//    returnVal.arrays = _self.predictionArrays;
+//    returnVal.opacities = _self.predictionOpacities;
+//
+//    return returnVal;
 };
 
 

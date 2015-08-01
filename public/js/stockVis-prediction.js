@@ -16,11 +16,13 @@ function Predictions(options) {
 
     _self.pastValues = {};
 
-    _self.TEMPORAL_ALTERNATIVES = 7;
+    _self.TEMPORAL_ALTERNATIVES = 6;
 
     _self.TEMPORAL_INPUT_SIZE = 6;
 
     _self.stockPastValues = {};
+    
+    _self.SPATIAL_ALTERNATIVES = 10;
 
 }
 
@@ -70,7 +72,7 @@ Predictions.prototype.getTopSpatialPredictions = function () {
 
     _self.sortSpatial();
 
-    var sp = _self.sortedSpatialPredictions.splice(0, 7);
+    var sp = _self.sortedSpatialPredictions.splice(0, _self.SPATIAL_ALTERNATIVES);
 
     if (!sp)
         return;
@@ -151,7 +153,7 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
 
             //var index = Math.floor(Math.random() * _self.TEMPORAL_ALTERNATIVES);
 
-            var index = _self.TEMPORAL_INPUT_SIZE - 1 - j < 0? 2*_self.TEMPORAL_INPUT_SIZE - 1 - j: _self.TEMPORAL_INPUT_SIZE - 1 - j;
+            var index = _self.TEMPORAL_INPUT_SIZE - 1 - j < 0 ? 2 * _self.TEMPORAL_INPUT_SIZE - 1 - j : _self.TEMPORAL_INPUT_SIZE - 1 - j;
 
             if (Math.random() < 0.5) {
 
@@ -230,6 +232,14 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
 
     var pastBestPredictions = [];
 
+    var temporalBands = [];
+    
+    temporalBands.push({
+        high: dataFiltered[0][adjCol],
+        low: dataFiltered[0][adjCol],
+        step: -1
+    });
+    
     for (var i = 0; i < nTimes; i++) {
 
         var presentDate = new Date(future.getTime());
@@ -243,6 +253,7 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
         previous = input[input.length - 1];
 
         var output = _self.generateTemporalPredictions(stockId, input);
+
 
         for (var j = 0; j < output.length; j++) {
 
@@ -259,8 +270,11 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
         }
 
         // lets fit the high confidence till the last step
-
         var bestPrediction = output[0].prediction;
+
+        // get the band information from output variables
+        var temporalBandData = getTPredictionBand(output, i);
+        temporalBands.push(temporalBandData);
 
         if (i != nTimes - 1) {
 
@@ -298,6 +312,11 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
             var change = (bestPrediction - previous) * 100 / previous;
 
             var spatialPred = spatialPrediction.getPredictions(stockId, change);
+            
+            // run a for loop to invert the array and 
+            // calculate high lows
+            
+            
 
             spatialPreds.push({
                 predictions: spatialPred,
@@ -312,7 +331,76 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
 
     return {
         temporal: predictions,
+        temporalband: temporalBands,
         spatial: spatialPreds
     };
 
+}
+
+function getTPredictionBand(data, step) {
+
+    var band = {}; //{ step: 0, low: 0, high: 0 }
+
+    band.step = step;
+
+    var wsum = d3.sum(data, function (d) {
+        return d.prediction * d.opacity;
+    });
+
+    var osum = d3.sum(data, function (d) {
+        return d.opacity;
+    });
+
+    var mean = wsum / osum;
+
+    band.mean = mean;
+
+    wsum = d3.sum(data, function (d) {
+        return Math.pow(d.prediction - mean, 2) * d.opacity;
+    });
+
+    osum = d3.sum(data, function (d) {
+        return d.opacity;
+    });
+
+    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+
+    band.low = mean - 2 * stdDev;
+    band.high = mean + 2 * stdDev;
+
+    return band;
+}
+
+function getSPredictionBand(data, step) {
+
+    var band = {}; //{ step: 0, low: 0, high: 0 }
+
+    band.step = step;
+
+    var wsum = d3.sum(data, function (d) {
+        return d.prediction * d.opacity;
+    });
+
+    var osum = d3.sum(data, function (d) {
+        return d.opacity;
+    });
+
+    var mean = wsum / osum;
+
+    band.mean = mean;
+
+    wsum = d3.sum(data, function (d) {
+        return Math.pow(d.prediction - mean, 2) * d.opacity;
+    });
+
+    osum = d3.sum(data, function (d) {
+        return d.opacity;
+    });
+
+    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+
+    band.low = mean - 2 * stdDev;
+    band.high = mean + 2 * stdDev;
+
+    return band;
 }

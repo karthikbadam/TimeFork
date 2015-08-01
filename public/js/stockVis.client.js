@@ -106,7 +106,7 @@ $(document).ready(function () {
     //initialize a predictions object 
     predictionObject = new Predictions();
 
-    //Download file for spatial prediction
+    //Download file for spatial prediction    
     $.get("data/train/SOM_WEIGHTS.json", function (data) {
         console.log("Data: ");
 
@@ -123,6 +123,7 @@ $(document).ready(function () {
 
     //reads the list of stocks first
     d3.csv(stockList, function (error, data) {
+        
         //for each string element in the data
         data.forEach(function (d) {
 

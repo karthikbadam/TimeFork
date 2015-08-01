@@ -242,7 +242,7 @@ function LineChart(options) {
 
     // draws a rectangle at the right of each line chart for predictions
     var rect_offsetX = 2;
-    var rectangle_width = _self.rectangle_width = 30;
+    var rectangle_width = _self.rectangle_width = 20;
     var rectangle_height = _self.height + _self.margin.top + _self.margin.bottom;
 
     var numberOfPredictions = 20;
@@ -414,7 +414,7 @@ LineChart.prototype.getCurrentPrediction = function () {
 LineChart.prototype.getBollingerBands = function (n, k, data) {
 
     var bands = []; //{ ma: 0, low: 0, high: 0 }
-    
+
     data.sort(function (a, b) {
         return new Date(a[dateCol]) - new Date(b[dateCol]);
     });
@@ -505,7 +505,7 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.chartContainer.selectAll(".line.ma.bands").remove();
 
     var bandRawData = _self.stockObject.getRawBandData(b, 20);
-    
+
     var bandsData = _self.getBollingerBands(20, 2, bandRawData);
 
     _self.chartContainer.append("path")
@@ -577,7 +577,8 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.linechartSVG.selectAll(".userPredictionLine").remove();
     _self.linechartSVG.selectAll(".predictionLine").remove();
 
-    _self.linechartSVG.selectAll(".temporalPredictionLine").remove();
+    _self.linechartSVG.selectAll(".temporalPredictionLine")
+        .remove();
     _self.linechartSVG.selectAll(".savedPredictionLine").remove();
 
     var savedPredictions = userPredictions[_self.stockSymbol];
@@ -608,7 +609,7 @@ LineChart.prototype.showOnly = function (b, empty) {
         }
     }
 
-
+    // Drawing the temporal prediction
     _self.topTemporalPredictions = new Array(20);
     _self.topTemporalPredictions[0] = _self.dataFiltered[0][adjCol];
 
@@ -628,7 +629,6 @@ LineChart.prototype.showOnly = function (b, empty) {
 
         _self.topTemporalPredictions[step] = past;
 
-
         if (i == 0) {
             xDate = currentDate;
         }
@@ -646,6 +646,29 @@ LineChart.prototype.showOnly = function (b, empty) {
             .attr("stroke-width", "1px");
     }
 
+    // Drawing all the bands at once
+    if (!allPredictions.temporalband) {
+        return;
+    }
+
+    var predictionBandData = allPredictions.temporalband;
+
+    _self.pArea = d3.svg.area()
+        .x(function (d) {
+            return _self.x(xDate) + (d.step + 1) * _self.rectangle_width;
+        })
+        .y0(function (d) {
+            return _self.y(d.low);
+        })
+        .y1(function (d) {
+            return _self.y(d.high);
+        });
+
+    _self.linechartSVG.selectAll(".tprediction.bands").remove();
+    _self.linechartSVG.append("path")
+        .datum(predictionBandData)
+        .attr("class", "tprediction bands")
+        .attr("d", _self.pArea);
 
 };
 
