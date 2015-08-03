@@ -70,15 +70,16 @@ option.ui-widget-content {
     top: 25%;
     cursor: pointer;
     border-radius: 50%;
-    border: 10px solid #4679BD;
+/*    border: 10px solid #4679BD;*/
+    border: 10px solid #3D9CDA;
     overflow: hidden;
-    background-color: #4679BD;
+    background-color: #3D9CDA;
     box-shadow: 0 0 3px gray;
 }
 
 #add_button:hover {
     background: url('../images/add_color.png') no-repeat;
-    background-color:  #4679BD;
+    background-color:  #3D9CDA;
 }
 
 #remove_button {
@@ -180,8 +181,8 @@ g.context g.brush rect.background {
 .x.brush {
     fill: #4679BD;
     fill-opacity: 0.1;
-    stroke: #4679BD;
-    stroke-size: 5px;
+    stroke: #3D9CDA;
+    stroke-width: 5px;
 }
 
 g.context g.axis path {
@@ -414,16 +415,16 @@ div.ui_button:hover {
 .tprediction.bands {
     fill: #fc8d59;
     fill-opacity: 0.3;
-    stroke: none;
-    stroke-width: 1px;
+    stroke: #fc8d59;
+    stroke-width: 0.5px;
     pointer-events: none;
 }
 
 .sprediction.bands {
     fill: #91bfdb;
     fill-opacity: 0.3;
-    stroke: none;
-    stroke-width: 1px;
+    stroke: #91bfdb;
+    stroke-width: 0.5px;
     pointer-events: none;
 }
 
@@ -463,8 +464,10 @@ div.ui_button:hover {
 
 .temporalPredictionLine {
     pointer-events: none;
+    display: none;
 }
 
-.spatialPredictionLine {
+.predictionLine {
     pointer-events: none;
+    display: none;
 }
