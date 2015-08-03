@@ -344,6 +344,18 @@ function getTPredictionBand(data, step) {
 
     band.step = step;
 
+    var low = d3.min(data, function (d) {
+        return d.prediction;
+    });
+
+    var high = d3.max(data, function (d) {
+        return d.prediction;
+    });
+
+    band.low = low;
+    band.high = high;
+
+
     var wsum = d3.sum(data, function (d) {
         return d.prediction * d.opacity;
     });
@@ -356,18 +368,18 @@ function getTPredictionBand(data, step) {
 
     band.mean = mean;
 
-    wsum = d3.sum(data, function (d) {
-        return Math.pow(d.prediction - mean, 2) * d.opacity;
-    });
-
-    osum = d3.sum(data, function (d) {
-        return d.opacity;
-    });
-
-    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
-
-    band.low = mean - stdDev;
-    band.high = mean + stdDev;
+    //    wsum = d3.sum(data, function (d) {
+    //        return Math.pow(d.prediction - mean, 2) * d.opacity;
+    //    });
+    //
+    //    osum = d3.sum(data, function (d) {
+    //        return d.opacity;
+    //    });
+    //
+    //    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+    //
+    //    band.low = mean - stdDev;
+    //    band.high = mean + stdDev;
 
     return band;
 }
@@ -379,7 +391,7 @@ function getSPredictionBand(data, step) {
     if (!data) {
         return;
     }
-    
+
     var numOfStocks = data[0].predictions.length;
 
     for (var i = 0; i < numOfStocks; i++) {
@@ -390,7 +402,7 @@ function getSPredictionBand(data, step) {
         if (selectedSymbols.indexOf(stockId) <= -1) {
             continue;
         }
-        
+
         if (!bands[stockId]) {
             bands[stockId] = {};
         }
@@ -407,22 +419,34 @@ function getSPredictionBand(data, step) {
 
         var mean = wsum / osum;
 
-        wsum = d3.sum(data, function (d) {
+        //        wsum = d3.sum(data, function (d) {
+        //            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
+        //
+        //            return Math.pow(value - mean, 2) * d.opacity;
+        //        });
+        //
+        //        osum = d3.sum(data, function (d) {
+        //            return d.opacity;
+        //        });
+        //
+        //        var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+        //
+        //
+        //        var low = mean - stdDev;
+        //
+        //        var high = mean + stdDev;
+
+        var low = d3.min(data, function (d) {
             var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
 
-            return Math.pow(value - mean, 2) * d.opacity;
+            return value;
         });
 
-        osum = d3.sum(data, function (d) {
-            return d.opacity;
+        var high = d3.max(data, function (d) {
+            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
+
+            return value;
         });
-
-        var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
-
-
-        var low = mean - stdDev;
-
-        var high = mean + stdDev;
 
         bands[stockId].high = high;
 

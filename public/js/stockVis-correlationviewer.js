@@ -3,42 +3,47 @@
 function CorrelationChart(options) {
     var _self = this;
 
-//    _self.selectedSymbolsData = options.selectedSymbolsData;
-//    _self.selectedSymbols = options.selectedSymbols; 
-//    _self.color = options.color; 
-//    _self.stocks = options.stocks;
-//    
+    //    _self.selectedSymbolsData = options.selectedSymbolsData;
+    //    _self.selectedSymbols = options.selectedSymbols; 
+    //    _self.color = options.color; 
+    //    _self.stocks = options.stocks;
+    //    
 
     _self.nodes = [];
     _self.links = [];
 
-    _self.margin = {top: 10, right: 50, bottom: 10, left: 10};
-    
+    _self.margin = {
+        top: 10,
+        right: 50,
+        bottom: 10,
+        left: 10
+    };
+
     _self.width = ($("#correlation-viewer").width() - _self.margin.left - _self.margin.right);
-    
+
     _self.height = ($("#correlation-viewer").height() - _self.margin.top - _self.margin.bottom);
 
     _self.force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(function (d) {
-                return _self.width - _self.width * d.value;
-            })
-            .size([_self.width, _self.height]);
+        .charge(-120)
+        .linkDistance(function (d) {
+            return _self.width * 0.75  - _self.width * d.value * 0.75;
+        })
+        .size([_self.width, _self.height]);
 
     _self.div = d3.select("#correlation-viewer");
 
     _self.svg = _self.div.append("svg")
-            .attr("class", "correlation-svg")
-            .attr("width", _self.width + _self.margin.left + _self.margin.right)
-            .attr("height", _self.height + _self.margin.top + _self.margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + _self.margin.left + "," + _self.margin.top + ")");
+        .attr("class", "correlation-svg")
+        .attr("width", _self.width + _self.margin.left + _self.margin.right)
+        .attr("height", _self.height + _self.margin.top + _self.margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + _self.margin.left + "," + _self.margin.top + ")");
 
     _self.nodes = [];
     _self.links = [];
 
     _self.force.nodes(_self.nodes)
-            .links(_self.links);
+        .links(_self.links);
 
 }
 
@@ -91,24 +96,28 @@ CorrelationChart.prototype.refresh = function () {
     }
 
     _self.force.nodes(_self.nodes)
-            .links(_self.links);
+        .links(_self.links);
 
     if (_self.link)
         _self.link.remove();
 
     _self.link = _self.svg.selectAll(".link")
-            .data(_self.links)
-            .enter().append("line")
-            .attr("class", "link")
-            .attr("stroke", function (d) {
-                if (d.value > 0) {
-                    return "#90EE90";
-                } else {
-                    return "#F08080";
-                }
+        .data(_self.links)
+        .enter().append("line")
+        .attr("class", "link")
+        .attr("stroke", function (d) {
+            if (d.value > 0) {
+                return "#5BB271";
+            } else {
+                return "#F08080";
+            }
 
-            })
-            .attr("stroke-width", "1px");
+        })
+        .attr("stroke-opacity", function (d) {
+            return (1 - Math.abs(d.value)) > 0 ? 
+                Math.abs(d.value) : 0.01;
+        })
+        .attr("stroke-width", "1px");
 
 
     //_self.link.exit().remove();
@@ -116,81 +125,81 @@ CorrelationChart.prototype.refresh = function () {
     if (_self.node)
         _self.node.remove();
 
-//    _self.node = _self.svg.selectAll(".node")
-//            .data(_self.nodes)
-//            .enter().append("circle")
-//            .attr("class", "node")
-//            .attr("r", radius)
-//            .style("fill", function (d) {
-//                return color(d.id);
-//            });
+    //    _self.node = _self.svg.selectAll(".node")
+    //            .data(_self.nodes)
+    //            .enter().append("circle")
+    //            .attr("class", "node")
+    //            .attr("r", radius)
+    //            .style("fill", function (d) {
+    //                return color(d.id);
+    //            });
     //.call(_self.force.drag);
 
     _self.node = _self.svg.selectAll(".node")
-            .data(_self.nodes)
-            .enter()
-            .append("g")
-            .attr("class", "node");
+        .data(_self.nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node");
 
 
     _self.node.append("circle")
-            .attr("cx", 0)
-            .attr("cy", 0)
-            .attr("r", radius)
-            .style("fill", function (d) {
-                //CHANGE COLOR SCHEME
-                //return color(d.id);
-                return "#67655D";
-            })
-    .call(_self.force.drag);
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", radius)
+        .style("fill", function (d) {
+            //CHANGE COLOR SCHEME
+            //return color(d.id);
+            return "#67655D";
+        })
+        .call(_self.force.drag);
 
     _self.node.append("text")
-            .attr("dx", 12)
-            .attr("dy", ".35em")
-            .text(function (d) {
-                return d.companyName;
-            });
+        .attr("dx", 12)
+        .attr("dy", ".35em")
+        .text(function (d) {
+            return d.companyName;
+        });
 
-//
-//    _self.node.append("title")
-//            .text(function (d) {
-//                return d.name;
-//            });
+    //
+    //    _self.node.append("title")
+    //            .text(function (d) {
+    //                return d.name;
+    //            });
 
 
     //_self.node.exit().remove();
 
     _self.force.on("tick", function () {
         _self.link.attr("x1", function (d) {
-                    return d.source.x;
-                })
-                .attr("y1", function (d) {
-                    return d.source.y;
-                })
-                .attr("x2", function (d) {
-                    return d.target.x;
-                })
-                .attr("y2", function (d) {
-                    return d.target.y;
-                });
+                return d.source.x;
+            })
+            .attr("y1", function (d) {
+                return d.source.y;
+            })
+            .attr("x2", function (d) {
+                return d.target.x;
+            })
+            .attr("y2", function (d) {
+                return d.target.y;
+            });
         _self.node.attr("transform", function (d) {
             d.x = Math.max(radius, Math.min(_self.width - radius, d.x));
             d.y = Math.max(radius, Math.min(_self.height - radius, d.y));
             return "translate(" + d.x + "," + d.y + ")";
         });
 
-//        _self.node.attr("cx", function (d) {
-//            return d.x = Math.max(radius, Math.min(_self.width - radius, d.x));
-//        })
-//                .attr("cy", function (d) {
-//                    return d.y = Math.max(radius, Math.min(_self.height - radius, d.y));
-//                });
+        //        _self.node.attr("cx", function (d) {
+        //            return d.x = Math.max(radius, Math.min(_self.width - radius, d.x));
+        //        })
+        //                .attr("cy", function (d) {
+        //                    return d.y = Math.max(radius, Math.min(_self.height - radius, d.y));
+        //                });
         //.attr("cx", function(d) { return d.x; })
         //.attr("cy", function(d) { return d.y; });
     });
 
     _self.force
-            .start();
+        .start();
 
     var n = _self.nodes.length;
     for (var i = n * n; i > 0; --i)

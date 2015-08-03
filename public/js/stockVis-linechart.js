@@ -22,7 +22,6 @@ function LineChart(options) {
     _self.topTemporalPredictions = [];
 
     var temporalprediction = new TemporalPrediction({
-        //encog_file: data,
         stock_name: _self.stockSymbol
     });
 
@@ -34,9 +33,6 @@ function LineChart(options) {
         bottom: 30,
         left: 30
     };
-
-
-    _self.tomorrow = new Date();
 
     _self.dataFilteredForPrediction = _self.dataFiltered;
 
@@ -95,9 +91,9 @@ function LineChart(options) {
     //creates x and y axis
     _self.xAxis = d3.svg.axis()
         .scale(_self.x)
-        .orient("bottom").ticks(4)
+        .orient("bottom").ticks(5)
         .tickFormat(function (d) {
-            return d3.time.format('%b%d/%y')(new Date(d));
+            return d3.time.format('%b %d')(new Date(d));
         });
 
     _self.yAxis = d3.svg.axis()
@@ -182,7 +178,8 @@ function LineChart(options) {
         .data([_self.dataFiltered])
         .attr("d", _self.line)
         //.attr("stroke", _self.color(_self.id)) //change COLOR THEME
-        .attr("stroke", "#67655D")
+        //.attr("stroke", "#67655D")
+        .attr("stroke", "#0069B2")
         .attr("fill", "transparent")
         .attr("stroke-width", "1.5px")
         .attr("z-index", 1);
@@ -483,8 +480,6 @@ LineChart.prototype.showOnly = function (b, empty) {
     _self.lineLength = 0;
     _self.predictedTimeSteps = 0;
 
-    _self.tomorrow = new Date();
-
     _self.dataFiltered = _self.stockObject.getFilteredData(b);
 
     if (_self.dataFiltered.length < 0) {
@@ -498,6 +493,8 @@ LineChart.prototype.showOnly = function (b, empty) {
     }));
 
     b = _self.x.domain();
+    
+    _self.xAxis.ticks(d3.time.mondays, 1);
 
     _self.chartContainer.select(".x.axis").call(_self.xAxis);
 
@@ -579,7 +576,20 @@ LineChart.prototype.showOnly = function (b, empty) {
             return _self.height / 4 - volumeY(d[volumeCol]);
         })
         //.attr("fill", color(_self.id))
-        .attr("fill", "#222") //--change COLOR THEME
+        .attr("fill", function (d, i) {
+            if (i == _self.dataFiltered.length - 1)
+                return "#5BB271";
+
+            var prev = _self.dataFiltered[i + 1][adjCol];
+            var curr = _self.dataFiltered[i][adjCol];
+
+            if (curr - prev > 0) {
+                return "#5BB271";
+            } else {
+                return "#F08080";
+            }
+
+        }) //--change COLOR THEME
         .attr("fill-opacity", 0.3);
 
     _self.chartContainer.select("path")
@@ -671,9 +681,9 @@ LineChart.prototype.showOnly = function (b, empty) {
             .attr("x2", _self.x(xDate) + (step + 1) * _self.rectangle_width)
             .attr("y2", _self.y(prediction))
             //.attr("stroke", _self.color(_self.id))
-            .attr("stroke", "#fc8d59")
+            .attr("stroke", "#0069B2")
             .attr("stroke-opacity", opacity)
-            .attr("stroke-width", "1px");
+            .attr("stroke-width", "0.5px");
     }
 
     _self.linechartSVG.selectAll(".sprediction.bands").remove();
@@ -718,8 +728,8 @@ LineChart.prototype.addPrediction = function (predictionArray, opacity, step) {
         .attr("x2", _self.lastValueX + (step + 1) * _self.rectangle_width)
         .attr("y2", _self.y(value))
         //.attr("stroke", _self.color(_self.id)) -- // change COLOR SCHEME
-        .attr("stroke", "#91bfdb")
-        .attr("stroke-width", "1px")
+        .attr("stroke", "#fc8d59")
+        .attr("stroke-width", "0.5px")
         .attr("stroke-opacity", opacity);
 };
 

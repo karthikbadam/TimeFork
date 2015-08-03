@@ -71,15 +71,15 @@ option.ui-widget-content {
     cursor: pointer;
     border-radius: 50%;
 /*    border: 10px solid #4679BD;*/
-    border: 10px solid #83A3E5;
+    border: 10px solid #0069B2;
     overflow: hidden;
-    background-color: #83A3E5;
+    background-color: #0069B2;
     box-shadow: 0 0 3px gray;
 }
 
 #add_button:hover {
     background: url('../images/add_color.png') no-repeat;
-    background-color:  #83A3E5;
+    background-color:  #0069B2;
 }
 
 #remove_button {
@@ -181,7 +181,7 @@ g.context g.brush rect.background {
 .x.brush {
     fill: #4679BD;
     fill-opacity: 0.1;
-    stroke: #83A3E5;
+    stroke: #0069B2;
     stroke-width: 5px;
 }
 
@@ -253,7 +253,7 @@ g.tick text {
 .content #linechart-viz {
     float: left;
     color: #D9D9D9;
-    overflow-y: hidden;
+    overflow: hidden;
     width: 80%;
     height: 80%;
     float: left;
@@ -325,7 +325,7 @@ g.tick text {
 
 .predictionLine {
     stroke-dasharray: 3, 3;
-    stroke-width: 2px;
+    stroke-width: 0.5px;
 }
 
 #search_box {
@@ -397,8 +397,7 @@ div.ui_button:hover {
 
 .line {
     fill: none;
-    stroke: black;
-    stroke-width: 1px;
+    stroke-width: 1.5px;
 }
 
 .line.bands {
@@ -413,17 +412,17 @@ div.ui_button:hover {
 }
 
 .tprediction.bands {
-    fill: #fc8d59;
-    fill-opacity: 0.5;
-    stroke: #fc8d59;
+    fill: #0069B2;
+    fill-opacity: 0.2;
+    stroke: none;
     stroke-width: 1px;
     pointer-events: none;
 }
 
 .sprediction.bands {
-    fill: #91bfdb;
-    fill-opacity: 0.5;
-    stroke: #91bfdb;
+    fill: #fc8d59;
+    fill-opacity: 0.3;
+    stroke: none;
     stroke-width: 1px;
     pointer-events: none;
 }
