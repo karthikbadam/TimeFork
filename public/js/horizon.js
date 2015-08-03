@@ -12,7 +12,7 @@
 
         var color = d3.scale.linear()
             .domain([-1, 0, 0, 1])
-            .range(["#006d2c", "#bae4b3", "#ffffff", "#3D9CDA"]);
+            .range(["#006d2c", "#bae4b3", "#ffffff", "#83A3E5"]);
 
         // For each small multiple…
         function horizon(g) {
@@ -103,7 +103,7 @@
 
                 path.enter().append("path")
                     .style("fill", color)
-                    .style("fill-opacity", 0.7)
+                    .style("fill-opacity", 1)
                     .attr("transform", t0)
                     .attr("d", d0);
 

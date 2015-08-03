@@ -102,7 +102,7 @@ OverviewHorizonChart.prototype.addHorizon = function (options) {
     var chart = d3.horizon()
         .width(_self.horizonWidth)
         .height(_self.horizonHeight)
-        .bands(4)
+        .bands(3)
         .mode("mirror")
         .interpolate("basis");
 
