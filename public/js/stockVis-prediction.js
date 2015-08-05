@@ -368,18 +368,18 @@ function getTPredictionBand(data, step) {
 
     band.mean = mean;
 
-    //    wsum = d3.sum(data, function (d) {
-    //        return Math.pow(d.prediction - mean, 2) * d.opacity;
-    //    });
-    //
-    //    osum = d3.sum(data, function (d) {
-    //        return d.opacity;
-    //    });
-    //
-    //    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
-    //
-    //    band.low = mean - stdDev;
-    //    band.high = mean + stdDev;
+//    wsum = d3.sum(data, function (d) {
+//        return Math.pow(d.prediction - mean, 2) * d.opacity;
+//    });
+//
+//    osum = d3.sum(data, function (d) {
+//        return d.opacity;
+//    });
+//
+//    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+//
+//    band.low = mean - 2 * stdDev;
+//    band.high = mean + 2 * stdDev;
 
     return band;
 }
@@ -432,9 +432,9 @@ function getSPredictionBand(data, step) {
         //        var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
         //
         //
-        //        var low = mean - stdDev;
+        //        var low = mean - 2 * stdDev;
         //
-        //        var high = mean + stdDev;
+        //        var high = mean + 2 * stdDev;
 
         var low = d3.min(data, function (d) {
             var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
