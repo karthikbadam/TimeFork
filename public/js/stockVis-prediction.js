@@ -16,13 +16,13 @@ function Predictions(options) {
 
     _self.pastValues = {};
 
-    _self.TEMPORAL_ALTERNATIVES = 6;
+    _self.TEMPORAL_ALTERNATIVES = 4;
 
     _self.TEMPORAL_INPUT_SIZE = 6;
 
     _self.stockPastValues = {};
 
-    _self.SPATIAL_ALTERNATIVES = 10;
+    _self.SPATIAL_ALTERNATIVES = 6;
 
 }
 
@@ -344,16 +344,16 @@ function getTPredictionBand(data, step) {
 
     band.step = step;
 
-    var low = d3.min(data, function (d) {
-        return d.prediction;
-    });
-
-    var high = d3.max(data, function (d) {
-        return d.prediction;
-    });
-
-    band.low = low;
-    band.high = high;
+    //    var low = d3.min(data, function (d) {
+    //        return d.prediction;
+    //    });
+    //
+    //    var high = d3.max(data, function (d) {
+    //        return d.prediction;
+    //    });
+    //
+    //    band.low = low;
+    //    band.high = high;
 
 
     var wsum = d3.sum(data, function (d) {
@@ -368,18 +368,18 @@ function getTPredictionBand(data, step) {
 
     band.mean = mean;
 
-//    wsum = d3.sum(data, function (d) {
-//        return Math.pow(d.prediction - mean, 2) * d.opacity;
-//    });
-//
-//    osum = d3.sum(data, function (d) {
-//        return d.opacity;
-//    });
-//
-//    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
-//
-//    band.low = mean - 2 * stdDev;
-//    band.high = mean + 2 * stdDev;
+    wsum = d3.sum(data, function (d) {
+        return Math.pow(d.prediction - mean, 2) * d.opacity;
+    });
+
+    osum = d3.sum(data, function (d) {
+        return d.opacity;
+    });
+
+    var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+
+    band.low = mean - 2 * stdDev;
+    band.high = mean + 2 * stdDev;
 
     return band;
 }
@@ -419,35 +419,35 @@ function getSPredictionBand(data, step) {
 
         var mean = wsum / osum;
 
-        //        wsum = d3.sum(data, function (d) {
+        wsum = d3.sum(data, function (d) {
+            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
+
+            return Math.pow(value - mean, 2) * d.opacity;
+        });
+
+        osum = d3.sum(data, function (d) {
+            return d.opacity;
+        });
+
+        var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
+
+
+        var low = mean - 2 * stdDev;
+
+        var high = mean + 2 * stdDev;
+
+        //        var low = d3.min(data, function (d) {
         //            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
         //
-        //            return Math.pow(value - mean, 2) * d.opacity;
+        //            return value;
         //        });
         //
-        //        osum = d3.sum(data, function (d) {
-        //            return d.opacity;
+        //        var high = d3.max(data, function (d) {
+        //            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
+        //
+        //            return value;
         //        });
         //
-        //        var stdDev = Math.pow((data.length * wsum) / ((data.length - 1) * osum), 0.5);
-        //
-        //
-        //        var low = mean - 2 * stdDev;
-        //
-        //        var high = mean + 2 * stdDev;
-
-        var low = d3.min(data, function (d) {
-            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
-
-            return value;
-        });
-
-        var high = d3.max(data, function (d) {
-            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
-
-            return value;
-        });
-
         bands[stockId].high = high;
 
         bands[stockId].low = low;
