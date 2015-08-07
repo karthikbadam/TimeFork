@@ -468,5 +468,5 @@ div.ui_button:hover {
 
 .predictionLine {
     pointer-events: none;
-    display: none;
+    display: inherit;
 }

@@ -435,6 +435,7 @@ function getSPredictionBand(data, step) {
         var low = mean - 2 * stdDev;
 
         var high = mean + 2 * stdDev;
+        
 
         //        var low = d3.min(data, function (d) {
         //            var value = chartObjects[stockId].topTemporalPredictions[step] + chartObjects[stockId].topTemporalPredictions[step] * d.predictions[i] / 100;
