@@ -1,3 +1,9 @@
+// Convert this into a framework for any data!
+
+// one meta data file on the data attributes
+
+// one file each for all other data
+
 var stockList = 'data/topInternetStocks.csv';
 
 var parseDate = d3.time.format("%Y-%m-%d").parse;

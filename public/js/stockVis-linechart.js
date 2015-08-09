@@ -1,4 +1,6 @@
-//Stock value + volume visualization: Creates a line chart of the value and a bar chart of the volume
+// Stock value + volume visualization: Creates a line chart of the value and a bar chart of the volume
+
+// Needs some clean up
 
 function LineChart(options) {
 

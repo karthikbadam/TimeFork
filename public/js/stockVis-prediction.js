@@ -454,7 +454,9 @@ function getSPredictionBand(data, step) {
 
         bands[stockId].mean = mean;
 
-        //need to show branches
+        // Need to show branches
+        
+        // Add more options -- in terms of machine learning!
 
     }
 
