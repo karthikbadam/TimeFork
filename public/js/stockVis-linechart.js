@@ -366,7 +366,6 @@ function LineChart(options) {
 
         }
 
-
         for (var i = 0; i < allPredictions.length; i++) {
 
             var p = allPredictions[i];
@@ -495,7 +494,7 @@ LineChart.prototype.showOnly = function (b, empty) {
     }));
 
     b = _self.x.domain();
-    
+
     _self.xAxis.ticks(d3.time.mondays, 1);
 
     _self.chartContainer.select(".x.axis").call(_self.xAxis);
