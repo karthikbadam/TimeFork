@@ -16,7 +16,7 @@ function Predictions(options) {
 
     _self.pastValues = {};
 
-    _self.TEMPORAL_ALTERNATIVES = 7;
+    _self.TEMPORAL_ALTERNATIVES = 5;
 
     _self.TEMPORAL_INPUT_SIZE = 6;
 

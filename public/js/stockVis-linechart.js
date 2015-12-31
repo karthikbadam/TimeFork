@@ -137,11 +137,12 @@ function LineChart(options) {
         .attr("viewBox", "0 -5 10 10")
         .attr("refX", 0)
         .attr("refY", 0)
-        .attr("markerWidth", 8)
-        .attr("markerHeight", 8)
+        .attr("markerWidth", 12)
+        .attr("markerHeight", 12)
         .attr("orient", "auto")
         .append("svg:path")
-        .attr("d", "M0,-5L10,0L0,5");
+        .attr("d", "M0,-5L10,0L0,5")
+        .attr("z-index", 100);
 
 
     //draws the path line    
@@ -310,27 +311,28 @@ function LineChart(options) {
 
             }
         }
-
+        
+        spatialUserPredictionBool[_self.stockSymbol] = true;
+        
         // clear existing spatial predictions
         _self.predictedTimeSteps = Math.round(_self.predictedValueX / _self.rectangle_width);
 
+        var sendData = {
+            id: participantID,
+            phase: stepNumber,
+            timestamp: new Date(),
+            stockId: _self.stockSymbol,
+            ps: PREDICTION_SCENARIO,
+            ct: CALENDAR_TIME,
+            userPrediction: _self.lineLength.toFixed(2),
+            timeSteps: _self.predictedTimeSteps
+        };
+
+
+        $.post("/userlog", sendData, function (data, error) {});
+
 
         if (PREDICTION_SCENARIO == 1) {
-
-            var sendData = {
-                id: participantID,
-                phase: stepNumber,
-                timestamp: new Date(),
-                stockId: _self.stockSymbol,
-                ps: PREDICTION_SCENARIO,
-                ct: CALENDAR_TIME,
-                userPrediction: _self.lineLength.toFixed(2),
-                timeSteps: _self.predictedTimeSteps
-            };
-
-
-            $.post("/userlog", sendData, function (data, error) {});
-
 
             var allPredictions = predictionObject.predictFutureSteps(_self.stockSymbol, _self.predictedTimeSteps, _self.dataFiltered, true, _self.predictedY).spatial;
 
@@ -382,6 +384,8 @@ LineChart.prototype.getCurrentPrediction = function () {
 
         return predictedDate.getTime() == d[stockColumns[0]].getTime();
     });
+    
+    
 
     var predictionInfo = {
         stockId: _self.stockSymbol,
@@ -389,7 +393,9 @@ LineChart.prototype.getCurrentPrediction = function () {
         date2: predictedDate,
         past: previousValue,
         predict: predictedValue,
-        actual: actual[0][stockColumns[6]]
+        actual: actual[0][stockColumns[6]],
+        days: _self.predictedTimeSteps,
+        slope: numberOfTimeSteps> 0?(predictedValue - previousValue)/numberOfTimeSteps:0
     };
 
     return predictionInfo;
@@ -401,6 +407,8 @@ LineChart.prototype.getCurrentPrediction = function () {
 LineChart.prototype.showOnly = function (b, empty) {
 
     var _self = this;
+    
+    spatialUserPredictionBool[_self.stockSymbol] = false; 
 
     _self.numberOfPredictionsMade = 0;
     _self.userPredicted = false;
@@ -564,7 +572,7 @@ LineChart.prototype.showOnly = function (b, empty) {
                 .attr("y2", _self.y(prediction))
                 //.attr("stroke", _self.color(_self.id))
                 .attr("stroke", "#fc8d59")
-                .attr("stroke-opacity", opacity)
+                .attr("stroke-opacity", opacity*opacity)
                 .attr("stroke-width", "1px");
         }
     }
@@ -586,5 +594,5 @@ LineChart.prototype.addPrediction = function (predictionArray, opacity, step) {
         //.attr("stroke", _self.color(_self.id)) -- // change COLOR SCHEME
         .attr("stroke", "#91bfdb")
         .attr("stroke-width", "1px")
-        .attr("stroke-opacity", opacity);
+        .attr("stroke-opacity", opacity*opacity);
 };

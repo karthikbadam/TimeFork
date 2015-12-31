@@ -1,10 +1,10 @@
 /* user study initializations */
 
-var participantID = "T1";
+var participantID = "T15";
 
 var PREDICTION_SCENARIO = 1; //0 for no prediction, 1 for TimeFork
 
-var CALENDAR_TIME = 2; //0 for July, 1 for December, 2 for training
+var CALENDAR_TIME = 1; //0 for July, 1 for December, 2 for training
 
 var stepNumber = 0;
 
@@ -14,9 +14,9 @@ var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 var brushes1 = [[parseDate("2014-07-01"), parseDate("2014-07-23")], [parseDate("2014-07-07"), parseDate("2014-07-31")], [parseDate("2014-07-13"), parseDate("2014-08-05")], [parseDate("2014-08-01"), parseDate("2014-08-23")]];
 
-var brushes2 = [[parseDate("2014-01-07"), parseDate("2014-01-27")], [parseDate("2015-01-11"), parseDate("2015-02-11")], [parseDate("2015-02-03"), parseDate("2015-02-23")], [parseDate("2014-03-01"), parseDate("2014-03-18")]];
+var brushes2 = [[parseDate("2015-01-07"), parseDate("2015-01-27")], [parseDate("2015-01-11"), parseDate("2015-02-11")], [parseDate("2015-02-03"), parseDate("2015-02-23")], [parseDate("2015-02-23"), parseDate("2015-03-18")]];
 
-var tBrushes = [[parseDate("2013-07-01"), parseDate("2013-07-23")], [parseDate("2013-07-07"), parseDate("2013-07-31")], [parseDate("2013-07-13"), parseDate("2013-08-05")], [parseDate("2013-08-01"), parseDate("2013-08-23")]];
+var tBrushes = [[parseDate("2013-07-01"), parseDate("2013-07-23")], [parseDate("2013-07-07"), parseDate("2013-07-25")], [parseDate("2013-07-13"), parseDate("2013-08-05")], [parseDate("2013-08-01"), parseDate("2013-08-23")]];
 
 var stockList = 'data/stocks.csv';
 
@@ -62,6 +62,9 @@ var userPredictions = {};
 
 var holidays = [parseDate("2013-01-01"), parseDate("2014-01-01"), parseDate("2015-01-01"), parseDate("2013-01-21"), parseDate("2014-01-20"), parseDate("2015-01-19"), parseDate("2013-02-18"), parseDate("2014-02-17"), parseDate("2015-02-16"), parseDate("2013-03-29"), parseDate("2014-04-18"), parseDate("2015-04-03"), parseDate("2013-05-27"), parseDate("2014-05-26"), parseDate("2015-05-25"), parseDate("2013-07-04"), parseDate("2014-07-04"), parseDate("2015-07-04"), parseDate("2013-09-02"), parseDate("2014-09-01"), parseDate("2015-09-07"), parseDate("2013-11-28"), parseDate("2014-11-27"), parseDate("2015-11-26"), parseDate("2013-12-25"), parseDate("2014-12-25"), parseDate("2015-12-25")];
 
+//memory for spatial predictions
+var spatialUserPredictionBool = {};
+
 // Earnings for the stock market game
 var totalEarnings = 100000;
 
@@ -106,7 +109,7 @@ function getFutureDate(today) {
 $(document).ready(function () {
 
     //link to earnings reports
-    $("#linechart-viz").append('<p><a href="/reports' + CALENDAR_TIME + '" target="_blank">Link to earning reports.</a></p>');
+    $("#linechart-viz").append('<p><a href="/reports' + (CALENDAR_TIME + 1) + '" target="_blank">Link to earning reports.</a></p>');
 
     //initialize a predictions object 
     predictionObject = new Predictions();
@@ -281,6 +284,8 @@ $(document).ready(function () {
 
             var previousEarnings = totalEarnings;
 
+            totalSlope = 0;
+
             for (var i = 0; i < charts.length; i++) {
 
                 var predictionInfo = charts[i].getCurrentPrediction();
@@ -294,10 +299,56 @@ $(document).ready(function () {
                 var past = predictionInfo.past;
                 var stockId = predictionInfo["stockId"];
 
+                if (predicted > past && predictionInfo.days > 0 && predictionInfo.slope > 0) {
+
+                    totalSlope += predictionInfo.slope;
+                    
+                }
+            }
+
+            
+            for (var i = 0; i < charts.length; i++) {
+
+                var predictionInfo = charts[i].getCurrentPrediction();
+
+                if (userPredictions[predictionInfo["stockId"]] == null) {
+                    userPredictions[predictionInfo["stockId"]] = [];
+                }
+
+                var predicted = predictionInfo.predict;
+                var actual = predictionInfo.actual;
+                var past = predictionInfo.past;
+                var stockId = predictionInfo["stockId"];
+
+                investment[stockId] = 0;
+                if (predictionInfo.slope > 0) {
+                    investment[stockId] = totalEarnings * predictionInfo.slope/totalSlope;
+                }
+                    
+                alert("stockId" + investment[stockId]);
+                
+                console.log("stockId"+ investment[stockId]);
+            }
+            
+            totalEarnings = 0;
+            previousEarnings = 0;
+            
+            for (var i = 0; i < charts.length; i++) {
+
+                var predictionInfo = charts[i].getCurrentPrediction();
+
+                if (userPredictions[predictionInfo["stockId"]] == null) {
+                    userPredictions[predictionInfo["stockId"]] = [];
+                }
+
+                var predicted = predictionInfo.predict;
+                var actual = predictionInfo.actual;
+                var past = predictionInfo.past;
+                var stockId = predictionInfo["stockId"];
+                    
                 if (investment[stockId] && investment[stockId] != 0) {
 
                     var profit = (investment[stockId] / past) * (actual - past);
-
 
                     totalEarnings = totalEarnings + profit + investment[stockId];
 
