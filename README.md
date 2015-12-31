@@ -45,7 +45,7 @@ These models are trained on the sample stock market data provided. The server-si
 
 ## Client Interface
 
-The client interface provides overview and detail representations for stock market data built using [D3](http://d3js.org/). It also accesses the trained neural networks (recreated from the JSON files) and provides prediction suggestions while supporting user interaction. 
+The client interface provides overview and detail visualizations for stock market data built using [D3](http://d3js.org/). It also accesses the trained neural networks (recreated from the JSON files) and provides prediction suggestions while supporting user interaction. 
 
 ![StockFork](https://raw.githubusercontent.com/karthikbadam/TimeFork/master/public/images/stockfork.png)
 
