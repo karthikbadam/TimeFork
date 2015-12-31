@@ -1,5 +1,5 @@
 /**
- * Created by Shivalik Sen and Karthik Badam on 6/11/15.
+ * Created by Karthik Badam on 6/11/15.
  */
 
 var express = require('express');

@@ -13,9 +13,9 @@ The analyst can go through these steps iteratively till he/she has enough inform
 ## Repository Content 
 In this repository, we provide two main things for developers and researchers interested in contributing to this project. 
 
-1. The "main" branch contains our implementation of the stock market analytics tool---StockFork--- including its server and client components (described below).
+1. The "main" branch contains our implementation of the stock market analytics tool, StockFork, including its server and client components (described below).
 
-2. The "user-study" contains the implementation including the code and data specifically used for a user study conducted to understand if TimeFork is successful improving the predictions and when/how it does do. 
+2. The "user-study" branch contains the implementation including the code and data specifically used for a user study conducted to understand if TimeFork is successful improving the predictions and when/how it does do. 
 
 Beyond the implementations, **our repository also offers sample stock market data in [public/data/](https://github.com/karthikbadam/TimeFork/tree/master/public/data) folder and the corresponding trained neural network files (containing fitted weights) in [public/data/train/](https://github.com/karthikbadam/TimeFork/tree/master/public/data/train).**
 
@@ -28,7 +28,7 @@ To deploy this Node.js application, you must have [npm](https://www.npmjs.com/) 
 2. Run `node app.js` in the TimeFork folder to start the application at port 3000. Now, you can try it out by opening `localhost:3000` in your browser.
 
 
-## StockFork Server-Side
+## StockFork Server-Side Components
 
 
 
