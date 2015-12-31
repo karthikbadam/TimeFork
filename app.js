@@ -39,9 +39,12 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/index', routes);
 app.use('/overview', routes);
-app.use('/linecharts', routes);
+app.use('/prediction', routes);
+app.use('/noprediction', routes);
 app.use('/faq', routes);
 app.use('/reports', routes);
+app.use('/reports2', routes);
+app.use('/userlog', routes); 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -55,7 +58,6 @@ var httpserver = http.createServer(app);
 httpserver.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 });
-
 
 /* Initializing a self organizing map */
 
@@ -76,7 +78,7 @@ var csvStream = csv
         var symbol = data.symbols;
 
         allStocks.push(symbol);
-        
+//        
 //        var fs = require('fs');
 //        var companyName = symbol;
 //        
@@ -94,11 +96,9 @@ var csvStream = csv
 //            symbols: allStocks
 //        });
         
-        return 1; 
-        
 //        var p = new Parallel(allStocks,  { evalPath: 'eval.js' });
 //        p.require(Stock);
-
+//
 //        p.map(function (data) {
 //
 //            console.log(data);
@@ -140,6 +140,8 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+
+
 
 module.exports = app;
 
