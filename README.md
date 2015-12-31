@@ -28,11 +28,14 @@ To deploy this Node.js application, you must have [npm](https://www.npmjs.com/) 
 2. Run `node app.js` in the TimeFork folder to start the application at port 3000. Now, you can try it out by opening `localhost:3000` in your browser.
 
 
-## StockFork Server-Side Components
+## Server-Side Components
+
+To support the TimeFork technique for stock market prediction, we used neural network models for temporal and conditional predictions. More specifically, 
+
+1. 
 
 
-
-## StockFork Client Interface
+## Client Interface
 
 
 
