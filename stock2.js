@@ -18,12 +18,13 @@ function Stock (options) {
     _self.max = -100000;
 
     _self.temporalNet = new _self.brain.NeuralNetwork({
-        hiddenLayers: [40, 50, 20],
+        hiddenLayers: [50, 60, 70],
         learningRate: 0.3 // global learning rate, useful when training using streams
     });
 
-    _self.parseDate =  _self.d3.time.format("%Y%m%d").parse;
-    _self.TEMPORAL_INPUT_SIZE = 12;
+    _self.parseDate =  _self.d3.time.format("%Y-%m-%d").parse;
+    
+    _self.TEMPORAL_INPUT_SIZE = 6;
     _self.TEMPORAL_OUTPUT_SIZE = 1;
 
     console.log("I am in child for "+_self.symbol);
@@ -39,18 +40,66 @@ function Stock (options) {
             return;
         }
 
-        for (var i = dataSize - 1; i >= _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE - 1; i--) {
+        // fraction change instead of normalized readings
+        
+//        for (var i = dataSize - 1; i >= _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE - 1; i--) {
+//            var tempInput = [];
+//            var tempOutput = [];
+//
+//            for (var j = 0; j < _self.TEMPORAL_OUTPUT_SIZE; j++) {
+//                var d = _self.data[i-j];
+//                tempOutput.push(d["normalized"]);
+//            }
+//
+//            for (var j = _self.TEMPORAL_OUTPUT_SIZE; j < _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE; j++) {
+//                var d = _self.data[i-j];
+//                tempInput.push(d["normalized"]);
+//            }
+//
+//            trainingData.push({
+//                input: tempInput,
+//                output: tempOutput
+//            })
+//        }
+        
+         for (var i = dataSize - 2; i >= _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE - 1; i--) {
             var tempInput = [];
             var tempOutput = [];
-
-            for (var j = 0; j < _self.TEMPORAL_OUTPUT_SIZE; j++) {
-                var d = _self.data[i-j];
-                tempOutput.push(d["normalized"]);
+            
+            var past = _self.data[i+1]; 
+                
+            for (var j = 0; j < _self.TEMPORAL_INPUT_SIZE; j++) {
+                var c = _self.data[i-j];
+                var change = (c["Adj Close"] - past["Adj Close"])*10/past["Adj Close"];
+                if (change > 1) {
+                    
+                    change = 1;
+                
+                } else if (change < -1) {
+                
+                    change = -1; 
+                }
+                
+                tempInput.push((1+change)/2);
             }
+             
+            //var past = _self.data[i-j+1];
 
-            for (var j = _self.TEMPORAL_OUTPUT_SIZE; j < _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE; j++) {
-                var d = _self.data[i-j];
-                tempInput.push(d["normalized"]);
+            for (var j = _self.TEMPORAL_INPUT_SIZE; j < _self.TEMPORAL_INPUT_SIZE + _self.TEMPORAL_OUTPUT_SIZE; j++) {
+                
+                var c = _self.data[i-j];
+                var change = (c["Adj Close"] - past["Adj Close"])*10/past["Adj Close"];
+                
+                if (change > 1) {
+                    
+                    change = 1;
+                
+                } else if (change < -1) {
+                
+                    change = -1; 
+                }
+                
+                tempOutput.push((1+change)/2);
             }
 
             trainingData.push({
@@ -69,14 +118,14 @@ function Stock (options) {
 
         var trainingData = getTemporalNetworkInput();
 
-        //console.log(trainingData);
+        console.log(trainingData);
 
         if (trainingData) {
 
             var info = _self.temporalNet.train(trainingData, {
-                errorThresh: 0.005,  // error threshold to reach
-                iterations: 20000,   // maximum training iterations
-                log: false,           // console.log() progress periodically
+                errorThresh: 0.0005,  // error threshold to reach
+                iterations: 10000,   // maximum training iterations
+                log: true,           // console.log() progress periodically
                 logPeriod: 10       // number of iterations between logging
             });
 
@@ -89,7 +138,7 @@ function Stock (options) {
             //write weights to file
 
             //console.log(JSON.stringify(_self.temporalNet.weights));
-            _self.fs.writeFileSync("data/train/train-"+_self.symbol+".json", JSON.stringify(_self.temporalNet.toJSON()));
+            _self.fs.writeFileSync("public/data/train/train-"+_self.symbol+".json", JSON.stringify(_self.temporalNet.toJSON()));
 
             return JSON.stringify(info);
         }
@@ -105,11 +154,11 @@ function Stock (options) {
 
     for (var i = 0; i < csv1.length; i++) {
         var d = csv1[i];
-        d["date"] = _self.parseDate(String(d["date"]));
-        d["close price"] = +d["close price"];
-        d["volume"] = +d["volume"];
+        d["Date"] = _self.parseDate(String(d["Date"]));
+        d["Adj Close"] = +d["Adj Close"];
+        d["Volume"] = +d["Volume"];
 
-        var close = d["close price"];
+        var close = d["Adj Close"];
 
         if (_self.min > close) {
             _self.min = close;
@@ -124,13 +173,18 @@ function Stock (options) {
 
     console.log("I am done with reading "+ _self.symbol + " of size " + _self.data.length);
 
-    for (var i = 0; i < _self.data.length; i++) {
-        if (_self.max - _self.min != 0)
-            _self.data[i].normalized = (_self.data[i]["close price"] - _self.min)/(_self.max - _self.min);
-        else
-            _self.data[i].normalized = 0;
-
-    }
+//    for (var i = 0; i < _self.data.length; i++) {
+//        if (_self.max - _self.min != 0)
+//            _self.data[i].normalized = (_self.data[i]["Adj Close"] - _self.min)/(_self.max - _self.min);
+//        else
+//            _self.data[i].normalized = 1;
+//        
+//        
+//        if (_self.data[i].normalized == 0) {
+//            _self.data[i].normalized = 0.001;
+//        }
+//
+//    }
 
     trainTemporal();
 
