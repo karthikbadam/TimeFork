@@ -5,7 +5,7 @@ TimeFork For Stock Market Data
 
 1. The interface first provides prediction suggestions for each stock based on its past trends (**temporal predictions**).
 2. Based on these suggestions and other stock market data, an analyst can interact to make his/her own prediction for one or more stocks.
-3. Following the analyst's interactions for specific stocks, the interface recalculates the predictions for other stocks (**conditional predictions**). In essence, this step answers "what if" questions that an analyst can have. For example, what if Tesla increase by 5% over the next ten days. The dialogue goes back to Step 1 or 2 after. 
+3. Following the analyst's interactions for specific stocks, the interface recalculates the predictions for other stocks (**conditional predictions**). In essence, this step answers "what if" questions that an analyst can have. For example, what if Tesla increase by 5% over the next ten days. The dialogue goes back to Step 1 or 2 after this. 
 
 The analyst can go through these steps iteratively till he/she has enough information to make a decision regarding investment in the stocks.
 
@@ -23,7 +23,7 @@ Beyond the implementations, **our repository also offers sample stock market dat
 
 ## Evaluation: User Study
 
-For implementations, data, and training files specific to our user study, take a look into the [**"user-study" branch**](https://github.com/karthikbadam/TimeFork/tree/user-study).
+For implementations, data, and training files specific to our user study, take a look into the [**user-study branch**](https://github.com/karthikbadam/TimeFork/tree/user-study).
 
 ## Build Process
 
