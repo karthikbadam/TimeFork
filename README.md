@@ -5,7 +5,7 @@ TimeFork For Stock Market Data
 
 1. The interface first provides prediction suggestions for each stock based on its past trends (**temporal predictions**).
 2. Based on these suggestions and other stock market data, an analyst can interact to make his/her own prediction for one or more stocks.
-3. Following the analyst's interactions for specific stocks, the interface recalculates the predictions for other stocks (**conditional predictions**). In essence, this step answers "what if" questions that an analyst can have. For example, what if Tesla increase by 5% over the next ten days. The dialogue goes back to Step 1 or 2 after this. 
+3. Following the analyst's interactions for specific stocks, the interface recalculates the predictions for other stocks (**conditional predictions**). In essence, this step answers "what if" questions that an analyst can have. For example, what if Tesla increases by 5% over the next ten days. The dialogue goes back to Step 1 or 2 after this. 
 
 The analyst can go through these steps iteratively till he/she has enough information to make a decision regarding investment in the stocks.
 
@@ -16,7 +16,7 @@ In this repository, we provide two main things for developers and researchers in
 
 1. The "master" branch contains our implementation of the stock market analytics tool, StockFork, including its server and client components (described below).
 
-2. The "user-study" branch contains the implementation including the code and data specifically used for a user study conducted to understand if TimeFork is successful improving the predictions and when/how it does do. 
+2. The "user-study" branch contains the implementation including the code and data specifically used for a user study conducted to understand if TimeFork is successful at improving the predictions and when/how it does do. 
 
 Beyond the implementations, **our repository also offers sample stock market data in [public/data/](https://github.com/karthikbadam/TimeFork/tree/master/public/data) folder and the corresponding trained neural network files (containing fitted weights) in [public/data/train/](https://github.com/karthikbadam/TimeFork/tree/master/public/data/train).**
 
