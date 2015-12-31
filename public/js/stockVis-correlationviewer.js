@@ -26,7 +26,7 @@ function CorrelationChart(options) {
     _self.force = d3.layout.force()
         .charge(-120)
         .linkDistance(function (d) {
-            return _self.width * 0.75  - _self.width * d.value * 0.75;
+            return _self.width - 20 - _self.width * d.value/2;
         })
         .size([_self.width, _self.height]);
 
@@ -99,7 +99,7 @@ CorrelationChart.prototype.refresh = function () {
         .links(_self.links);
 
     if (_self.link)
-        _self.link.remove();
+        _self.link.remove().transition().delay(100);
 
     _self.link = _self.svg.selectAll(".link")
         .data(_self.links)
@@ -123,7 +123,7 @@ CorrelationChart.prototype.refresh = function () {
     //_self.link.exit().remove();
 
     if (_self.node)
-        _self.node.remove();
+        _self.node.remove().transition().delay(100);
 
     //    _self.node = _self.svg.selectAll(".node")
     //            .data(_self.nodes)
@@ -135,14 +135,14 @@ CorrelationChart.prototype.refresh = function () {
     //            });
     //.call(_self.force.drag);
 
-    _self.node = _self.svg.selectAll(".node")
-        .data(_self.nodes)
-        .enter()
-        .append("g")
-        .attr("class", "node");
-
-
-    _self.node.append("circle")
+     if (_self.svg.selectAll(".node").empty()) {
+        _self.node = _self.svg.selectAll(".node")
+            .data(_self.nodes)
+            .enter()
+            .append("g")
+            .attr("class", "node");
+        
+        _self.node.append("circle")
         .attr("cx", 0)
         .attr("cy", 0)
         .attr("r", radius)
@@ -150,8 +150,37 @@ CorrelationChart.prototype.refresh = function () {
             //CHANGE COLOR SCHEME
             //return color(d.id);
             return "#67655D";
-        })
-        .call(_self.force.drag);
+        });
+
+    } else {
+        _self.node = _self.svg.selectAll(".node")
+            .data(_self.nodes);
+
+        _self.node.exit().transition().delay(100).remove();
+        
+        _self.node.select("circle")
+        .transition().delay(100)
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", radius)
+        .style("fill", function (d) {
+            //CHANGE COLOR SCHEME
+            //return color(d.id);
+            return "#67655D";
+        });
+
+        _self.node.enter().select('circle')
+            .transition().delay(200)
+            .attr("cx", 0)
+            .attr("cy", 0)
+            .attr("r", radius)
+            .style("fill", function (d) {
+                //CHANGE COLOR SCHEME
+                //return color(d.id);
+                return "#67655D";
+            });
+
+    }
 
     _self.node.append("text")
         .attr("dx", 12)
@@ -170,7 +199,7 @@ CorrelationChart.prototype.refresh = function () {
     //_self.node.exit().remove();
 
     _self.force.on("tick", function () {
-        _self.link.attr("x1", function (d) {
+        _self.link.transition().delay(30).attr("x1", function (d) {
                 return d.source.x;
             })
             .attr("y1", function (d) {
@@ -182,7 +211,7 @@ CorrelationChart.prototype.refresh = function () {
             .attr("y2", function (d) {
                 return d.target.y;
             });
-        _self.node.attr("transform", function (d) {
+        _self.node.transition().delay(30).attr("transform", function (d) {
             d.x = Math.max(radius, Math.min(_self.width - radius, d.x));
             d.y = Math.max(radius, Math.min(_self.height - radius, d.y));
             return "translate(" + d.x + "," + d.y + ")";

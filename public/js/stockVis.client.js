@@ -34,6 +34,8 @@ var chartObjects = {};
 
 var overviewChart;
 
+var currentUserQuery = {};
+
 //var stockColumns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'];
 
 // columns
@@ -106,6 +108,24 @@ function getFutureDate(today) {
 
 $(document).ready(function () {
 
+
+    $(window).keypress(function (e) {
+        if (e.keyCode === 0 || e.keyCode === 32) {
+            console.log('Space pressed');
+
+            //clear the predictions
+            
+            for (var i = 0; i < charts.length; i++) {
+                charts[i].showOnly(overviewChart.b, "null");
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+        }
+    });
+
     //create Correlation Viewer
     correlationViewer = new CorrelationChart();
 
@@ -129,7 +149,7 @@ $(document).ready(function () {
 
     //reads the list of stocks first
     d3.csv(stockList, function (error, data) {
-        
+
         //for each string element in the data
         data.forEach(function (d) {
 

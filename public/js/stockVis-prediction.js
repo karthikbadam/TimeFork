@@ -16,13 +16,13 @@ function Predictions(options) {
 
     _self.pastValues = {};
 
-    _self.TEMPORAL_ALTERNATIVES = 4;
+    _self.TEMPORAL_ALTERNATIVES = 3;
 
     _self.TEMPORAL_INPUT_SIZE = 6;
 
     _self.stockPastValues = {};
 
-    _self.SPATIAL_ALTERNATIVES = 6;
+    _self.SPATIAL_ALTERNATIVES = 5;
 
 }
 
@@ -61,7 +61,7 @@ Predictions.prototype.sortSpatial = function (predictions, opacity) {
 
     // sort based on opacities
     _self.sortedSpatialPredictions = _self.spatialPredictions.sort(function (a, b) {
-        return b.opacity - a.opacity
+        return b.opacity - a.opacity;
     });
 
 };
@@ -138,7 +138,7 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
 
     allInputs.push({
         input: input,
-        opacity: 1
+        opacity: 0.8
     });
 
     for (var i = 0; i < _self.TEMPORAL_ALTERNATIVES; i++) {
@@ -147,7 +147,7 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
         var tempInput = input.slice(0);
 
         //get a random number 
-        var alternations = Math.ceil(Math.random() * _self.TEMPORAL_ALTERNATIVES); //i
+        var alternations = Math.floor(0.7 * _self.TEMPORAL_ALTERNATIVES); //i
 
         for (var j = 0; j < alternations; j++) {
 
@@ -157,12 +157,12 @@ Predictions.prototype.generateTemporalPredictions = function (stockId, input) {
 
             if (Math.random() < 0.5) {
 
-                tempInput[index] = tempInput[index] + 0.05 * tempInput[index];
+                tempInput[index] = tempInput[index] + 0.1 * tempInput[index];
                 //tempInput[index] = tempInput[index] + 0.4 > 1? 1: tempInput[index] + 0.4;
 
             } else {
 
-                tempInput[index] = tempInput[index] - 0.05 * tempInput[index];
+                tempInput[index] = tempInput[index] - 0.1 * tempInput[index];
                 //tempInput[index] = tempInput[index] - 0.4 > -1? -1: tempInput[index] - 0.4;
             }
         }
@@ -256,7 +256,6 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
 
         var output = _self.generateTemporalPredictions(stockId, input);
 
-
         for (var j = 0; j < output.length; j++) {
 
             var currPrediction = output[j].prediction;
@@ -306,29 +305,43 @@ Predictions.prototype.predictFutureSteps = function (stockId, nTimes, dataFilter
 
             pastBestPredictions.push(bestPrediction);
         }
+        
 
-
-
-        if (predictSpatial) {
-
+        if (predictSpatial && i!=nTimes) {
+            
+            //get the list of predicted stocks
+            var stockIds = Object.keys(currentUserQuery);
+            
+            var query = {};
+            
+            for (var stockIdIndex = 0; stockIdIndex < stockIds.length; stockIdIndex++) {
+                var chart = chartObjects[stockIds[stockIdIndex]];
+                var change = (chart.topTemporalPredictions[i+1] 
+                - chart.topTemporalPredictions[i]) * 100/chart.topTemporalPredictions[i];
+                
+                query[stockIds[stockIdIndex]] = change;
+            }
+            
             var change = (bestPrediction - previous) * 100 / previous;
 
-            var spatialPred = spatialPrediction.getPredictions(stockId, change);
-
+            //var spatialPred = spatialPrediction.getPredictions(stockId, change);
+            
+            var spatialPred = spatialPrediction.getPredictions(stockId, change, query);
+            
             var bands = getSPredictionBand(spatialPred, i);
-
+             
             spatialPreds.push({
                 predictions: spatialPred,
                 date: presentDate,
                 past: previous,
-                step: i
+                step: i,
             });
 
             spatialBands.push(bands);
         }
 
     }
-
+    
     return {
         temporal: predictions,
         temporalband: temporalBands,

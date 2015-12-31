@@ -8,6 +8,11 @@ html {
     margin: 0;
     font-family: Helvetica-Light, FFDinWebPro, "Helvetica Neue", Helvetica, Arial, sans-serif;
     overflow: hidden;
+    
+}
+
+::-webkit-scrollbar { 
+    display: none; 
 }
 
 #stocklist {
@@ -270,6 +275,7 @@ g.tick text {
     border: 1px solid rgba(180, 180, 180, 0.2);
     overflow-x: scroll;
     display: block;
+    cursor: crosshair;
 }
 
 .expandedStockChart {
@@ -324,8 +330,10 @@ g.tick text {
 }
 
 .predictionLine {
+/*
     stroke-dasharray: 3, 3;
     stroke-width: 0.5px;
+*/
 }
 
 #search_box {
@@ -407,7 +415,7 @@ div.ui_button:hover {
 
 .area.bands {
     fill: black;
-    fill-opacity: 0.05;
+    fill-opacity: 0.09;
     stroke: none;
 }
 
@@ -417,6 +425,7 @@ div.ui_button:hover {
     stroke: none;
     stroke-width: 1px;
     pointer-events: none;
+    display: none;
 }
 
 .sprediction.bands {
@@ -425,6 +434,7 @@ div.ui_button:hover {
     stroke: none;
     stroke-width: 1px;
     pointer-events: none;
+    display: none;
 }
 
 
@@ -448,6 +458,7 @@ div.ui_button:hover {
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid black;
     margin-bottom: 5px;
+    margin-top: 5px;
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -463,10 +474,9 @@ div.ui_button:hover {
 
 .temporalPredictionLine {
     pointer-events: none;
-    display: none;
-}
+/*    display: none;*/
+ }
 
 .predictionLine {
     pointer-events: none;
-    display: inherit;
-}
+ }
