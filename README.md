@@ -21,6 +21,10 @@ In this repository, we provide two main things for developers and researchers in
 Beyond the implementations, **our repository also offers sample stock market data in [public/data/](https://github.com/karthikbadam/TimeFork/tree/master/public/data) folder and the corresponding trained neural network files (containing fitted weights) in [public/data/train/](https://github.com/karthikbadam/TimeFork/tree/master/public/data/train).**
 
 
+## User-study Branch
+
+For implementations, data, and training files specific to our user study, take a look into the [**"user-study" branch**](https://github.com/karthikbadam/TimeFork/tree/user-study).
+
 ## Build Process
 
 To deploy this application, you must have [node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/) installed.
@@ -41,18 +45,14 @@ These models are trained on the sample stock market data provided. The server-si
 
 ## Client Interface
 
-The client interface provides overview and detail representations for stock market data built using [D3][http://d3js.org/]. It also accesses the trained neural networks (recreated from the JSON files) and provides prediction suggestions while supporting user interaction. 
+The client interface provides overview and detail representations for stock market data built using [D3](http://d3js.org/). It also accesses the trained neural networks (recreated from the JSON files) and provides prediction suggestions while supporting user interaction. 
 
 ![StockFork](https://raw.githubusercontent.com/karthikbadam/TimeFork/master/public/images/stockfork.png)
 
 
-
-
-
 ## How to use
 
-
-
+[Link to the video](https://dl.dropboxusercontent.com/u/110166980/TimeFork-demo.mp4)
 
 To learn more, [visit the wiki](https://github.com/karthikbadam/TimeFork/wiki).
 
