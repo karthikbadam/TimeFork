@@ -14,7 +14,7 @@ The analyst can go through these steps iteratively till he/she has enough inform
 
 In this repository, we provide two main things for developers and researchers interested in contributing to this project. 
 
-1. The "main" branch contains our implementation of the stock market analytics tool, StockFork, including its server and client components (described below).
+1. The "master" branch contains our implementation of the stock market analytics tool, StockFork, including its server and client components (described below).
 
 2. The "user-study" branch contains the implementation including the code and data specifically used for a user study conducted to understand if TimeFork is successful improving the predictions and when/how it does do. 
 
