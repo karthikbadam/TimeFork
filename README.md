@@ -11,7 +11,7 @@ To deploy this application, you must have [node.js](https://nodejs.org/en/) and 
 2. Run `node app.js` to start the application at port 3000. 
 
 
-## Deploy
+## How to use
 
 In our study, we evaluated TimeFork prediction (where the computer helps the user predict by providing suggestions) against manual prediction (where the users have to predict by themselves just by looking at the data).
 
@@ -28,7 +28,7 @@ These datasets are available in [public/data/](https://github.com/karthikbadam/T
 
 ## Training Data: Prediction Models
 
-The prediction models (MLP and SOM) by the server are trained on the stock market data for the aforementioned stocks from July 2012 till March 2014. 
+The prediction models (MLP and SOM) are trained by the server on the stock market data for the above stocks from July 2012 till March 2014. 
 
 This data is available in the [data/](https://github.com/karthikbadam/TimeFork/tree/user-study/data) folder in CSV format.
 
