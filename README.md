@@ -28,7 +28,7 @@ These datasets are available in [public/data/](https://github.com/karthikbadam/T
 
 ## Training Data: Prediction Models
 
-The prediction models (MLP and SOM) are trained by the server on the stock market data for the above stocks from July 2012 till March 2014. 
+The prediction models (MLP and SOM) are trained by the server on the stock market data for the above stocks from July 2012 to February 2014. 
 
 This data is available in the [data/](https://github.com/karthikbadam/TimeFork/tree/user-study/data) folder in CSV format.
 
