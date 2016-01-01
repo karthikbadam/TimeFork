@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('index.html', {});
+    res.render('linecharts.html', {});
 });
 
 router.get('/overview', function (req, res, next) {

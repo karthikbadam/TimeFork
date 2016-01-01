@@ -1,21 +1,37 @@
 /* user study initializations */
 
-var participantID = "T15";
+var participantID = "Tester";
 
 var PREDICTION_SCENARIO = 1; //0 for no prediction, 1 for TimeFork
 
-var CALENDAR_TIME = 1; //0 for July, 1 for December, 2 for training
+var CALENDAR_TIME = 0; //0 for July, 1 for January, 2 for training
 
 var stepNumber = 0;
 
 var userPredictions = {};
 
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+// 1 for TimeFork
+PREDICTION_SCENARIO = getParameterByName("pred")? +getParameterByName("pred"): 1; //0 for no prediction, 1 for TimeFork
+
+// 1 for D1, 2 for D2
+CALENDAR_TIME = getParameterByName("data")? +getParameterByName("data") - 1: 0; //0 for July, 1 for January, 2 for training
+
 var parseDate = d3.time.format("%Y-%m-%d").parse;
 
+// Data from July-Aug 2014
 var brushes1 = [[parseDate("2014-07-01"), parseDate("2014-07-23")], [parseDate("2014-07-07"), parseDate("2014-07-31")], [parseDate("2014-07-13"), parseDate("2014-08-05")], [parseDate("2014-08-01"), parseDate("2014-08-23")]];
 
+// Data from Jan-March 2015
 var brushes2 = [[parseDate("2015-01-07"), parseDate("2015-01-27")], [parseDate("2015-01-11"), parseDate("2015-02-11")], [parseDate("2015-02-03"), parseDate("2015-02-23")], [parseDate("2015-02-23"), parseDate("2015-03-18")]];
 
+// Data from Training
 var tBrushes = [[parseDate("2013-07-01"), parseDate("2013-07-23")], [parseDate("2013-07-07"), parseDate("2013-07-25")], [parseDate("2013-07-13"), parseDate("2013-08-05")], [parseDate("2013-08-01"), parseDate("2013-08-23")]];
 
 var stockList = 'data/stocks.csv';
@@ -246,40 +262,6 @@ $(document).ready(function () {
 
         });
 
-        //        $("#forward").click(function (e) {
-        //
-        //            for (var i = 0; i < charts.length; i++) {
-        //
-        //                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
-        //
-        //                b[0] = getFutureDate(b[0]);
-        //                b[1] = getFutureDate(b[1]);
-        //
-        //                overviewChart.moveBrush(b);
-        //
-        //                charts[i].showOnly(b, null);
-        //            }
-        //
-        //        });
-        //
-        //        $("#fast-forward").click(function (e) {
-        //
-        //            for (var i = 0; i < charts.length; i++) {
-        //
-        //                var b = [charts[i].dataFiltered[charts[i].dataFiltered.length - 1][stockColumns[0]], charts[i].dataFiltered[0][stockColumns[0]]];
-        //
-        //                for (var j = 0; j < 10; j++) {
-        //                    b[0] = getFutureDate(b[0]);
-        //                    b[1] = getFutureDate(b[1]);
-        //                }
-        //
-        //                overviewChart.moveBrush(b);
-        //
-        //                charts[i].showOnly(b, null);
-        //            }
-        //
-        //        });
-
         $("#saveButton").click(function (e) {
 
             var previousEarnings = totalEarnings;
@@ -307,28 +289,28 @@ $(document).ready(function () {
             }
 
             
-            for (var i = 0; i < charts.length; i++) {
-
-                var predictionInfo = charts[i].getCurrentPrediction();
-
-                if (userPredictions[predictionInfo["stockId"]] == null) {
-                    userPredictions[predictionInfo["stockId"]] = [];
-                }
-
-                var predicted = predictionInfo.predict;
-                var actual = predictionInfo.actual;
-                var past = predictionInfo.past;
-                var stockId = predictionInfo["stockId"];
-
-                investment[stockId] = 0;
-                if (predictionInfo.slope > 0) {
-                    investment[stockId] = totalEarnings * predictionInfo.slope/totalSlope;
-                }
-                    
-                alert("stockId" + investment[stockId]);
-                
-                console.log("stockId"+ investment[stockId]);
-            }
+//            for (var i = 0; i < charts.length; i++) {
+//
+//                var predictionInfo = charts[i].getCurrentPrediction();
+//
+//                if (userPredictions[predictionInfo["stockId"]] == null) {
+//                    userPredictions[predictionInfo["stockId"]] = [];
+//                }
+//
+//                var predicted = predictionInfo.predict;
+//                var actual = predictionInfo.actual;
+//                var past = predictionInfo.past;
+//                var stockId = predictionInfo["stockId"];
+//
+//                investment[stockId] = 0;
+//                if (predictionInfo.slope > 0) {
+//                    investment[stockId] = totalEarnings * predictionInfo.slope/totalSlope;
+//                }
+//                    
+//                alert("stockId" + investment[stockId]);
+//                
+//                console.log("stockId"+ investment[stockId]);
+//            }
             
             totalEarnings = 0;
             previousEarnings = 0;
