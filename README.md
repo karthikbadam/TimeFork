@@ -26,14 +26,14 @@ To test manual prediction on these datasets, set the `pred` parameter to 0.
 These datasets are available in [public/data/](https://github.com/karthikbadam/TimeFork/tree/user-study/public/data) in CSV format.
 
 
-## Training Data: Prediction Models
+## Prediction Models: Training Data
 
 The prediction models (MLP and SOM) are trained by the server on the stock market data for the above stocks from July 2012 to February 2014. 
 
 This data is available in the [data/](https://github.com/karthikbadam/TimeFork/tree/user-study/data) folder in CSV format.
 
 
-## Fitted Weights: Prediction Models
+## Prediction Models: Fitted Weights
 
 The fitted weights of the prediction models (after training), are available in [public/data/train](https://github.com/karthikbadam/TimeFork/tree/user-study/public/data/train) in JSON format. These files can be used in [Brain](https://www.npmjs.com/package/brain) and [ML-SOM](https://www.npmjs.com/package/ml-som) to recreate the corresponding models.
 
