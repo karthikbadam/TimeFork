@@ -55,7 +55,7 @@ The client interface provides overview and detail visualizations for stock marke
 
 Please watch our video demo for this prediction tool.
 
-[Link to the video](https://dl.dropboxusercontent.com/u/110166980/TimeFork-demo.mp4)
+[Link to the video](https://www.youtube.com/watch?v=nUfSqqbaD5k)
 
 To learn more, [visit the wiki](https://github.com/karthikbadam/TimeFork/wiki).
 
