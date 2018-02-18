@@ -2,6 +2,8 @@ TimeFork For Stock Market Data
 ====
 *For information related to our user study, please look into the [user-study branch](https://github.com/karthikbadam/TimeFork/tree/user-study).*
 
+[Please note that this repository is not being maintained. Contact the developer for updates.]
+
 **TimeFork** is a technique for interactive prediction of time-series data. To showcase this technique, we developed a stock market analytics tool (StockFork) using data from the Yahoo Finance API. With TimeFork, you can predict the future of stocks through an interactive dialogue with the interface (through 3 steps).
 
 1. The interface first provides prediction suggestions for each stock based on its past trends (**temporal predictions**).
